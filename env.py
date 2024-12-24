@@ -1,14 +1,9 @@
-#!/usr/bin/env python
-
-# -*- coding: utf-8 -*-
-
-# author：Elan time:2020/1/9
-
 from task import *
 import copy as cp
 
 
 class Env(object):
+
     def __init__(self):
         self.time = 0
         self.task_set = []
@@ -29,9 +24,9 @@ class Env(object):
 
     def reset(self):
         self.time = 0
-        del self.task_set
         self.no_processor = np.random.randint(NO_PROCESSOR - 4, NO_PROCESSOR + 4)
         self.no_task = self.no_processor * TASK_PER_PROCESSOR
+        del self.task_set
         self.task_set = []
         self.instance = []
         for i in range(self.no_task):
@@ -45,7 +40,6 @@ class Env(object):
         global_reward = 0
         info = np.zeros(2)
         next_state = []
-        # 对优先级排序，选前m个执行
         executable = np.argsort(actions)[-self.no_processor:]
         #if len(actions) > self.no_processor:
         #    self.instance[executable[0]].execute_time += 1

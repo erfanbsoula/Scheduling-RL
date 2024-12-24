@@ -1,18 +1,16 @@
-#!/usr/bin/env python
-
-# -*- coding: utf-8 -*-
-
-# author：Elan time:2020/1/8
-
 from ddpg_torch import *
 from LSF import *
 from env import *
 from EDF import *
+
 if __name__ == '__main__':
-    replay_buffer = ReplayBuffer(BUFFER_SIZE)
+
     np.set_printoptions(precision=2, suppress=True)
+
+    env = Env()
+    replay_buffer = ReplayBuffer(BUFFER_SIZE)
     alg = DDPG(replay_buffer, STATE_DIM, ACTION_DIM, HIDDEN)
-    # alg.load_model(model_path)
+
     # hyper-parameters
     noise = 3
     frame_idx = 0
@@ -21,14 +19,14 @@ if __name__ == '__main__':
     mean_edf_rewards = []
     mean_lsf_rewards = []
     rewards = []
-    env = Env()
     edf_rewards = []
     lsf_rewards = []
 
     for i_episode in range(MAX_EPISODES):
+
+        env.reset()
         q_loss_list = []
         policy_loss_list = []
-        env.reset()
         episode_reward = 0
         edf_episode_reward = 0
         completed = 0
@@ -40,36 +38,9 @@ if __name__ == '__main__':
         missed = 0
         edf_missed = 0
         lsf_missed = 0
-        if EDF:
-            env.save()
-            for step in range(MAX_STEPS):
-                # env.arrive()
-                actions = GlobalEDF(env.instance, env.no_processor)
-                reward, _, _, info = env.step(actions)
-                edf_completed += info[0]
-                edf_missed += info[1]
-                edf_episode_reward = edf_completed
-                if env.done():
-                    break
-            env.load()
-            env.save()
-            for step in range(MAX_STEPS):
-                # env.arrive()
-                # actions = GlobalLSF(env.instance, env.no_processor)
-                actions = np.zeros(len(env.instance))
-                a = random.sample(range(len(env.instance)), min(env.no_processor, len(env.instance)))
-                for i in range(len(env.instance)):
-                    if i in a:
-                        actions[i] = 1
-                reward, _, _, info = env.step(actions)
-                lsf_completed += info[0]
-                lsf_missed += info[1]
-                lsf_episode_reward = lsf_completed
-                if env.done():
-                    break
-            env.load()
+
         for step in range(MAX_STEPS):
-            # env.arrive()
+
             no_instance = len(env.instance)
             actions = np.ones((no_instance, 1), dtype=np.float32)
             states = np.ones((no_instance, STATE_DIM), dtype=np.float32)
@@ -85,7 +56,6 @@ if __name__ == '__main__':
             noise *= 0.99686
 
             reward, done, next_state, info = env.step(np.squeeze(actions, 1))
-            # info[0]: 执行成功数 info[1]：执行失败数
             completed += info[0]
             missed += info[1]
             if no_instance > 0:

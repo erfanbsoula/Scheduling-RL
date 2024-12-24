@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-
-# -*- coding: utf-8 -*-
-
-# author：Elan time:2020/1/9
-
-
 import math
 import random
 from config import *
@@ -20,7 +13,6 @@ from collections import namedtuple
 
 import matplotlib.pyplot as plt
 from matplotlib import animation
-from IPython.display import display
 
 import argparse
 
@@ -81,7 +73,7 @@ class ActorNetwork(nn.Module):
 
         self.linear1 = nn.Linear(input_dim, hidden_dim[0])
         self.linear2 = nn.Linear(hidden_dim[0], hidden_dim[1])
-        self.linear3 = nn.Linear(hidden_dim[1], output_dim)  # output dim = dim of action
+        self.linear3 = nn.Linear(hidden_dim[1], output_dim)
 
         # weights initialization
         self.linear3.weight.data.uniform_(-init_w, init_w)
@@ -102,9 +94,9 @@ class ActorNetwork(nn.Module):
         normal = Normal(0, noise)
         action = self.forward(state)
         noise = noise_scale * normal.sample(action.shape).to(device)
-        action += noise
+        action = action + noise
         # action = torch.from_numpy(np.clip(action.detach().numpy(), 0, 1)[0])
-        torch.clamp(action, 0, 1)
+        action = torch.clamp(action, 0, 1)
         return action.detach().cpu().numpy()[0]
 
     @staticmethod
@@ -118,10 +110,10 @@ class ActorNetwork(nn.Module):
         evaluate action within GPU graph, for gradients flowing through it, noise_scale controllable
         '''
         normal = Normal(0, 1)
-        action = self.forward(state)
+        action = self(state)
         # action = torch.tanh(action)
         noise = noise_scale * normal.sample(action.shape).to(device)
-        action += noise
+        action = action + noise
         return action
 
 
@@ -178,46 +170,42 @@ class DDPG:
                warmup=True):
         self.update_cnt += 1
         state, action, reward, next_state, done = self.replay_buffer.sample(batch_size)
-        # print('sample:', state, action,  reward, done)
         reward = torch.FloatTensor(reward).unsqueeze(1).to(device)
         done = torch.FloatTensor(done).unsqueeze(1).to(device)
-        # print(reward.shape,state)
+
         predict_q = []
-        predict_new_q = []
         target_q = []
+
         for i in range(batch_size):
             state1 = torch.FloatTensor(state[i]).to(device)
             next_state1 = torch.FloatTensor(next_state[i]).to(device)
             action1 = torch.FloatTensor(action[i]).to(device)
+
             pq = torch.mean(self.q_net(state1, action1), 0)
-            nna = self.target_policy_net.evaluate_action(next_state1)
-            na = self.policy_net.evaluate_action(state1)
             predict_q.append(pq)
-            pnq = torch.mean(self.q_net(state1, na), 0)
-            predict_new_q.append(pnq)
+
+            nna = self.target_policy_net.evaluate_action(next_state1)
             tq = reward[i] + (1 - done[i]) * gamma * torch.mean(self.target_qnet(next_state1, nna), 0)
             target_q.append(tq)
-        # state = torch.FloatTensor(state).to(device)
-        # next_state = torch.FloatTensor(next_state).to(device)
-        # action = torch.FloatTensor(action).to(device)
-        # reward = torch.FloatTensor(reward).unsqueeze(1).to(device)
-        # done = torch.FloatTensor(np.float32(done)).unsqueeze(1).to(device)
 
-        # predict_q = self.q_net(state, action)  # for q
-        # new_next_action = self.target_policy_net.evaluate_action(next_state)  # for q
-        # new_action = self.policy_net.evaluate_action(state)  # for policy
-        # predict_new_q = self.q_net(state, new_action)  # for policy
-        # target_q = reward + (1 - done) * gamma * self.target_qnet(next_state, new_next_action)  # for q
-        # reward = reward_scale * (reward - reward.mean(dim=0)) /reward.std(dim=0) # normalize with batch mean and std
         predict_q = torch.stack(predict_q).to(device)
         target_q = torch.stack(target_q).to(device)
-        predict_new_q = torch.stack(predict_new_q).to(device)
 
         # train qnet
         q_loss = self.q_criterion(predict_q, target_q.detach())
         self.q_optimizer.zero_grad()
         q_loss.backward()
         self.q_optimizer.step()
+
+        predict_new_q = []
+        for i in range(batch_size):
+            state1 = torch.FloatTensor(state[i]).to(device)
+
+            na = self.policy_net.evaluate_action(state1)
+            pnq = torch.mean(self.q_net(state1, na), 0)
+            predict_new_q.append(pnq)
+
+        predict_new_q = torch.stack(predict_new_q).to(device)
 
         # train policy_net
         policy_loss = -torch.mean(predict_new_q)
