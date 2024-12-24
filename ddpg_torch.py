@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-
-# -*- coding: utf-8 -*-
-
-# author：Elan time:2020/1/9
-
-
 import math
 import random
 from config import *
@@ -20,7 +13,6 @@ from collections import namedtuple
 
 import matplotlib.pyplot as plt
 from matplotlib import animation
-from IPython.display import display
 
 import argparse
 
@@ -81,7 +73,7 @@ class ActorNetwork(nn.Module):
 
         self.linear1 = nn.Linear(input_dim, hidden_dim[0])
         self.linear2 = nn.Linear(hidden_dim[0], hidden_dim[1])
-        self.linear3 = nn.Linear(hidden_dim[1], output_dim)  # output dim = dim of action
+        self.linear3 = nn.Linear(hidden_dim[1], output_dim)
 
         # weights initialization
         self.linear3.weight.data.uniform_(-init_w, init_w)
@@ -102,9 +94,9 @@ class ActorNetwork(nn.Module):
         normal = Normal(0, noise)
         action = self.forward(state)
         noise = noise_scale * normal.sample(action.shape).to(device)
-        action += noise
+        action = action + noise
         # action = torch.from_numpy(np.clip(action.detach().numpy(), 0, 1)[0])
-        torch.clamp(action, 0, 1)
+        action = torch.clamp(action, 0, 1)
         return action.detach().cpu().numpy()[0]
 
     @staticmethod
@@ -121,7 +113,7 @@ class ActorNetwork(nn.Module):
         action = self.forward(state)
         # action = torch.tanh(action)
         noise = noise_scale * normal.sample(action.shape).to(device)
-        action += noise
+        action = action + noise
         return action
 
 
@@ -189,7 +181,7 @@ class DDPG:
             state1 = torch.FloatTensor(state[i]).to(device)
             next_state1 = torch.FloatTensor(next_state[i]).to(device)
             action1 = torch.FloatTensor(action[i]).to(device)
-            pq = torch.mean(self.q_net(state1, action1), 0)
+            pq = torch.mean(self.q_net(state1, action1), 0)#### here
             nna = self.target_policy_net.evaluate_action(next_state1)
             na = self.policy_net.evaluate_action(state1)
             predict_q.append(pq)

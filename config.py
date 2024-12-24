@@ -4,7 +4,7 @@
 
 # author：Elan time:2020/1/10
 
-GPU = True
+GPU = False
 
 DEVICE_INDEX = 0
 STATE_DIM = 9
