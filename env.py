@@ -135,7 +135,7 @@ class Env(object):
         ])
 
 
-    # save and load neet attention and maybe they can be removed
+    # save and load need attention and maybe they can be removed
     def save(self):
         self.saved = cp.deepcopy(self.task_set)
 
