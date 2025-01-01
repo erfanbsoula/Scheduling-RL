@@ -1,9 +1,31 @@
+import numpy as np
 from config import *
 from env import Env
 from ddpg_torch import ReplayBuffer, DDPG
 
-from LSF import *
-from EDF import *
+
+def GlobalEDF(instance, no_processor):
+    deadline = []
+    action = np.zeros(len(instance))
+    for i in instance:
+        deadline.append(i.deadline)
+    executable = np.argsort(deadline)
+    for i in range(no_processor):
+        if i < len(executable):
+            action[executable[i]] = 1
+    return action
+
+
+def GlobalLSF(instance, no_processor):
+    laxity = []
+    action = np.zeros(len(instance))
+    for i in instance:
+        laxity.append(i.laxity_time)
+    executable = np.argsort(laxity)
+    for i in range(no_processor):
+        if i < len(executable):
+            action[executable[i]] = 1
+    return action
 
 
 if __name__ == '__main__':
