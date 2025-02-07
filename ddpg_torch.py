@@ -42,16 +42,16 @@ class ReplayBuffer:
 
     def sample(self, batch_size):
         batch = random.sample(self.buffer, batch_size)
-        state, action, reward, next_state, done = [], [], [], [], []
+        states, actions, rewards, next_states, done_flags = [], [], [], [], []
 
         for i in range(batch_size):
-            state.append(batch[i]['state'])
-            action.append(batch[i]['action'])
-            reward.append(batch[i]['reward'])
-            next_state.append(batch[i]['next'])
-            done.append(batch[i]['done'])
+            states.append(batch[i]['state'])
+            actions.append(batch[i]['action'])
+            rewards.append(batch[i]['reward'])
+            next_states.append(batch[i]['next'])
+            done_flags.append(batch[i]['done'])
 
-        return state, action, reward, next_state, done
+        return states, actions, rewards, next_states, done_flags
 
 
     def __len__(self):
@@ -76,37 +76,36 @@ class ActorNetwork(nn.Module):
     def forward(self, state):
         x = torch.tanh(self.linear1(state))
         x = torch.tanh(self.linear2(x))
-        x = torch.sigmoid(self.linear3(x)).clone()
+        x = torch.sigmoid(self.linear3(x))
         return x
 
 
-    def select_action(self, state, noise=0, noise_scale=0.5):
+    def select_action(self, state, noise_std=0.0):
         '''
-        select action for sampling, no gradients flow, noisy action, return .cpu
+        select actions, no gradients flow, noisy action, return numpy
         '''
-        state = torch.FloatTensor(state).unsqueeze(0).to(device)
-        action = self(state)
+        state = torch.FloatTensor(state).to(device)
 
-        noise = noise_scale * Normal(0, noise).sample(action.shape).to(device)
-        action = torch.clamp(action + noise, 0, 1)
+        with torch.no_grad():
+            action = self(state)
 
-        return action.detach().cpu().numpy()[0]
+        if noise_std > 0:
+            noise = Normal(0, noise_std).sample(action.shape).to(device)
+            action = torch.clamp(action + noise, 0, 1)
 
-
-    @staticmethod
-    def sample_action():
-        normal = Normal(0.5, 1).sample((1,))
-        random_action = torch.clamp(normal, 0.001, 1)
-        return random_action.cpu().numpy()
+        return action.cpu().numpy().astype(np.float32)
 
 
-    def evaluate_action(self, state, noise_scale=0.0):
+    def forward_noisy(self, state, noise_std=0.0):
         '''
-        evaluate action within GPU graph, for gradients flowing through it, noise_scale controllable
+        forward with controllable noise scale
         '''
         action = self(state)
-        noise = noise_scale * Normal(0, 1).sample(action.shape).to(device)
-        action = action + noise
+
+        if noise_std > 0:
+            noise = Normal(0, noise_std).sample(action.shape).to(device)
+            action = action + noise
+
         return action
 
 
@@ -141,39 +140,29 @@ class DDPG:
 
         self.replay_buffer: ReplayBuffer = replay_buffer
 
-        self.q_net = QNetwork(state_dim + action_dim, hidden_dim).to(device)
-        self.target_qnet = QNetwork(state_dim + action_dim, hidden_dim).to(device)
         self.policy_net = ActorNetwork(state_dim, action_dim, hidden_dim).to(device)
         self.target_policy_net = ActorNetwork(state_dim, action_dim, hidden_dim).to(device)
+        self.policy_optimizer = optim.Adam(self.policy_net.parameters(), lr=policy_lr)
 
-        print(self.q_net)
         print(self.policy_net)
 
-        self.target_qnet.load_state_dict(self.q_net.state_dict())
-
-        self.q_criterion = nn.MSELoss()
+        self.q_net = QNetwork(state_dim + action_dim, hidden_dim).to(device)
+        self.target_q_net = QNetwork(state_dim + action_dim, hidden_dim).to(device)
+        self.target_q_net.load_state_dict(self.q_net.state_dict())
         self.q_optimizer = optim.Adam(self.q_net.parameters(), lr=q_lr)
-        self.policy_optimizer = optim.Adam(self.policy_net.parameters(), lr=policy_lr)
+        self.q_criterion = nn.MSELoss()
+
+        print(self.q_net)
 
         self.update_cnt = 0
 
 
-    def target_soft_update(self, net, target_net, tau):
-
-        for target_param, param in zip(target_net.parameters(), net.parameters()):
-            target_param.data.copy_(
-                target_param.data * (1.0 - tau) + param.data * tau
-            )
-
-        return target_net
-
-
-    def update(self, batch_size, gamma=0.99, soft_tau=1e-2, target_update_delay=3):
+    def update(self, batch_size, gamma=0.99, soft_tau=2e-2, target_update_delay=3):
 
         self.update_cnt += 1
         states, actions, rewards, next_states, done_flags = self.replay_buffer.sample(batch_size)
+
         rewards = torch.FloatTensor(rewards).unsqueeze(1).to(device)
-        done_flags = torch.FloatTensor(done_flags).unsqueeze(1).to(device)
 
         predicted_q_values = []
         target_q_values = []
@@ -184,15 +173,15 @@ class DDPG:
             predicted_q = torch.mean(self.q_net(current_state, current_action), 0)
 
             next_predicted_q = 0
-            if len(next_states[i]) > 0 and len(next_states[i][0]) > 0:
+            if not done_flags[i] and len(next_states[i]) != 0:
                 next_state = torch.FloatTensor(next_states[i]).to(device)
-                next_action = self.target_policy_net.evaluate_action(next_state)
-                next_predicted_q = torch.mean(self.target_qnet(next_state, next_action), 0)
+                next_action = self.target_policy_net.forward_noisy(next_state)
+                next_predicted_q = torch.mean(self.target_q_net(next_state, next_action), 0)
 
-            target_q = rewards[i] + (1 - done_flags[i]) * gamma * next_predicted_q
+            target_q = rewards[i] + gamma * next_predicted_q
 
-            target_q_values.append(target_q)
             predicted_q_values.append(predicted_q)
+            target_q_values.append(target_q)
 
         predicted_q_values = torch.stack(predicted_q_values).to(device)
         target_q_values = torch.stack(target_q_values).to(device).detach()
@@ -207,7 +196,7 @@ class DDPG:
 
         for i in range(batch_size):
             current_state = torch.FloatTensor(states[i]).to(device)
-            predicted_action = self.policy_net.evaluate_action(current_state)
+            predicted_action = self.policy_net.forward_noisy(current_state)
             predicted_q = torch.mean(self.q_net(current_state, predicted_action), 0)
             predicted_q_values.append(predicted_q)
 
@@ -221,35 +210,46 @@ class DDPG:
 
         # update the target_qnet
         if self.update_cnt % target_update_delay == 0:
-            self.target_qnet = self.target_soft_update(self.q_net, self.target_qnet, soft_tau)
+            self.target_q_net = self.target_soft_update(self.q_net, self.target_q_net, soft_tau)
             self.target_policy_net = self.target_soft_update(self.policy_net, self.target_policy_net, soft_tau)
 
         return q_loss.detach().cpu().numpy(), policy_loss.detach().cpu().numpy()
 
 
+    def target_soft_update(self, net, target_net, tau):
+
+        for target_param, param in zip(target_net.parameters(), net.parameters()):
+            target_param.data.copy_(
+                target_param.data * (1.0 - tau) + param.data * tau
+            )
+
+        return target_net
+
+
     def save_model(self, path):
         torch.save(self.q_net.state_dict(), path + '_q')
-        torch.save(self.target_qnet.state_dict(), path + '_target_q')
+        torch.save(self.target_q_net.state_dict(), path + '_target_q')
         torch.save(self.policy_net.state_dict(), path + '_policy')
+
 
     def load_model(self, path):
         self.q_net.load_state_dict(torch.load(path + '_q'))
-        self.target_qnet.load_state_dict(torch.load(path + '_target_q'))
+        self.target_q_net.load_state_dict(torch.load(path + '_target_q'))
         self.policy_net.load_state_dict(torch.load(path + '_policy'))
         self.q_net.eval()
-        self.target_qnet.eval()
+        self.target_q_net.eval()
         self.policy_net.eval()
 
-    def plot(self, rewards, edf_rewards, lsf_rewards):
-        plt.close("all")
-        plt.figure(figsize=(20, 5))
-        plt.plot(range(len(rewards)), rewards, color='green', label='DDPG')
-        # plt.plot(range(len(edf_rewards)), edf_rewards, color='red', label='EDF')
-        # plt.plot(range(len(lsf_rewards)), lsf_rewards, color='blue', label='LSF')
-        plt.xlabel('Episode')
-        plt.ylabel('Scheduling Success Ratio ')
-        plt.legend()
-        plt.ylim(0, 100)
-        plt.savefig('plot/ddpg VS edf delay.png')
-        # plt.show()
-        plt.clf()
+    # def plot(self, rewards, edf_rewards, lsf_rewards):
+    #     plt.close("all")
+    #     plt.figure(figsize=(20, 5))
+    #     plt.plot(range(len(rewards)), rewards, color='green', label='DDPG')
+    #     # plt.plot(range(len(edf_rewards)), edf_rewards, color='red', label='EDF')
+    #     # plt.plot(range(len(lsf_rewards)), lsf_rewards, color='blue', label='LSF')
+    #     plt.xlabel('Episode')
+    #     plt.ylabel('Scheduling Success Ratio ')
+    #     plt.legend()
+    #     plt.ylim(0, 100)
+    #     plt.savefig('plot/ddpg VS edf delay.png')
+    #     # plt.show()
+    #     plt.clf()
