@@ -135,8 +135,8 @@ class DDPG:
 
     def __init__(self, replay_buffer, state_dim, action_dim, hidden_dim):
 
-        q_lr = 1e-4
-        policy_lr = 1e-5
+        q_lr = 1e-2
+        policy_lr = 1e-3
 
         self.replay_buffer: ReplayBuffer = replay_buffer
 
@@ -157,7 +157,7 @@ class DDPG:
         self.update_cnt = 0
 
 
-    def update(self, batch_size, gamma=0.99, soft_tau=2e-2, target_update_delay=3):
+    def update(self, batch_size, gamma=0.95, soft_tau=1e-3, target_update_delay=3):
 
         self.update_cnt += 1
         states, actions, rewards, next_states, done_flags = self.replay_buffer.sample(batch_size)
