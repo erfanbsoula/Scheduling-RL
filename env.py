@@ -8,24 +8,27 @@ np.random.seed(199686)
 class Task:
 
 
-    def __init__(self):
-        # (min_deadline + max_deadline) / 2 * granularity / arrival_rate * 5 = load
-        self.arrival_rate = np.random.randint(12, 26)
-        self.arrival_intervals = np.random.exponential(
-            self.arrival_rate, INSTANCES_PER_TASK
-        )
-        self.arrival_intervals = self.arrival_intervals.round().astype(int)
-        self.arrival_times = np.cumsum(self.arrival_intervals)
+    def __init__(self, load):
+        self.deadline = np.random.randint(MIN_DEADLINE, MAX_DEADLINE+1)
 
-        self.deadline = np.random.randint(5, 51)
-
-        self.granularity = np.random.uniform(0.1, 0.6)
+        self.granularity = np.random.uniform(MIN_GRANULARITY, MAX_GRANULARITY)
         self.execution_rate = self.deadline * self.granularity
         self.execution_times = np.random.exponential(
             self.execution_rate, INSTANCES_PER_TASK
         )
         self.execution_times = self.execution_times.round().astype(int)
         self.execution_times = np.clip(self.execution_times, 1, self.deadline)
+
+        # self.arrival_rate = np.random.randint(12, 26)
+        # (min_deadline + max_deadline) / 2 * granularity / arrival_rate * 5 = load
+        # arrival_rate = (min_deadline + max_deadline) / 2 * granularity / load * 5
+        self.expected_execution_time = (MIN_DEADLINE + MAX_DEADLINE) / 2 * self.granularity
+        self.arrival_rate = self.expected_execution_time / load * TASK_PER_PROCESSOR
+        self.arrival_intervals = np.random.exponential(
+            self.arrival_rate, INSTANCES_PER_TASK
+        )
+        self.arrival_intervals = self.arrival_intervals.round().astype(int)
+        self.arrival_times = np.cumsum(self.arrival_intervals)
 
         self.instance_count = 0
 
@@ -93,7 +96,8 @@ class Environment(object):
         self.time = 0
         self.processor_count = PROCESSOR_COUNT
         self.task_count = self.processor_count * TASK_PER_PROCESSOR
-        self.task_set = [Task() for i in range(self.task_count)]
+        load = np.random.uniform(MIN_LOAD, MAX_LOAD)
+        self.task_set = [Task(load) for i in range(self.task_count)]
         self.active_instances = []
 
         self.arrive_instances()
