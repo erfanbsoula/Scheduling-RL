@@ -1,5 +1,4 @@
 from typing import List
-import copy as cp
 import numpy as np
 from config import *
 
@@ -8,205 +7,220 @@ np.random.seed(199686)
 
 class Task:
 
-    def __init__(self):
-        # !! Attention !!
-        # the paper states exponentially distributed arrivals
-        # but here they have used poisson distribution!
-        self.interval = np.random.poisson(LAMBDA, FREQUENCY)
-        self.arrive_time = np.cumsum(self.interval)
-        self.deadline = np.random.randint(MIN_DEADLINE, MAX_DEADLINE)
-        self.execute_time = round(
-            np.random.exponential((MAX_DEADLINE + MIN_DEADLINE) / 2 * GRANULARITY)
+
+    def __init__(self, load):
+        self.deadline = np.random.randint(MIN_DEADLINE, MAX_DEADLINE+1)
+
+        self.granularity = np.random.uniform(MIN_GRANULARITY, MAX_GRANULARITY)
+        self.execution_rate = self.deadline * self.granularity
+        self.execution_times = np.random.exponential(
+            self.execution_rate, INSTANCES_PER_TASK
         )
-        self.execute_time = np.clip(self.execute_time, MIN_EXECUTE_TIME, self.deadline)
-        self.count = 0
+        self.execution_times = self.execution_times.round().astype(int)
+        self.execution_times = np.clip(self.execution_times, 1, self.deadline)
+
+        # self.arrival_rate = np.random.randint(12, 26)
+        # (min_deadline + max_deadline) / 2 * granularity / arrival_rate * 5 = load
+        # arrival_rate = (min_deadline + max_deadline) / 2 * granularity / load * 5
+        self.expected_execution_time = (MIN_DEADLINE + MAX_DEADLINE) / 2 * self.granularity
+        self.arrival_rate = self.expected_execution_time / load * TASK_PER_PROCESSOR
+        self.arrival_intervals = np.random.exponential(
+            self.arrival_rate, INSTANCES_PER_TASK
+        )
+        self.arrival_intervals = self.arrival_intervals.round().astype(int)
+        self.arrival_times = np.cumsum(self.arrival_intervals)
+
+        self.instance_count = 0
 
 
     def create_instance(self) -> "Instance":
-        self.count += 1
-        return Instance(self)
+        execution_time = self.execution_times[self.instance_count]
+        instance = Instance(self.deadline, execution_time)
+        self.instance_count += 1
+        return instance
 
 
 class Instance:
 
-    def __init__(self, task: Task):
-        self.execute_time = task.execute_time
-        self.deadline = task.deadline
-        self.laxity_time = self.deadline - self.execute_time
+    def __init__(self, deadline, execution_time):
+        self.execution_time = execution_time
+        self.deadline = deadline
+        self.laxity = self.deadline - self.execution_time
         self.over = False
 
 
     def step(self, execute: bool):
         self.deadline -= 1
-        self.laxity_time = self.deadline - self.execute_time
-
         if execute:
-            self.execute_time -= 1
+            self.execution_time -= 1
 
-        if self.execute_time == 0:
-            return "finished"
+        self.laxity = self.deadline - self.execution_time
 
-        if self.deadline == 0:
-            return "missed"
-
-        return "ready"
+        if self.execution_time == 0 or self.deadline == 0:
+            self.over = True
 
 
-class Env(object):
+    def is_finished(self):
+        return self.execution_time == 0
+
+
+    def is_missed(self):
+        return self.execution_time != 0 and self.deadline == 0
+
+
+class Environment(object):
 
     def __init__(self):
+
         self.time = 0
-        self.no_processor = 0
-        self.no_task = 0
+        self.processor_count = 0
+        self.task_count = 0
         self.task_set: List[Task] = []
-        self.instance: List[Instance] = []
-        self.mean_deadline = 0
-        self.mean_execute = 0
-        self.mean_laxity = 0
+        self.active_instances: List[Instance] = []
+
+        self.min_execution_time = 0
+        self.mean_execution_time = 0
+        self.max_execution_time = 0
+
         self.min_deadline = 0
-        self.min_execute = 0
-        self.min_laxity = 0
+        self.mean_deadline = 0
         self.max_deadline = 0
-        self.max_execute = 0
+
+        self.min_laxity = 0
+        self.mean_laxity = 0
         self.max_laxity = 0
-        self.saved = 0
-        self.count = 0
 
 
     def reset(self):
+
         self.time = 0
-        self.saved = 0
-        del self.task_set
-        self.instance = []
-        self.no_processor = np.random.randint(NO_PROCESSOR - 4, NO_PROCESSOR + 4)
-        self.no_task = self.no_processor * TASK_PER_PROCESSOR
-        self.task_set = [Task() for i in range(self.no_task)]
-        self.arrive()
+        self.processor_count = PROCESSOR_COUNT
+        self.task_count = self.processor_count * TASK_PER_PROCESSOR
+        load = np.random.uniform(MIN_LOAD, MAX_LOAD)
+        self.task_set = [Task(load) for i in range(self.task_count)]
+        self.active_instances = []
+
+        self.arrive_instances()
 
 
-    def step(self, actions):
+    def arrive_instances(self):
+        for task in self.task_set:
+            if task.instance_count < INSTANCES_PER_TASK and self.time == task.arrival_times[task.instance_count]:
+                self.active_instances.append(task.create_instance())
 
-        global_reward = 0
-        info = np.zeros(2)
-        next_state = []
-
-        executable = np.argsort(actions)[-self.no_processor:]
-
-        for i in range(len(self.instance)):
-            instance = self.instance[i]
-            result = instance.step(True if i in executable and actions[i] > 0.1 else False)
-
-            if result == "missed":
-                instance.over = True
-                global_reward -= 1
-                info[1] += 1
-
-            elif result == "finished":
-                info[0] += 1
-                global_reward += 1
-                instance.over = True
-
-        self.time += 1
-        self.del_instance()
-        self.arrive()
-        for i in range(len(self.instance)):
-            next_state.append(self.observation(self.instance[i]))
-
-        return global_reward, self.done(), next_state, info
+        self.update_env_stats()
 
 
-    def update(self):
+    def update_env_stats(self):
 
-        if len(self.instance) == 0:
+        if len(self.active_instances) == 0:
+            self.min_execution_time = 0
+            self.mean_execution_time = 0
+            self.max_execution_time = 0
             self.min_deadline = 0
-            self.min_execute = 0
-            self.min_laxity = 0
             self.mean_deadline = 0
-            self.mean_execute = 0
-            self.mean_laxity = 0
             self.max_deadline = 0
-            self.max_execute = 0
+            self.min_laxity = 0
+            self.mean_laxity = 0
             self.max_laxity = 0
             return
 
-        instance_deadline = []
-        instance_execute = []
-        instance_laxity = []
-        for i in self.instance:
-            instance_deadline.append(i.deadline)
-            instance_execute.append(i.execute_time)
-            instance_laxity.append(i.laxity_time)
+        instance_deadlines = []
+        instance_execution_times = []
+        instance_laxities = []
+        for i in self.active_instances:
+            instance_execution_times.append(i.execution_time)
+            instance_deadlines.append(i.deadline)
+            instance_laxities.append(i.laxity)
 
-        self.min_deadline = np.min(instance_deadline)
-        self.min_execute = np.min(instance_execute)
-        self.min_laxity = np.min(instance_laxity)
-        self.max_deadline = np.max(instance_deadline)
-        self.max_execute = np.max(instance_execute)
-        self.max_laxity = np.max(instance_laxity)
-        self.mean_deadline = np.mean(instance_deadline)
-        self.mean_execute = np.mean(instance_execute)
-        self.mean_laxity = np.mean(instance_laxity)
+        self.min_execution_time = np.min(instance_execution_times)
+        self.mean_execution_time = np.mean(instance_execution_times)
+        self.max_execution_time = np.max(instance_execution_times)
+
+        self.min_deadline = np.min(instance_deadlines)
+        self.mean_deadline = np.mean(instance_deadlines)
+        self.max_deadline = np.max(instance_deadlines)
+
+        self.min_laxity = np.min(instance_laxities)
+        self.mean_laxity = np.mean(instance_laxities)
+        self.max_laxity = np.max(instance_laxities)
 
 
-    # later on merge this function to update
-    def arrive(self):
-        for task in self.task_set:
-            if task.count < FREQUENCY and self.time == task.arrive_time[task.count]:
-                self.instance.append(task.create_instance())
+    def step(self, actions: np.ndarray[np.float64]):
 
-        self.update()
+        completed_count = 0
+        missed_count = 0
+
+        executable = np.argsort(actions)[-self.processor_count:]
+
+        for i in range(len(self.active_instances)):
+
+            instance = self.active_instances[i]
+            instance.step(True if i in executable and actions[i] > 0.1 else False)
+
+            if instance.is_missed():
+                missed_count += 1
+
+            elif instance.is_finished():
+                completed_count += 1
+
+        global_reward = completed_count - missed_count
+
+        self.time += 1
+        self.delete_inactive_instances()
+        self.arrive_instances()
+        next_state = self.get_state()
+
+        return global_reward, next_state, self.done(), completed_count, missed_count
+
+
+    def delete_inactive_instances(self):
+        for instance in self.active_instances[:]:
+            if instance.over:
+                self.active_instances.remove(instance)
+                del instance
+
+
+    def get_state(self):
+
+        state = []
+        for instance in self.active_instances:
+            state.append(self.observation(instance))
+
+        return np.array(state, dtype=np.float32)
+
+
+    def observation(self, instance):
+        return [
+            instance.execution_time - self.min_execution_time,
+            instance.execution_time - self.mean_execution_time,
+            instance.execution_time - self.max_execution_time,
+            instance.deadline - self.min_deadline,
+            instance.deadline - self.mean_deadline,
+            instance.deadline - self.max_deadline,
+            instance.laxity - self.min_laxity,
+            instance.laxity - self.mean_laxity,
+            instance.laxity - self.max_laxity
+        ]
 
 
     def done(self):
-        if len(self.instance) > 0:
+
+        if len(self.active_instances) > 0:
             return False
 
-        for t in self.task_set:
-            if t.count < FREQUENCY:
+        for task in self.task_set:
+            if task.instance_count < INSTANCES_PER_TASK:
                 return False
 
         return True
 
 
-    def observation(self, instance):
-        return np.array([
-            instance.execute_time - self.mean_execute,
-            instance.execute_time - self.max_execute,
-            instance.execute_time - self.min_execute,
-            instance.deadline - self.mean_deadline,
-            instance.deadline - self.max_deadline,
-            instance.deadline - self.min_deadline,
-            instance.laxity_time - self.mean_laxity,
-            instance.laxity_time - self.min_laxity,
-            instance.laxity_time - self.max_laxity
-        ])
+    def calc_utilization(self):
 
-
-    # save and load need attention and maybe they can be removed
-    def save(self):
-        self.saved = cp.deepcopy(self.task_set)
-
-
-    def load(self):
-        self.time = 0
-        self.instance = []
-        del self.task_set
-        self.task_set = cp.deepcopy(self.saved)
-        del self.saved
-        self.update()
-
-
-    def del_instance(self):
-        for i in self.instance[::-1]:
-            if i.over:
-                self.instance.remove(i)
-                del i
-
-
-    def utilization(self):
-        c = []
-        t = []
+        c, t = [], []
         for task in self.task_set:
-            c.append(task.execute_time)
-            t.append(np.mean(task.interval))
-        return (np.mean(c) / np.mean(t)) * (self.no_task / self.no_processor)
+            c.append(np.mean(task.execution_times))
+            t.append(np.mean(task.arrival_intervals))
+
+        return (np.mean(c) / np.mean(t)) * TASK_PER_PROCESSOR

@@ -1,7 +1,9 @@
 import numpy as np
 from config import *
-from env import Env
+from env import Environment
 from ddpg_torch import ReplayBuffer, DDPG
+
+np.set_printoptions(precision=2, suppress=True)
 
 
 def GlobalEDF(instance, no_processor):
@@ -28,78 +30,72 @@ def GlobalLSF(instance, no_processor):
     return action
 
 
-if __name__ == '__main__':
 
-    np.set_printoptions(precision=2, suppress=True)
+env = Environment()
+replay_buffer = ReplayBuffer(BUFFER_SIZE)
 
-    env = Env()
-    replay_buffer = ReplayBuffer(BUFFER_SIZE)
-    alg = DDPG(replay_buffer, STATE_DIM, ACTION_DIM, HIDDEN)
+algprithm = DDPG(
+    replay_buffer, DISCOUNT_RATE, STATE_DIM, ACTION_DIM, HIDDEN_DIM,
+    Q_LEARNING_RATE, POLICY_LEARNING_RATE, TARGET_UPDATE_DELAY
+)
 
-    # hyper-parameters
-    noise = 3
-    frame_idx = 0
-    update_frequency = 100
+noise = 0
 
-    rewards = []
-    mean_rewards = []
+rewards = []
+mean_rewards = []
 
-    for i_episode in range(MAX_EPISODES):
+for i_episode in range(MAX_EPISODES):
 
-        print(f"episode {i_episode} ...")
+    env.reset()
+    next_state = env.get_state()
+    print(f"episode {i_episode} ...")
+    print(f"utilization: {env.calc_utilization():.2f}")
 
-        env.reset()
-        q_loss_list = []
-        policy_loss_list = []
+    q_loss_list = []
+    policy_loss_list = []
+    episode_reward = 0
+    total_completed = 0
+    total_missed = 0
 
-        episode_reward = 0
-        completed = 0
-        missed = 0
+    for step in range(MAX_STEPS):
 
-        for step in range(MAX_STEPS):
+        noise *= 0.99686
+        instance_count = len(env.active_instances)
+        state = next_state
 
-            frame_idx += 1
-            noise *= 0.99686
-            instance_count = len(env.instance)
-            states = np.ones((instance_count, STATE_DIM), dtype=np.float32)
-            actions = np.ones((instance_count, 1), dtype=np.float32)
+        if instance_count > 0 and i_episode > EXPLORATION_EPISODES:
+            action = algprithm.policy_net.select_action(state, noise/2)
+        else:
+            normal = np.random.normal(loc=0.5, scale=1.0, size=(instance_count,1))
+            action = np.clip(normal, 0.001, 1).astype(np.float32)
 
-            for i in range(instance_count):
-                state = env.observation(env.instance[i])
-                if i_episode > EXPLORATION_EPISODES:
-                    action = alg.policy_net.select_action(state, noise)
-                else:
-                    action = alg.policy_net.sample_action()
+        reward, next_state, done, completed, missed = env.step(np.squeeze(action, 1))
+        if instance_count > 0:
+            replay_buffer.push(state, action, reward, next_state, done)
 
-                states[i] = state
-                actions[i] = action
+        total_completed += completed
+        total_missed += missed
 
-            reward, done, next_state, info = env.step(np.squeeze(actions, 1))
-            if instance_count > 0:
-                replay_buffer.push(states, actions, reward, next_state, done)
+        if len(replay_buffer) > BATCH_SIZE and (step + 1) % UPDATE_INTERVAL == 0:
+            for i in range(UPDATE_REPEAT_COUNT):
+                q_loss, policy_loss = algprithm.update(BATCH_SIZE, SOFT_UPDATE_TAU)
+                q_loss_list.append(q_loss)
+                policy_loss_list.append(policy_loss)
 
-            completed += info[0]
-            missed += info[1]
+        if env.done():
+            break
 
-            if len(replay_buffer) > BATCH_SIZE and frame_idx % update_frequency == 0:
-                for i in range(5):
-                    q_loss, policy_loss = alg.update(BATCH_SIZE)
-                    q_loss_list.append(q_loss)
-                    policy_loss_list.append(policy_loss)
+    episode_reward = total_completed
+    rewards.append(episode_reward / (env.task_count * INSTANCES_PER_TASK) * 100)
+    print("episode success ratio:", rewards[i_episode])
 
-            if env.done():
-                break
+    # if i_episode % 2 == 0 and i_episode >= EXPLORATION_EPISODES:
+    #     rewards.append(np.mean(mean_rewards))
+    #     mean_rewards = []
+    #     alg.plot(rewards, [], [])
+    #     alg.save_model(MODEL_PATH)
 
-        episode_reward = completed
-        mean_rewards.append(episode_reward * 100 / (env.no_task * FREQUENCY))
-
-        if i_episode % 2 == 0 and i_episode >= EXPLORATION_EPISODES:
-            rewards.append(np.mean(mean_rewards))
-            mean_rewards = []
-            alg.plot(rewards, [], [])
-            alg.save_model(MODEL_PATH)
-
-        # print('Eps: ', i_episode, ' | Update: ', update_frequency, '| Successful: %.2f' % (completed * 100/ (completed + missed)),
-        #       '& %.2f'% (edf_completed * 100/ (edf_completed + edf_missed)),'& %.2f'% (lsf_completed * 100/ (lsf_completed + lsf_missed)),
-        #       ' | Loss: %.2f' % np.average(q_loss_list),'%.2f' % np.average(policy_loss_list),
-        #       '| Completed & Missed:', int(completed), int(missed), '| Utilization: %.2f' % env.utilization())
+    # print('Eps: ', i_episode, ' | Update: ', update_frequency, '| Successful: %.2f' % (completed * 100/ (completed + missed)),
+    #       '& %.2f'% (edf_completed * 100/ (edf_completed + edf_missed)),'& %.2f'% (lsf_completed * 100/ (lsf_completed + lsf_missed)),
+    #       ' | Loss: %.2f' % np.average(q_loss_list),'%.2f' % np.average(policy_loss_list),
+    #       '| Completed & Missed:', int(completed), int(missed), '| Utilization: %.2f' % env.utilization())
