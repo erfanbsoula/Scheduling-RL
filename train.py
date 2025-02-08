@@ -49,7 +49,7 @@ for i_episode in range(MAX_EPISODES):
     env.reset()
     next_state = env.get_state()
     print(f"episode {i_episode} ...")
-    print("utilization:", env.calc_utilization())
+    print(f"utilization: {env.calc_utilization():.2f}")
 
     q_loss_list = []
     policy_loss_list = []
