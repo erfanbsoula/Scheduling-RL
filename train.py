@@ -6,7 +6,6 @@ from ddpg_torch import ReplayBuffer, DDPG
 np.set_printoptions(precision=2, suppress=True)
 
 
-
 def GlobalEDF(instance, no_processor):
     deadline = []
     action = np.zeros(len(instance))
@@ -34,7 +33,11 @@ def GlobalLSF(instance, no_processor):
 
 env = Environment()
 replay_buffer = ReplayBuffer(BUFFER_SIZE)
-alg = DDPG(replay_buffer, STATE_DIM, ACTION_DIM, HIDDEN)
+
+algprithm = DDPG(
+    replay_buffer, DISCOUNT_RATE, STATE_DIM, ACTION_DIM, HIDDEN_DIM,
+    Q_LEARNING_RATE, POLICY_LEARNING_RATE, TARGET_UPDATE_DELAY
+)
 
 noise = 0
 
@@ -61,7 +64,7 @@ for i_episode in range(MAX_EPISODES):
         state = next_state
 
         if instance_count > 0 and i_episode > EXPLORATION_EPISODES:
-            action = alg.policy_net.select_action(state, noise/2)
+            action = algprithm.policy_net.select_action(state, noise/2)
         else:
             normal = np.random.normal(loc=0.5, scale=1.0, size=(instance_count,1))
             action = np.clip(normal, 0.001, 1).astype(np.float32)
@@ -74,8 +77,8 @@ for i_episode in range(MAX_EPISODES):
         total_missed += missed
 
         if len(replay_buffer) > BATCH_SIZE and (step + 1) % UPDATE_INTERVAL == 0:
-            for i in range(5):
-                q_loss, policy_loss = alg.update(BATCH_SIZE)
+            for i in range(UPDATE_REPEAT_COUNT):
+                q_loss, policy_loss = algprithm.update(BATCH_SIZE, SOFT_UPDATE_TAU)
                 q_loss_list.append(q_loss)
                 policy_loss_list.append(policy_loss)
 
@@ -83,7 +86,7 @@ for i_episode in range(MAX_EPISODES):
             break
 
     episode_reward = total_completed
-    rewards.append(episode_reward * 100 / (env.task_count * INSTANCES_PER_TASK))
+    rewards.append(episode_reward / (env.task_count * INSTANCES_PER_TASK) * 100)
     print("episode success ratio:", rewards[i_episode])
 
     # if i_episode % 2 == 0 and i_episode >= EXPLORATION_EPISODES:

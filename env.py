@@ -18,24 +18,30 @@ class Task:
         self.arrival_times = np.cumsum(self.arrival_intervals)
 
         self.deadline = np.random.randint(5, 51)
+
         self.granularity = np.random.uniform(0.1, 0.6)
         self.execution_rate = self.deadline * self.granularity
-        self.execution_time = round(np.random.exponential(self.execution_rate))
-        self.execution_time = np.clip(self.execution_time, 1, self.deadline)
+        self.execution_times = np.random.exponential(
+            self.execution_rate, INSTANCES_PER_TASK
+        )
+        self.execution_times = self.execution_times.round().astype(int)
+        self.execution_times = np.clip(self.execution_times, 1, self.deadline)
 
         self.instance_count = 0
 
 
     def create_instance(self) -> "Instance":
+        execution_time = self.execution_times[self.instance_count]
+        instance = Instance(self.deadline, execution_time)
         self.instance_count += 1
-        return Instance(self)
+        return instance
 
 
 class Instance:
 
-    def __init__(self, task: Task):
-        self.execution_time = task.execution_time
-        self.deadline = task.deadline
+    def __init__(self, deadline, execution_time):
+        self.execution_time = execution_time
+        self.deadline = deadline
         self.laxity = self.deadline - self.execution_time
         self.over = False
 
@@ -210,7 +216,7 @@ class Environment(object):
 
         c, t = [], []
         for task in self.task_set:
-            c.append(task.execution_time)
+            c.append(np.mean(task.execution_times))
             t.append(np.mean(task.arrival_intervals))
 
         return (np.mean(c) / np.mean(t)) * TASK_PER_PROCESSOR

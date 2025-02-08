@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.distributions import Normal
 
-from config import *
+from config import GPU, DEVICE_INDEX
 
 
 if GPU:
@@ -133,12 +133,15 @@ class QNetwork(nn.Module):
 
 class DDPG:
 
-    def __init__(self, replay_buffer, state_dim, action_dim, hidden_dim):
-
-        q_lr = 1e-2
-        policy_lr = 1e-3
+    def __init__(
+        self,
+        replay_buffer: ReplayBuffer, gamma,
+        state_dim, action_dim, hidden_dim,
+        q_lr, policy_lr, target_update_delay
+    ):
 
         self.replay_buffer: ReplayBuffer = replay_buffer
+        self.gamma = gamma
 
         self.policy_net = ActorNetwork(state_dim, action_dim, hidden_dim).to(device)
         self.target_policy_net = ActorNetwork(state_dim, action_dim, hidden_dim).to(device)
@@ -154,10 +157,11 @@ class DDPG:
 
         print(self.q_net)
 
+        self.target_update_delay = target_update_delay
         self.update_cnt = 0
 
 
-    def update(self, batch_size, gamma=0.95, soft_tau=1e-3, target_update_delay=3):
+    def update(self, batch_size, soft_tau):
 
         self.update_cnt += 1
         states, actions, rewards, next_states, done_flags = self.replay_buffer.sample(batch_size)
@@ -178,7 +182,7 @@ class DDPG:
                 next_action = self.target_policy_net.forward_noisy(next_state)
                 next_predicted_q = torch.mean(self.target_q_net(next_state, next_action), 0)
 
-            target_q = rewards[i] + gamma * next_predicted_q
+            target_q = rewards[i] + self.gamma * next_predicted_q
 
             predicted_q_values.append(predicted_q)
             target_q_values.append(target_q)
@@ -209,9 +213,15 @@ class DDPG:
         self.policy_optimizer.step()
 
         # update the target_qnet
-        if self.update_cnt % target_update_delay == 0:
-            self.target_q_net = self.target_soft_update(self.q_net, self.target_q_net, soft_tau)
-            self.target_policy_net = self.target_soft_update(self.policy_net, self.target_policy_net, soft_tau)
+        if self.update_cnt % self.target_update_delay == 0:
+
+            self.target_q_net = self.target_soft_update(
+                self.q_net, self.target_q_net, soft_tau
+            )
+
+            self.target_policy_net = self.target_soft_update(
+                self.policy_net, self.target_policy_net, soft_tau
+            )
 
         return q_loss.detach().cpu().numpy(), policy_loss.detach().cpu().numpy()
 
@@ -239,17 +249,3 @@ class DDPG:
         self.q_net.eval()
         self.target_q_net.eval()
         self.policy_net.eval()
-
-    # def plot(self, rewards, edf_rewards, lsf_rewards):
-    #     plt.close("all")
-    #     plt.figure(figsize=(20, 5))
-    #     plt.plot(range(len(rewards)), rewards, color='green', label='DDPG')
-    #     # plt.plot(range(len(edf_rewards)), edf_rewards, color='red', label='EDF')
-    #     # plt.plot(range(len(lsf_rewards)), lsf_rewards, color='blue', label='LSF')
-    #     plt.xlabel('Episode')
-    #     plt.ylabel('Scheduling Success Ratio ')
-    #     plt.legend()
-    #     plt.ylim(0, 100)
-    #     plt.savefig('plot/ddpg VS edf delay.png')
-    #     # plt.show()
-    #     plt.clf()
