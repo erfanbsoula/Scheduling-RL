@@ -7,7 +7,6 @@ np.random.seed(199686)
 
 class Task:
 
-
     def __init__(self, load):
         self.deadline = np.random.randint(MIN_DEADLINE, MAX_DEADLINE+1)
 
