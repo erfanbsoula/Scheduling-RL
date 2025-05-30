@@ -1,10 +1,18 @@
+########################################
+# Device configuration parameters
+
 GPU = False
 DEVICE_INDEX = 0
 
+########################################
+# General parameters for train.py
+
+DVFS_LEVELS = [0.25, 0.5, 0.75, 1.0]
+
 STATE_DIM = 9
-ACTION_DIM = 1
+ACTION_DIM = 2
 HIDDEN_DIM = [8, 4]
-MODEL_PATH = 'model/'
+MODEL_PATH = 'saves/'
 
 BUFFER_SIZE = 1e6
 EXPLORATION_EPISODES = 30
@@ -19,9 +27,16 @@ SOFT_UPDATE_TAU = 1e-3
 TARGET_UPDATE_DELAY = 1
 UPDATE_REPEAT_COUNT = 1
 
+########################################
+# Simulation parameters for env.py
+
 PROCESSOR_COUNT = 8
 TASK_PER_PROCESSOR = 5
 INSTANCES_PER_TASK = 20
+
+STATIC_POWER_COEFF = 0.5
+DYNAMIC_POWER_COEFF = 1.0
+ENERGY_PENALTY_COEFF = 0.01
 
 MIN_DEADLINE = 5
 MAX_DEADLINE = 50
@@ -29,3 +44,5 @@ MIN_GRANULARITY = 0.1
 MAX_GRANULARITY = 0.6
 MIN_LOAD = 0.5
 MAX_LOAD = 1.5
+
+########################################

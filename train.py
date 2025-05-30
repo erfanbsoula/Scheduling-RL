@@ -1,101 +1,109 @@
+import os
 import numpy as np
 from config import *
 from env import Environment
-from ddpg_torch import ReplayBuffer, DDPG
+from ddpg_torch import ReplayBuffer, MADDPG
+import matplotlib.pyplot as plt
 
-np.set_printoptions(precision=2, suppress=True)
-
-
-def GlobalEDF(instance, no_processor):
-    deadline = []
-    action = np.zeros(len(instance))
-    for i in instance:
-        deadline.append(i.deadline)
-    executable = np.argsort(deadline)
-    for i in range(no_processor):
-        if i < len(executable):
-            action[executable[i]] = 1
-    return action
+np.set_printoptions(precision=4, suppress=True)
 
 
-def GlobalLSF(instance, no_processor):
-    laxity = []
-    action = np.zeros(len(instance))
-    for i in instance:
-        laxity.append(i.laxity_time)
-    executable = np.argsort(laxity)
-    for i in range(no_processor):
-        if i < len(executable):
-            action[executable[i]] = 1
-    return action
-
-
-
-env = Environment()
+environment = Environment()
 replay_buffer = ReplayBuffer(BUFFER_SIZE)
 
-algprithm = DDPG(
+algorithm = MADDPG(
     replay_buffer, DISCOUNT_RATE, STATE_DIM, ACTION_DIM, HIDDEN_DIM,
     Q_LEARNING_RATE, POLICY_LEARNING_RATE, TARGET_UPDATE_DELAY
 )
 
-noise = 0
+noise_scale = 0.0
+noise_decay = 0.998
 
-rewards = []
-mean_rewards = []
+rewards_log = []
 
 for i_episode in range(MAX_EPISODES):
 
-    env.reset()
-    next_state = env.get_state()
-    print(f"episode {i_episode} ...")
-    print(f"utilization: {env.calc_utilization():.2f}")
+    environment.reset()
+    next_state = environment.get_state() 
+
+    print(f"--- Episode {i_episode} ---")
+    util = environment.calc_utilization()
+    print(f"Utilization: {util if util is not None else 'N/A':.4f}")
 
     q_loss_list = []
     policy_loss_list = []
-    episode_reward = 0
-    total_completed = 0
-    total_missed = 0
+    episode_reward_sum = 0
+    total_completed_in_episode = 0
+    total_missed_in_episode = 0
 
     for step in range(MAX_STEPS):
 
-        noise *= 0.99686
-        instance_count = len(env.active_instances)
-        state = next_state
+        current_state = next_state
+        num_active_instances = len(environment.active_instances)
+        noise_scale *= noise_decay
 
-        if instance_count > 0 and i_episode > EXPLORATION_EPISODES:
-            action = algprithm.policy_net.select_action(state, noise/2)
+        if num_active_instances > 0 and i_episode > EXPLORATION_EPISODES:
+            action = algorithm.policy_net.select_action(current_state, noise_std=noise_scale)
         else:
-            normal = np.random.normal(loc=0.5, scale=1.0, size=(instance_count,1))
-            action = np.clip(normal, 0.001, 1).astype(np.float32)
+            action = np.random.uniform(low=0.0, high=1.0, size=(num_active_instances, ACTION_DIM))
+            action = action.astype(np.float32)
 
-        reward, next_state, done, completed, missed = env.step(np.squeeze(action, 1))
-        if instance_count > 0:
-            replay_buffer.push(state, action, reward, next_state, done)
+        scheduling_priorities = action[:, 0]
+        frequency_scales = action[:, 1]
 
-        total_completed += completed
-        total_missed += missed
+        if frequency_scales.size > 0:
+            num_levels = len(DVFS_LEVELS)
+            level_indices = np.floor(action[:, 1] * num_levels).astype(int)
+            level_indices = np.clip(level_indices, 0, num_levels - 1)
+            frequency_scales = np.array([DVFS_LEVELS[i] for i in level_indices]).astype(np.float32)
+
+        transition = environment.step(scheduling_priorities, frequency_scales)
+        global_reward, next_state, is_done, num_completed, num_missed = transition
+
+        if num_active_instances > 0:
+             replay_buffer.push(current_state, action, global_reward, next_state, is_done)
+
+        episode_reward_sum += global_reward
+        total_completed_in_episode += num_completed
+        total_missed_in_episode += num_missed
 
         if len(replay_buffer) > BATCH_SIZE and (step + 1) % UPDATE_INTERVAL == 0:
-            for i in range(UPDATE_REPEAT_COUNT):
-                q_loss, policy_loss = algprithm.update(BATCH_SIZE, SOFT_UPDATE_TAU)
+            for _ in range(UPDATE_REPEAT_COUNT):
+                q_loss, policy_loss = algorithm.update(BATCH_SIZE, SOFT_UPDATE_TAU)
                 q_loss_list.append(q_loss)
                 policy_loss_list.append(policy_loss)
 
-        if env.done():
+        if is_done:
             break
 
-    episode_reward = total_completed
-    rewards.append(episode_reward / (env.task_count * INSTANCES_PER_TASK) * 100)
-    print("episode success ratio:", rewards[i_episode])
+    # End of episode
+    rewards_log.append(episode_reward_sum)
 
-    # if i_episode % 2 == 0 and i_episode >= EXPLORATION_EPISODES:
-    #     rewards.append(np.mean(mean_rewards))
-    #     mean_rewards = []
-    #     alg.plot(rewards, [], [])
-    #     alg.save_model(MODEL_PATH)
+    total_tasks_in_episode = environment.task_count * INSTANCES_PER_TASK
+    success_ratio = total_completed_in_episode / total_tasks_in_episode * 100
+    avg_q_loss = np.mean(q_loss_list) if q_loss_list else 0
+    avg_policy_loss = np.mean(policy_loss_list) if policy_loss_list else 0
 
-    # print('Eps: ', i_episode, ' | Update: ', update_frequency, '| Successful: %.2f' % (completed * 100/ (completed + missed)),
-    #       '& %.2f'% (edf_completed * 100/ (edf_completed + edf_missed)),'& %.2f'% (lsf_completed * 100/ (lsf_completed + lsf_missed)),
-    #       ' | Loss: %.2f' % np.average(q_loss_list),'%.2f' % np.average(policy_loss_list),
-    #       '| Completed & Missed:', int(completed), int(missed), '| Utilization: %.2f' % env.utilization())
+    print(f"Episode Reward: {episode_reward_sum}")
+    print(f"Episode Success Ratio: {success_ratio:.2f}%")
+    print(f"Total Completed: {total_completed_in_episode}/{total_tasks_in_episode}")
+    print(f"Total Missed: {total_missed_in_episode}/{total_tasks_in_episode}")
+    print(f"Total Energy Consumed: {environment.total_energy_consumed:.2f}")
+    print(f"Avg Q_Loss: {avg_q_loss:.4f}, Avg Policy_Loss: {avg_policy_loss:.4f}")
+    print(f"Noise Scale: {noise_scale:.4f}")
+    print(f"Replay Buffer Size: {len(replay_buffer)}")
+
+    if (i_episode + 1) % 50 == 0:
+        print(f"Saving model at episode {i_episode}...")
+        algorithm.save_model(os.path.join(MODEL_PATH, f"ep_{i_episode}"))
+
+
+print("Training finished.")
+
+plt.plot(rewards_log)
+plt.title("Episode Reward Trend")
+plt.xlabel("Episode")
+plt.ylabel("Reward")
+plt.savefig("plots/episode_rewards.png", dpi=300, bbox_inches='tight')
+plt.close()
+print("Plot saved to plots/episode_rewards.png")
