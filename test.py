@@ -1,4 +1,3 @@
-
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -129,14 +128,14 @@ def main():
     print(f"Loading RL agent model from: {latest_model_path}")
     rl_agent.load_model(latest_model_path)
 
-    utilization_levels = list(np.arange(0.4, 1.5, 0.1))
+    utilization_levels = list(np.arange(0.5, 1.5, 0.1))
 
     results = {
         'rl': {'success_ratio': [], 'energy': []},
         'gedf': {'success_ratio': [], 'energy': []}
     }
 
-    num_runs_per_utilization = 10
+    num_runs_per_utilization = 5
 
     for util in utilization_levels:
 
@@ -187,12 +186,17 @@ def main():
         print(f"  Avg RL   - Success: {avg_rl_success:.2f}%, Energy: {avg_rl_energy:.2f}")
         print(f"  Avg GEDF - Success: {avg_gedf_success:.2f}%, Energy: {avg_gedf_energy:.2f}")
 
+    # Normalize energy values for plotting
+    max_energy = np.max(results['rl']['energy'] + results['gedf']['energy'])
+    results['rl']['normalized_energy'] = [e / max_energy for e in results['rl']['energy']]
+    results['gedf']['normalized_energy'] = [e / max_energy for e in results['gedf']['energy']]
+
     # Plotting results
     fig, ax1 = plt.subplots(figsize=(10, 6))
 
     color = 'tab:red'
-    ax1.set_xlabel('System Utilization (Load)')
-    ax1.set_ylabel('Success Ratio (%)', color=color)
+    ax1.set_xlabel('System Utilization (Load)', fontsize=14)
+    ax1.set_ylabel('Success Ratio (%)', color=color, fontsize=14)
     ax1.plot(
         utilization_levels, results['rl']['success_ratio'],
         marker='o', linestyle='-', color=color, label='RL Success Ratio'
@@ -201,28 +205,29 @@ def main():
         utilization_levels, results['gedf']['success_ratio'],
         marker='x', linestyle='--', color=color, alpha=0.7, label='GEDF Success Ratio'
     )
-    ax1.tick_params(axis='y', labelcolor=color)
+    ax1.tick_params(axis='y', labelcolor=color, labelsize=12)
+    ax1.tick_params(axis='x', labelsize=12)
     ax1.grid(True, linestyle=':', alpha=0.7)
 
     ax2 = ax1.twinx()
     color = 'tab:blue'
-    ax2.set_ylabel('Total Energy Consumed', color=color)
+    ax2.set_ylabel('Normalized Total Energy Consumed', color=color, fontsize=14)
     ax2.plot(
-        utilization_levels, results['rl']['energy'],
-        marker='o', linestyle='-', color=color, label='RL Energy'
+        utilization_levels, results['rl']['normalized_energy'],
+        marker='o', linestyle='-', color=color, label='RL Energy (Normalized)'
     )
     ax2.plot(
-        utilization_levels, results['gedf']['energy'],
-        marker='x', linestyle='--', color=color, alpha=0.7, label='GEDF Energy'
+        utilization_levels, results['gedf']['normalized_energy'],
+        marker='x', linestyle='--', color=color, alpha=0.7, label='GEDF Energy (Normalized)'
     )
-    ax2.tick_params(axis='y', labelcolor=color)
+    ax2.tick_params(axis='y', labelcolor=color, labelsize=12)
 
     fig.tight_layout()
-    plt.title('Performance Comparison: RL Agent vs GEDF')
+    plt.title('Performance Comparison: RL Agent vs GEDF', fontsize=16)
     
     lines, labels = ax1.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
-    ax2.legend(lines + lines2, labels + labels2, loc='best')
+    ax2.legend(lines + lines2, labels + labels2, loc='best', fontsize=12)
 
     os.makedirs('plots', exist_ok=True)
     plt.savefig('plots/performance_comparison.png', dpi=300, bbox_inches='tight')
