@@ -4,15 +4,17 @@ from config import (
     PROCESSOR_COUNT,
     TASK_PER_PROCESSOR,
     INSTANCES_PER_TASK,
-    MIN_DEADLINE,
-    MAX_DEADLINE,
-    MIN_GRANULARITY,
-    MAX_GRANULARITY,
     MIN_LOAD,
     MAX_LOAD,
     STATIC_POWER_COEFF,
     DYNAMIC_POWER_COEFF,
-    ENERGY_PENALTY_COEFF
+    ENERGY_PENALTY_COEFF,
+    MIN_TASK_AVG_LOG_EXEC_TIME, 
+    MAX_TASK_AVG_LOG_EXEC_TIME, 
+    MIN_TASK_SIGMA_LOG_EXEC_TIME,
+    MAX_TASK_SIGMA_LOG_EXEC_TIME,
+    MIN_DEADLINE_FACTOR,
+    MAX_DEADLINE_FACTOR
 )
 
 np.random.seed(199686)
@@ -20,18 +22,37 @@ np.random.seed(199686)
 
 class Task:
 
-    def __init__(self, load):
-        self.deadline = np.random.randint(MIN_DEADLINE, MAX_DEADLINE+1)
+    def __init__(self, task_target_utilization: float):
 
-        self.granularity = np.random.uniform(MIN_GRANULARITY, MAX_GRANULARITY)
-        self.mean_work_units = self.deadline * self.granularity
-        self.work_units_per_instance = np.random.exponential(
-            self.mean_work_units, INSTANCES_PER_TASK
+        task_mean_log_exec_time = np.random.uniform(
+            MIN_TASK_AVG_LOG_EXEC_TIME, MAX_TASK_AVG_LOG_EXEC_TIME
         )
-        self.work_units_per_instance = np.clip(self.work_units_per_instance, 1, self.deadline)
 
-        self.expected_execution_time = (MIN_DEADLINE + MAX_DEADLINE) / 2 * self.granularity
-        self.mean_arrival_interval = self.expected_execution_time / load * TASK_PER_PROCESSOR
+        task_sigma_log_exec_time = np.random.uniform(
+            MIN_TASK_SIGMA_LOG_EXEC_TIME, MAX_TASK_SIGMA_LOG_EXEC_TIME
+        )
+
+        # m = (MAX_TASK_SIGMA_LOG_EXEC_TIME - MIN_TASK_SIGMA_LOG_EXEC_TIME) / \
+        #     (MAX_TASK_AVG_LOG_EXEC_TIME - MIN_TASK_AVG_LOG_EXEC_TIME)
+        
+        # task_sigma_log_exec_time = \
+        #     m * (task_mean_log_exec_time - MIN_TASK_AVG_LOG_EXEC_TIME) + \
+        #     MIN_TASK_SIGMA_LOG_EXEC_TIME
+
+        self.work_units_per_instance = np.random.lognormal(
+            task_mean_log_exec_time, task_sigma_log_exec_time, INSTANCES_PER_TASK*10
+        )
+        self.work_units_per_instance = np.maximum(self.work_units_per_instance, 1.0)
+        self.mean_work_units = np.mean(self.work_units_per_instance)
+
+        deadline_factor = np.random.uniform(MIN_DEADLINE_FACTOR, MAX_DEADLINE_FACTOR)
+        self.deadline = np.ceil(self.mean_work_units * deadline_factor)
+        self.work_units_per_instance = np.random.choice(
+            self.work_units_per_instance[self.work_units_per_instance < self.deadline], INSTANCES_PER_TASK
+        )
+        self.mean_work_units = np.mean(self.work_units_per_instance)
+
+        self.mean_arrival_interval = self.mean_work_units / task_target_utilization
         self.arrival_intervals = np.random.exponential(
             self.mean_arrival_interval, INSTANCES_PER_TASK
         )
@@ -100,8 +121,16 @@ class Environment(object):
         self.time = 0
         self.processor_count = PROCESSOR_COUNT
         self.task_count = self.processor_count * TASK_PER_PROCESSOR
-        load = np.random.uniform(MIN_LOAD, MAX_LOAD)
-        self.task_set = [Task(load) for i in range(self.task_count)]
+        target_system_utilization_per_processor = np.random.uniform(MIN_LOAD, MAX_LOAD)
+        avg_target_util_per_task = target_system_utilization_per_processor / TASK_PER_PROCESSOR
+
+        self.task_set = []
+        for _ in range(self.task_count):
+            variation_factor = np.random.uniform(0.5, 1.5)
+            task_specific_target_util = avg_target_util_per_task * variation_factor
+            task_specific_target_util = np.maximum(task_specific_target_util, 0.01)
+            self.task_set.append(Task(task_specific_target_util))
+
         self.active_instances = []
         self.total_energy_consumed = 0.0
 
@@ -266,13 +295,10 @@ class Environment(object):
 
 
     def calc_utilization(self):
-        c, t = [], []
+        utils = []
         for task in self.task_set:
-            if len(task.work_units_per_instance) > 0:
-                 c.append(np.mean(task.work_units_per_instance))
-            if len(task.arrival_intervals) > 0:
-                 t.append(np.mean(task.arrival_intervals))
+            w = np.mean(task.work_units_per_instance)
+            t = np.mean(task.arrival_intervals)
+            utils.append(w / t)
 
-        if not c or not t: return 0.0
-
-        return (np.mean(c) / np.mean(t)) * TASK_PER_PROCESSOR
+        return np.mean(utils) * TASK_PER_PROCESSOR
