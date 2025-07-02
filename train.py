@@ -21,7 +21,7 @@ noise_decay = 0.998
 
 rewards_log = []
 
-for i_episode in range(MAX_EPISODES):
+for i_episode in range(1, MAX_EPISODES+1):
 
     environment.reset()
     next_state = environment.get_state() 
@@ -93,7 +93,7 @@ for i_episode in range(MAX_EPISODES):
     print(f"Noise Scale: {noise_scale:.4f}")
     print(f"Replay Buffer Size: {len(replay_buffer)}")
 
-    if (i_episode + 1) % 50 == 0:
+    if i_episode % CHECKPOINT_INTERVAL == 0:
         print(f"Saving model at episode {i_episode}...")
         algorithm.save_model(os.path.join(MODEL_PATH, f"ep_{i_episode}"))
 

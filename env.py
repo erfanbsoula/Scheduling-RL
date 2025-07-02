@@ -32,13 +32,6 @@ class Task:
             MIN_TASK_SIGMA_LOG_EXEC_TIME, MAX_TASK_SIGMA_LOG_EXEC_TIME
         )
 
-        # m = (MAX_TASK_SIGMA_LOG_EXEC_TIME - MIN_TASK_SIGMA_LOG_EXEC_TIME) / \
-        #     (MAX_TASK_AVG_LOG_EXEC_TIME - MIN_TASK_AVG_LOG_EXEC_TIME)
-        
-        # task_sigma_log_exec_time = \
-        #     m * (task_mean_log_exec_time - MIN_TASK_AVG_LOG_EXEC_TIME) + \
-        #     MIN_TASK_SIGMA_LOG_EXEC_TIME
-
         self.work_units_per_instance = np.random.lognormal(
             task_mean_log_exec_time, task_sigma_log_exec_time, INSTANCES_PER_TASK*10
         )
@@ -108,7 +101,7 @@ class Environment(object):
         self.active_instances: List[Instance] = []
         self.total_energy_consumed = 0.0
 
-        self.state_dim = 9
+        self.state_dim = 10
         self.stats = {
             "remaining_work_units": {"min": 0, "mean": 0, "max": 0},
             "deadline": {"min": 0, "mean": 0, "max": 0},
@@ -122,14 +115,22 @@ class Environment(object):
         self.processor_count = PROCESSOR_COUNT
         self.task_count = self.processor_count * TASK_PER_PROCESSOR
         target_system_utilization_per_processor = np.random.uniform(MIN_LOAD, MAX_LOAD)
-        avg_target_util_per_task = target_system_utilization_per_processor / TASK_PER_PROCESSOR
+        target_system_utilization = target_system_utilization_per_processor * self.processor_count
+
+        # maybe we can also use task count to control the utilization
+        # along with using the arrival times
+        utilizations = []
+        remaining_utilization = target_system_utilization
+        for i in range(1, self.task_count):
+            next_util = remaining_utilization * np.random.uniform(0, 1) ** (1 / (self.task_count - i))
+            utilizations.append(remaining_utilization - next_util)
+            remaining_utilization = next_util
+        utilizations.append(remaining_utilization)
 
         self.task_set = []
-        for _ in range(self.task_count):
-            variation_factor = np.random.uniform(0.5, 1.5)
-            task_specific_target_util = avg_target_util_per_task * variation_factor
-            task_specific_target_util = np.maximum(task_specific_target_util, 0.01)
-            self.task_set.append(Task(task_specific_target_util))
+        for task_util in utilizations:
+            task_util = np.maximum(task_util, 0.005)
+            self.task_set.append(Task(task_util))
 
         self.active_instances = []
         self.total_energy_consumed = 0.0
@@ -261,8 +262,11 @@ class Environment(object):
 
     def get_state(self):
         state = []
+        system_load = self.calc_utilization()
         for instance in self.active_instances:
-            state.append(self.observation(instance))
+            instance_state = self.observation(instance)
+            instance_state.append(system_load)
+            state.append(instance_state)
 
         state = np.array(state, dtype=np.float32)
         state = state.reshape(-1, self.state_dim)
