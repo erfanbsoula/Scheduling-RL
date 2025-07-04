@@ -140,7 +140,8 @@ def main():
     for util in utilization_levels:
 
         print(f"\n--- Testing Utilization: {util:.2f} ---")
-        
+        target_system_utilization = util * environment.processor_count
+
         rl_success_temp = []
         rl_energy_temp = []
         gedf_success_temp = []
@@ -149,12 +150,18 @@ def main():
         for i in range(num_runs_per_utilization):
 
             print(f"  Run {i+1}/{num_runs_per_utilization}")
-            task_set_for_run = [Task(util) for _ in range(environment.task_count)]
+            utilizations = environment.uunifast(target_system_utilization)
+            task_set_for_run = []
+            for task_util in utilizations:
+                task_util = np.maximum(task_util, 0.01)
+                task_set_for_run.append(Task(task_util))
+
             environment.reset()
             environment.task_set = task_set_for_run
             environment.active_instances = []
             environment.arrive_instances()
             environment.update_env_stats()
+            print("Debug: actual utilization:", environment.calc_utilization())
 
             success_rl, energy_rl = run_simulation(environment, 'rl', rl_agent=rl_agent)
             rl_success_temp.append(success_rl)

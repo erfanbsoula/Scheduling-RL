@@ -109,6 +109,20 @@ class Environment(object):
         }
 
 
+    def uunifast(self, target_system_utilization):
+
+        utilizations = []
+
+        remaining_utilization = target_system_utilization
+        for i in range(1, self.task_count):
+            next_util = remaining_utilization * np.random.uniform(0, 1) ** (1 / (self.task_count - i))
+            utilizations.append(remaining_utilization - next_util)
+            remaining_utilization = next_util
+
+        utilizations.append(remaining_utilization)
+        return utilizations
+
+
     def reset(self):
 
         self.time = 0
@@ -116,20 +130,11 @@ class Environment(object):
         self.task_count = self.processor_count * TASK_PER_PROCESSOR
         target_system_utilization_per_processor = np.random.uniform(MIN_LOAD, MAX_LOAD)
         target_system_utilization = target_system_utilization_per_processor * self.processor_count
-
-        # maybe we can also use task count to control the utilization
-        # along with using the arrival times
-        utilizations = []
-        remaining_utilization = target_system_utilization
-        for i in range(1, self.task_count):
-            next_util = remaining_utilization * np.random.uniform(0, 1) ** (1 / (self.task_count - i))
-            utilizations.append(remaining_utilization - next_util)
-            remaining_utilization = next_util
-        utilizations.append(remaining_utilization)
+        utilizations = self.uunifast(target_system_utilization)
 
         self.task_set = []
         for task_util in utilizations:
-            task_util = np.maximum(task_util, 0.005)
+            task_util = np.maximum(task_util, 0.01)
             self.task_set.append(Task(task_util))
 
         self.active_instances = []

@@ -42,7 +42,10 @@ for i_episode in range(1, MAX_EPISODES+1):
         num_active_instances = len(environment.active_instances)
         noise_scale *= noise_decay
 
-        if num_active_instances > 0 and i_episode > EXPLORATION_EPISODES:
+        if (
+            num_active_instances > 0 and i_episode > EXPLORATION_EPISODES and
+            np.random.rand() > EXPLORATION_PROBABILITY
+        ):
             action = algorithm.policy_net.select_action(current_state, noise_std=noise_scale)
         else:
             action = np.random.uniform(low=0.0, high=1.0, size=(num_active_instances, ACTION_DIM))
@@ -97,13 +100,13 @@ for i_episode in range(1, MAX_EPISODES+1):
         print(f"Saving model at episode {i_episode}...")
         algorithm.save_model(os.path.join(MODEL_PATH, f"ep_{i_episode}"))
 
+        plt.plot(rewards_log)
+        plt.title("Episode Reward Trend")
+        plt.xlabel("Episode")
+        plt.ylabel("Reward")
+        plt.savefig("plots/episode_rewards.png", dpi=300, bbox_inches='tight')
+        plt.close()
+        print("Plot saved to plots/episode_rewards.png")
+
 
 print("Training finished.")
-
-plt.plot(rewards_log)
-plt.title("Episode Reward Trend")
-plt.xlabel("Episode")
-plt.ylabel("Reward")
-plt.savefig("plots/episode_rewards.png", dpi=300, bbox_inches='tight')
-plt.close()
-print("Plot saved to plots/episode_rewards.png")
