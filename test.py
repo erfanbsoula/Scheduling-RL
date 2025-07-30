@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from config import *
 from env import Environment, Task
 from ddpg_torch import MADDPG
+from task_gen import StaffordRandFixedSum, gen_periods
 
 np.set_printoptions(precision=4, suppress=True)
 
@@ -112,6 +113,7 @@ def main():
 
     print("Starting performance comparison...")
     environment = Environment()
+    environment.reset()
 
     rl_agent = MADDPG(
         None, DISCOUNT_RATE, STATE_DIM, ACTION_DIM, HIDDEN_DIM,
@@ -150,11 +152,13 @@ def main():
         for i in range(num_runs_per_utilization):
 
             print(f"  Run {i+1}/{num_runs_per_utilization}")
-            utilizations = environment.uunifast(target_system_utilization)
+            utilizations = StaffordRandFixedSum(environment.task_count, target_system_utilization, 1).flatten()
+            periods = gen_periods(environment.task_count, 1, MIN_PERIOD, MAX_PERIOD, 1.0, "logunif").flatten()
+            periods = periods.round().astype(int) # periods are integers for now
+
             task_set_for_run = []
-            for task_util in utilizations:
-                task_util = np.maximum(task_util, 0.01)
-                task_set_for_run.append(Task(task_util))
+            for utilization, period in zip(utilizations, periods):
+                task_set_for_run.append(Task(utilization, period))
 
             environment.reset()
             environment.task_set = task_set_for_run

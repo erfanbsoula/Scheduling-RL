@@ -4,48 +4,25 @@ from config import (
     PROCESSOR_COUNT,
     TASK_PER_PROCESSOR,
     INSTANCES_PER_TASK,
-    MIN_LOAD,
-    MAX_LOAD,
+    MIN_LOAD, MAX_LOAD,
+    MIN_PERIOD, MAX_PERIOD,
     STATIC_POWER_COEFF,
     DYNAMIC_POWER_COEFF,
     ENERGY_PENALTY_COEFF,
-    MIN_TASK_AVG_LOG_EXEC_TIME, 
-    MAX_TASK_AVG_LOG_EXEC_TIME, 
-    MIN_TASK_SIGMA_LOG_EXEC_TIME,
-    MAX_TASK_SIGMA_LOG_EXEC_TIME,
-    MIN_DEADLINE_FACTOR,
-    MAX_DEADLINE_FACTOR
 )
+from task_gen import StaffordRandFixedSum, gen_periods
 
 np.random.seed(199686)
 
 
 class Task:
 
-    def __init__(self, task_target_utilization: float):
+    def __init__(self, task_target_utilization: float, task_period: int):
 
-        task_mean_log_exec_time = np.random.uniform(
-            MIN_TASK_AVG_LOG_EXEC_TIME, MAX_TASK_AVG_LOG_EXEC_TIME
-        )
+        self.deadline = task_period
+        self.work_units = max(1, int(task_period * task_target_utilization))
+        self.mean_arrival_interval = task_period
 
-        task_sigma_log_exec_time = np.random.uniform(
-            MIN_TASK_SIGMA_LOG_EXEC_TIME, MAX_TASK_SIGMA_LOG_EXEC_TIME
-        )
-
-        self.work_units_per_instance = np.random.lognormal(
-            task_mean_log_exec_time, task_sigma_log_exec_time, INSTANCES_PER_TASK*10
-        )
-        self.work_units_per_instance = np.maximum(self.work_units_per_instance, 1.0)
-        self.mean_work_units = np.mean(self.work_units_per_instance)
-
-        deadline_factor = np.random.uniform(MIN_DEADLINE_FACTOR, MAX_DEADLINE_FACTOR)
-        self.deadline = np.ceil(self.mean_work_units * deadline_factor)
-        self.work_units_per_instance = np.random.choice(
-            self.work_units_per_instance[self.work_units_per_instance < self.deadline], INSTANCES_PER_TASK
-        )
-        self.mean_work_units = np.mean(self.work_units_per_instance)
-
-        self.mean_arrival_interval = self.mean_work_units / task_target_utilization
         self.arrival_intervals = np.random.exponential(
             self.mean_arrival_interval, INSTANCES_PER_TASK
         )
@@ -57,8 +34,7 @@ class Task:
 
 
     def create_instance(self) -> "Instance":
-        work_units = self.work_units_per_instance[self.instance_count]
-        instance = Instance(self.deadline, work_units)
+        instance = Instance(self.deadline, self.work_units)
         self.instance_count += 1
         return instance
 
@@ -109,20 +85,6 @@ class Environment(object):
         }
 
 
-    def uunifast(self, target_system_utilization):
-
-        utilizations = []
-
-        remaining_utilization = target_system_utilization
-        for i in range(1, self.task_count):
-            next_util = remaining_utilization * np.random.uniform(0, 1) ** (1 / (self.task_count - i))
-            utilizations.append(remaining_utilization - next_util)
-            remaining_utilization = next_util
-
-        utilizations.append(remaining_utilization)
-        return utilizations
-
-
     def reset(self):
 
         self.time = 0
@@ -130,12 +92,14 @@ class Environment(object):
         self.task_count = self.processor_count * TASK_PER_PROCESSOR
         target_system_utilization_per_processor = np.random.uniform(MIN_LOAD, MAX_LOAD)
         target_system_utilization = target_system_utilization_per_processor * self.processor_count
-        utilizations = self.uunifast(target_system_utilization)
+
+        utilizations = StaffordRandFixedSum(self.task_count, target_system_utilization, 1).flatten()
+        periods = gen_periods(self.task_count, 1, MIN_PERIOD, MAX_PERIOD, 1.0, "logunif").flatten()
+        periods = periods.round().astype(int) # periods are integers for now
 
         self.task_set = []
-        for task_util in utilizations:
-            task_util = np.maximum(task_util, 0.01)
-            self.task_set.append(Task(task_util))
+        for utilization, period in zip(utilizations, periods):
+            self.task_set.append(Task(utilization, period))
 
         self.active_instances = []
         self.total_energy_consumed = 0.0
@@ -306,8 +270,7 @@ class Environment(object):
     def calc_utilization(self):
         utils = []
         for task in self.task_set:
-            w = np.mean(task.work_units_per_instance)
             t = np.mean(task.arrival_intervals)
-            utils.append(w / t)
+            utils.append(task.work_units / t)
 
         return np.mean(utils) * TASK_PER_PROCESSOR

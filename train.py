@@ -82,7 +82,8 @@ for i_episode in range(1, MAX_EPISODES+1):
     # End of episode
     rewards_log.append(episode_reward_sum)
 
-    total_tasks_in_episode = environment.task_count * INSTANCES_PER_TASK
+    # total_tasks_in_episode = environment.task_count * INSTANCES_PER_TASK
+    total_tasks_in_episode = total_completed_in_episode + total_missed_in_episode
     success_ratio = total_completed_in_episode / total_tasks_in_episode * 100
     avg_q_loss = np.mean(q_loss_list) if q_loss_list else 0
     avg_policy_loss = np.mean(policy_loss_list) if policy_loss_list else 0
@@ -96,7 +97,7 @@ for i_episode in range(1, MAX_EPISODES+1):
     print(f"Noise Scale: {noise_scale:.4f}")
     print(f"Replay Buffer Size: {len(replay_buffer)}")
 
-    if i_episode % CHECKPOINT_INTERVAL == 0:
+    if i_episode % CHECKPOINT_INTERVAL == 0 or i_episode == MAX_EPISODES:
         print(f"Saving model at episode {i_episode}...")
         algorithm.save_model(os.path.join(MODEL_PATH, f"ep_{i_episode}"))
 
