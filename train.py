@@ -98,16 +98,20 @@ for i_episode in range(1, MAX_EPISODES+1):
     print(f"Replay Buffer Size: {len(replay_buffer)}")
 
     if i_episode % CHECKPOINT_INTERVAL == 0 or i_episode == MAX_EPISODES:
-        print(f"Saving model at episode {i_episode}...")
-        algorithm.save_model(os.path.join(MODEL_PATH, f"ep_{i_episode}"))
+
+        plot_path = os.path.join(SAVE_PATH, f"episode_rewards.png")
+        model_path = os.path.join(SAVE_PATH, f"ep_{i_episode}")
+
+        algorithm.save_model(model_path)
+        print(f"Models saved to {model_path}")
 
         plt.plot(rewards_log)
         plt.title("Episode Reward Trend")
         plt.xlabel("Episode")
         plt.ylabel("Reward")
-        plt.savefig("plots/episode_rewards.png", dpi=300, bbox_inches='tight')
+        plt.savefig(plot_path, dpi=300, bbox_inches='tight')
         plt.close()
-        print("Plot saved to plots/episode_rewards.png")
+        print(f"Reward plot saved to {plot_path}")
 
 
 print("Training finished.")
