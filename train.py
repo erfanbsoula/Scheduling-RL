@@ -16,18 +16,21 @@ algorithm = MADDPG(
     Q_LEARNING_RATE, POLICY_LEARNING_RATE, TARGET_UPDATE_DELAY
 )
 
-noise_scale = 0.0
-noise_decay = 0.998
+start_noise_scale = 0.2
+end_noise_scale = 0.001
+noise_decay = (end_noise_scale / start_noise_scale) ** (1 / MAX_EPISODES)
+noise_scale = start_noise_scale
 
 rewards_log = []
 
 for i_episode in range(1, MAX_EPISODES+1):
 
     environment.reset()
-    next_state = environment.get_state() 
+    next_state = environment.get_state()
+    noise_scale *= noise_decay
 
     print(f"--- Episode {i_episode} ---")
-    util = environment.calc_utilization()
+    util = environment.calc_mean_utilization()
     print(f"Utilization: {util if util is not None else 'N/A':.4f}")
 
     q_loss_list = []
@@ -40,16 +43,11 @@ for i_episode in range(1, MAX_EPISODES+1):
 
         current_state = next_state
         num_active_instances = len(environment.active_instances)
-        noise_scale *= noise_decay
 
-        if (
-            num_active_instances > 0 and i_episode > EXPLORATION_EPISODES and
-            np.random.rand() > EXPLORATION_PROBABILITY
-        ):
+        if num_active_instances > 0:
             action = algorithm.policy_net.select_action(current_state, noise_std=noise_scale)
         else:
-            action = np.random.uniform(low=0.0, high=1.0, size=(num_active_instances, ACTION_DIM))
-            action = action.astype(np.float32)
+            action = np.zeros((0, ACTION_DIM), dtype=np.float32)
 
         scheduling_priorities = action[:, 0]
         frequency_scales = action[:, 1]

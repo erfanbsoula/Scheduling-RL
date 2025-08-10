@@ -42,6 +42,7 @@ class Task:
 class Instance:
 
     def __init__(self, deadline, total_work_units):
+        self.initial_work_units = total_work_units
         self.remaining_work_units = total_work_units
         self.deadline = deadline
         self.over = False
@@ -77,11 +78,13 @@ class Environment(object):
         self.active_instances: List[Instance] = []
         self.total_energy_consumed = 0.0
 
-        self.state_dim = 10
+        self.state_dim = 15
         self.stats = {
+            "system_load": 0,
+            "normalized_instance_count": 0,
             "remaining_work_units": {"min": 0, "mean": 0, "max": 0},
             "deadline": {"min": 0, "mean": 0, "max": 0},
-            "laxity": {"min": 0, "mean": 0, "max": 0},
+            "laxity": {"min": 0, "mean": 0, "max": 0}
         }
 
 
@@ -120,18 +123,21 @@ class Environment(object):
     def update_env_stats(self):
 
         if len(self.active_instances) == 0:
-            for key in self.stats:
-                for stat in self.stats[key]:
-                    self.stats[key][stat] = 0
+            for key, value in self.stats.items():
+                if isinstance(value, dict):
+                    for stat in value:
+                        self.stats[key][stat] = 0
+                else:
+                    self.stats[key] = 0
             return
 
-        instance_deadlines = []
-        instance_remaining_execution_times = []
-        instance_laxities = []
-        for i in self.active_instances:
-            instance_remaining_execution_times.append(i.remaining_work_units)
-            instance_deadlines.append(i.deadline)
-            instance_laxities.append(i.laxity)
+        total_load = sum(i.remaining_work_units / i.deadline for i in self.active_instances)
+        self.stats["system_load"] = total_load / self.processor_count
+        self.stats["normalized_instance_count"] = len(self.active_instances) / self.task_count
+
+        instance_deadlines = [i.deadline for i in self.active_instances]
+        instance_remaining_execution_times = [i.remaining_work_units for i in self.active_instances]
+        instance_laxities = [i.laxity for i in self.active_instances]
 
         self.stats["remaining_work_units"]["min"] = np.min(instance_remaining_execution_times)
         self.stats["remaining_work_units"]["mean"] = np.mean(instance_remaining_execution_times)
@@ -230,31 +236,44 @@ class Environment(object):
 
 
     def get_state(self):
-        state = []
-        system_load = self.calc_utilization()
-        for instance in self.active_instances:
-            instance_state = self.observation(instance)
-            instance_state.append(system_load)
-            state.append(instance_state)
 
-        state = np.array(state, dtype=np.float32)
-        state = state.reshape(-1, self.state_dim)
-        return state
+        if len(self.active_instances) == 0:
+            return np.array([])
 
-
-    def observation(self, instance: Instance):
-        obs = [
-            instance.remaining_work_units - self.stats["remaining_work_units"]["min"],
-            instance.remaining_work_units - self.stats["remaining_work_units"]["mean"],
-            instance.remaining_work_units - self.stats["remaining_work_units"]["max"],
-            instance.deadline - self.stats["deadline"]["min"],
-            instance.deadline - self.stats["deadline"]["mean"],
-            instance.deadline - self.stats["deadline"]["max"],
-            instance.laxity - self.stats["laxity"]["min"],
-            instance.laxity - self.stats["laxity"]["mean"],
-            instance.laxity - self.stats["laxity"]["max"]
+        global_state = [
+            self.stats["system_load"],
+            self.stats["normalized_instance_count"],
+            self.stats["remaining_work_units"]["min"] / MAX_PERIOD,
+            self.stats["remaining_work_units"]["mean"] / MAX_PERIOD,
+            self.stats["remaining_work_units"]["max"] / MAX_PERIOD,
+            self.stats["deadline"]["min"] / MAX_PERIOD,
+            self.stats["deadline"]["mean"] / MAX_PERIOD,
+            self.stats["deadline"]["max"] / MAX_PERIOD,
+            self.stats["laxity"]["min"] / MAX_PERIOD,
+            self.stats["laxity"]["mean"] / MAX_PERIOD,
+            self.stats["laxity"]["max"] / MAX_PERIOD,
         ]
-        return obs
+        global_state = np.array(global_state, dtype=np.float32)
+
+        mean_remaining_work_units = self.stats["remaining_work_units"]["mean"] + 1e-6
+        mean_deadline = self.stats["deadline"]["mean"] + 1e-6
+        mean_laxity = self.stats["laxity"]["mean"] + 1e-6
+
+        local_observations = []
+        for instance in self.active_instances:
+            local_obs = [
+                (instance.deadline - self.stats["deadline"]["min"]) / mean_deadline,
+                (instance.laxity - self.stats["laxity"]["min"]) / mean_laxity,
+                instance.remaining_work_units / mean_remaining_work_units,
+                instance.remaining_work_units / instance.initial_work_units,
+            ]
+            local_observations.append(local_obs)
+
+        local_observations = np.array(local_observations, dtype=np.float32)
+        global_observations = np.tile(global_state, (len(self.active_instances), 1))
+        state = np.hstack((local_observations, global_observations))
+
+        return state
 
 
     def done(self):
@@ -267,7 +286,7 @@ class Environment(object):
         return True
 
 
-    def calc_utilization(self):
+    def calc_mean_utilization(self):
         utils = []
         for task in self.task_set:
             t = np.mean(task.arrival_intervals)

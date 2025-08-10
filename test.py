@@ -283,7 +283,7 @@ def main():
     print(f"Loading RL agent model from: {latest_model_path}")
     rl_agent.load_model(latest_model_path)
 
-    utilization_levels = list(np.arange(0.5, 1.5, 0.1))
+    utilization_levels = list(np.arange(0.5, 1.3, 0.1))
 
     results = {
         'rl': {'success_ratio': [], 'energy': []},
@@ -291,7 +291,7 @@ def main():
         'es-dvfs': {'success_ratio': [], 'energy': []}
     }
 
-    num_runs_per_utilization = 5
+    num_runs_per_utilization = 10
 
     for util in utilization_levels:
 
@@ -318,7 +318,7 @@ def main():
             environment.active_instances = []
             environment.arrive_instances()
             environment.update_env_stats()
-            print("Debug: actual utilization:", environment.calc_utilization())
+            print("Debug: actual utilization:", environment.calc_mean_utilization())
 
             success_rl, energy_rl = run_simulation(environment, 'rl', rl_agent=rl_agent)
             rl_success_temp.append(success_rl)

@@ -89,6 +89,8 @@ class ActorNetwork(nn.Module):
 
     def __init__(self, input_dim, output_dim, hidden_dim, init_w=3e-3):
         super().__init__()
+        self.normal_distribution = Normal(0, 1)
+
         self.linear1 = nn.Linear(input_dim, hidden_dim[0])
         self.linear2 = nn.Linear(hidden_dim[0], hidden_dim[1])
         self.linear3 = nn.Linear(hidden_dim[1], output_dim)
@@ -119,11 +121,14 @@ class ActorNetwork(nn.Module):
         state = torch.FloatTensor(state).to(device)
 
         with torch.no_grad():
-            action = self(state)
+            x = torch.tanh(self.linear1(state))
+            x = torch.tanh(self.linear2(x))
+            x = self.linear3(x)
 
         if noise_std > 0:
-            noise = Normal(0, noise_std).sample(action.shape).to(device)
-            action = torch.clamp(action + noise, 0, 1)
+            x += self.normal_distribution.sample(x.shape).to(device) * noise_std
+
+        action = torch.sigmoid(x)
 
         return action.cpu().numpy().astype(np.float32)
 
