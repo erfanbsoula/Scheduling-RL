@@ -283,7 +283,7 @@ def main():
     print(f"Loading RL agent model from: {latest_model_path}")
     rl_agent.load_model(latest_model_path)
 
-    utilization_levels = list(np.arange(0.5, 1.3, 0.1))
+    utilization_levels = list(np.arange(MIN_LOAD, MAX_LOAD + 0.1, 0.1))
 
     results = {
         'rl': {'success_ratio': [], 'energy': []},

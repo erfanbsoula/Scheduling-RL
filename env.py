@@ -78,10 +78,11 @@ class Environment(object):
         self.active_instances: List[Instance] = []
         self.total_energy_consumed = 0.0
 
-        self.state_dim = 15
+        self.state_dim = 16
         self.stats = {
             "system_load": 0,
             "normalized_instance_count": 0,
+            "arrived_instance_ratio": 0,
             "remaining_work_units": {"min": 0, "mean": 0, "max": 0},
             "deadline": {"min": 0, "mean": 0, "max": 0},
             "laxity": {"min": 0, "mean": 0, "max": 0}
@@ -151,6 +152,10 @@ class Environment(object):
         self.stats["laxity"]["mean"] = np.mean(instance_laxities)
         self.stats["laxity"]["max"] = np.max(instance_laxities)
 
+        total_instances = self.task_count * INSTANCES_PER_TASK
+        arrived_instances = sum(task.instance_count for task in self.task_set)
+        self.stats["arrived_instance_ratio"] = arrived_instances / total_instances
+
 
     def step(self, scheduling_priorities: np.ndarray, frequency_scales: np.ndarray):
         """
@@ -215,7 +220,8 @@ class Environment(object):
 
         self.total_energy_consumed += current_step_energy
         energy_penalty = ENERGY_PENALTY_COEFF * current_step_energy
-        global_reward = completed_count - missed_count - energy_penalty
+        normalized_energy_penalty = energy_penalty / (self.stats["system_load"] + 1e-6)
+        global_reward = completed_count - missed_count - normalized_energy_penalty
 
         self.time += 1
         self.delete_inactive_instances()
@@ -243,6 +249,7 @@ class Environment(object):
         global_state = [
             self.stats["system_load"],
             self.stats["normalized_instance_count"],
+            self.stats["arrived_instance_ratio"],
             self.stats["remaining_work_units"]["min"] / MAX_PERIOD,
             self.stats["remaining_work_units"]["mean"] / MAX_PERIOD,
             self.stats["remaining_work_units"]["max"] / MAX_PERIOD,
