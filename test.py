@@ -101,12 +101,12 @@ def run_simulation(
     next_state = environment.get_state()
 
     while not environment.done():
-        current_state = next_state
+        current_state_actor, current_state_critic = next_state
         num_active_instances = len(environment.active_instances)
 
         if scheduler_type == 'rl':
             if num_active_instances > 0:
-                action = rl_agent.policy_net.select_action(current_state, noise_std=0.0)
+                action = rl_agent.policy_net.select_action(current_state_actor, noise_std=0.0)
                 scheduling_priorities = action[:, 0]
                 frequency_scales = action[:, 1]
 
@@ -128,7 +128,7 @@ def run_simulation(
             raise ValueError(f"Unknown scheduler type: {scheduler_type}")
 
         transition = environment.step(scheduling_priorities, frequency_scales)
-        global_reward, next_state, is_done, num_completed, num_missed = transition
+        global_reward, next_state, is_done, num_completed, num_missed, time_duration = transition
 
         episode_reward_sum += global_reward
         total_completed_in_episode += num_completed
@@ -256,10 +256,7 @@ def main():
     environment = Environment()
     environment.reset()
 
-    rl_agent = MADDPG(
-        None, DISCOUNT_RATE, STATE_DIM, ACTION_DIM, HIDDEN_DIM,
-        Q_LEARNING_RATE, POLICY_LEARNING_RATE, TARGET_UPDATE_DELAY
-    )
+    rl_agent = MADDPG(None)
 
     model_files = [d for d in os.listdir(SAVE_PATH) if d.startswith('ep_')]
     if not model_files:

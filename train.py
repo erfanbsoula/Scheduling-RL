@@ -14,10 +14,7 @@ torch.manual_seed(199686)
 environment = Environment()
 replay_buffer = ReplayBuffer(BUFFER_SIZE)
 
-algorithm = MADDPG(
-    replay_buffer, DISCOUNT_RATE, STATE_DIM, ACTION_DIM, HIDDEN_DIM,
-    Q_LEARNING_RATE, POLICY_LEARNING_RATE, TARGET_UPDATE_DELAY
-)
+algorithm = MADDPG(replay_buffer)
 
 start_noise_scale = 0.2
 end_noise_scale = 0.001
@@ -44,11 +41,11 @@ for i_episode in range(1, MAX_EPISODES+1):
 
     for step in range(MAX_STEPS):
 
-        current_state = next_state
+        current_state_actor, current_state_critic = next_state
         num_active_instances = len(environment.active_instances)
 
         if num_active_instances > 0:
-            action = algorithm.policy_net.select_action(current_state, noise_std=noise_scale)
+            action = algorithm.policy_net.select_action(current_state_actor, noise_std=noise_scale)
         else:
             action = np.zeros((0, ACTION_DIM), dtype=np.float32)
 
@@ -62,10 +59,12 @@ for i_episode in range(1, MAX_EPISODES+1):
             frequency_scales = np.array([DVFS_LEVELS[i] for i in level_indices]).astype(np.float32)
 
         transition = environment.step(scheduling_priorities, frequency_scales)
-        global_reward, next_state, is_done, num_completed, num_missed = transition
+        global_reward, next_state, is_done, num_completed, num_missed, time_duration = transition
+        next_state_actor, next_state_critic = next_state
 
         if num_active_instances > 0:
-            replay_buffer.push(current_state, action, global_reward, next_state, is_done)
+            replay_buffer.push(current_state_actor, current_state_critic, action, global_reward,
+                               next_state_actor, next_state_critic, is_done, time_duration)
 
         episode_reward_sum += global_reward
         total_completed_in_episode += num_completed

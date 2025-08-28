@@ -248,12 +248,15 @@ class Environment(object):
                 done (bool): Whether the episode is finished (no more new instances).
                 completed_count (int): Number of instances completed this step.
                 missed_count (int): Number of instances missed this step.
+                time_duration (float): The actual time duration elapsed in this step.
         """
         if not self.active_instances:
+            previous_time = self.time
             self.time = self.event_queue.peek_next_timestamp()
             self.process_events_at_current_time()
             self.update_env_stats()
-            return 0.0, self.get_state(), self.done(), 0, 0
+            time_duration = self.time - previous_time
+            return 0.0, self.get_state(), self.done(), 0, 0, time_duration
 
         indices_by_priority = np.argsort(scheduling_priorities)[::-1]
         exec_indices = indices_by_priority[:min(self.processor_count, len(self.active_instances))]
@@ -310,7 +313,7 @@ class Environment(object):
         global_reward = completed_count - missed_count - norm_energy_penalty
 
         self.update_env_stats()
-        return global_reward, self.get_state(), self.done(), completed_count, missed_count
+        return global_reward, self.get_state(), self.done(), completed_count, missed_count, duration
 
 
     def update_env_stats(self):
@@ -353,9 +356,9 @@ class Environment(object):
     def get_state(self):
 
         if len(self.active_instances) == 0:
-            return np.array([])
+            return np.array([]), np.array([])
 
-        global_state = [
+        global_state_critic = [
             self.stats["system_load"],
             self.stats["normalized_instance_count"],
             self.stats["arrived_instance_ratio"],
@@ -369,7 +372,14 @@ class Environment(object):
             self.stats["laxity"]["mean"] / MAX_PERIOD,
             self.stats["laxity"]["max"] / MAX_PERIOD,
         ]
-        global_state = np.array(global_state, dtype=np.float32)
+        global_state_critic = np.array(global_state_critic, dtype=np.float32)
+
+        global_state_actor = [
+            self.stats["system_load"],
+            self.stats["normalized_instance_count"],
+            self.stats["arrived_instance_ratio"],
+        ]
+        global_state_actor = np.array(global_state_actor, dtype=np.float32)
 
         mean_remaining_work_units = self.stats["remaining_work_units"]["mean"] + 1e-6
         mean_deadline = self.stats["deadline"]["mean"] + 1e-6
@@ -386,10 +396,13 @@ class Environment(object):
             local_observations.append(local_obs)
 
         local_observations = np.array(local_observations, dtype=np.float32)
-        global_observations = np.tile(global_state, (len(self.active_instances), 1))
-        state = np.hstack((local_observations, global_observations))
+        global_observations_actor = np.tile(global_state_actor, (len(self.active_instances), 1))
+        global_observations_critic = np.tile(global_state_critic, (len(self.active_instances), 1))
 
-        return state
+        state_actor = np.hstack((local_observations, global_observations_actor))
+        state_critic = np.hstack((local_observations, global_observations_critic))
+
+        return state_actor, state_critic
 
 
     def done(self) -> bool:

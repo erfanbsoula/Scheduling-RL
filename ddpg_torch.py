@@ -7,7 +7,17 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.distributions import Normal
 
-from config import GPU, DEVICE_INDEX
+from config import (
+    GPU, DEVICE_INDEX,
+    DISCOUNT_RATE,
+    CRITIC_STATE_DIM,
+    ACTOR_STATE_DIM,
+    ACTION_DIM,
+    HIDDEN_DIM,
+    Q_LEARNING_RATE,
+    POLICY_LEARNING_RATE,
+    TARGET_UPDATE_DELAY
+)
 
 if GPU:
     cuda = "cuda:" + str(DEVICE_INDEX)
@@ -33,27 +43,40 @@ class ReplayBuffer:
 
     def push(
             self,
-            state: np.ndarray,
+            state_actor: np.ndarray,
+            state_critic: np.ndarray,
             action: np.ndarray,
             reward: float,
-            next_state: np.ndarray,
-            done: bool
+            next_state_actor: np.ndarray,
+            next_state_critic: np.ndarray,
+            done: bool,
+            time_duration: float
         ):
         """
         Stores a transition in the replay buffer.
 
         Args:
-            state (np.ndarray): State at time t. Shape: (num_instances, state_dim)
-            action (np.ndarray): Action taken at time t. Shape: (num_instances, action_dim)
+            state_actor (np.ndarray): Actor-specific state at time t.
+            state_critic (np.ndarray): Critic-specific state at time t.
+            action (np.ndarray): Action taken at time t.
             reward (float): Scalar reward received after taking the action.
-            next_state (np.ndarray): State at time t+1. Shape: (next_num_instances, state_dim)
+            next_state_actor (np.ndarray): Actor-specific state at time t+1.
+            next_state_critic (np.ndarray): Critic-specific state at time t+1.
             done (bool): Whether the episode has ended after this transition.
+            time_duration (float): The actual time duration elapsed during this transition.
         """
         if len(self.buffer) < self.capacity:
             self.buffer.append(None)
 
-        index = ['state', 'action', 'reward', 'next', 'done']
-        dic = dict(zip(index, [state, action, reward, next_state, done]))
+        index = [
+            'state_actor', 'state_critic', 'action', 'reward',
+            'next_actor', 'next_critic', 'done', 'time_duration'
+        ]
+        values = [
+            state_actor, state_critic, action, reward,
+            next_state_actor, next_state_critic, done, time_duration
+        ]
+        dic = dict(zip(index, values))
         self.buffer[self.position] = dic
         self.position = int((self.position + 1) % self.capacity)
 
@@ -66,23 +89,24 @@ class ReplayBuffer:
             batch_size (int): Number of transitions to sample.
 
         Returns:
-            states (List[np.ndarray]): List of states. Shape: (num_instances, state_dim)
-            actions (List[np.ndarray]): List of actions. Shape: (num_instances, action_dim)
-            rewards (List[float]): List of scalar rewards.
-            next_states (List[np.ndarray]): List of next states. Shape: (next_num_instances, state_dim)
-            done_flags (List[bool]): List of done flags.
+            Tuple of lists for actor states, critic states, actions, rewards,
+            next actor states, next critic states, done flags, and time durations.
         """
         batch = random.sample(self.buffer, batch_size)
-        states, actions, rewards, next_states, done_flags = [], [], [], [], []
 
-        for i in range(batch_size):
-            states.append(batch[i]['state'])
-            actions.append(batch[i]['action'])
-            rewards.append(batch[i]['reward'])
-            next_states.append(batch[i]['next'])
-            done_flags.append(batch[i]['done'])
+        states_actor = [item['state_actor'] for item in batch]
+        states_critic = [item['state_critic'] for item in batch]
+        actions = [item['action'] for item in batch]
+        rewards = [item['reward'] for item in batch]
+        next_states_actor = [item['next_actor'] for item in batch]
+        next_states_critic = [item['next_critic'] for item in batch]
+        done_flags = [item['done'] for item in batch]
+        time_durations = [item['time_duration'] for item in batch]
 
-        return states, actions, rewards, next_states, done_flags
+        return (
+            states_actor, states_critic, actions, rewards,
+            next_states_actor, next_states_critic, done_flags, time_durations
+        )
 
 
 class ActorNetwork(nn.Module):
@@ -180,24 +204,25 @@ class MADDPG:
     def __init__(
         self,
         replay_buffer: ReplayBuffer,
-        gamma: float,
-        state_dim: int,
-        action_dim: int,
-        hidden_dim: list,
-        q_lr: float,
-        policy_lr: float,
-        target_update_delay: int
+        gamma: float = DISCOUNT_RATE,
+        critic_state_dim: int = CRITIC_STATE_DIM,
+        actor_state_dim: int = ACTOR_STATE_DIM,
+        action_dim: int = ACTION_DIM,
+        hidden_dim: List[int] = HIDDEN_DIM,
+        q_lr: float = Q_LEARNING_RATE,
+        policy_lr: float = POLICY_LEARNING_RATE,
+        target_update_delay: int = TARGET_UPDATE_DELAY
     ):
         self.replay_buffer: ReplayBuffer = replay_buffer
         self.gamma = gamma
 
-        self.policy_net = ActorNetwork(state_dim, action_dim, hidden_dim).to(device)
-        self.target_policy_net = ActorNetwork(state_dim, action_dim, hidden_dim).to(device)
+        self.policy_net = ActorNetwork(actor_state_dim, action_dim, hidden_dim).to(device)
+        self.target_policy_net = ActorNetwork(actor_state_dim, action_dim, hidden_dim).to(device)
         self.target_policy_net.load_state_dict(self.policy_net.state_dict())
         self.policy_optimizer = optim.Adam(self.policy_net.parameters(), lr=policy_lr)
 
-        self.q_net = QNetwork(state_dim + action_dim, hidden_dim).to(device)
-        self.target_q_net = QNetwork(state_dim + action_dim, hidden_dim).to(device)
+        self.q_net = QNetwork(critic_state_dim + action_dim, hidden_dim).to(device)
+        self.target_q_net = QNetwork(critic_state_dim + action_dim, hidden_dim).to(device)
         self.target_q_net.load_state_dict(self.q_net.state_dict())
         self.q_optimizer = optim.Adam(self.q_net.parameters(), lr=q_lr)
         self.q_criterion = nn.MSELoss()
@@ -218,26 +243,28 @@ class MADDPG:
             Tuple[float, float]: Average Q-network loss and policy-network loss for this update step.
         """
         self.update_cnt += 1
-        states, actions, rewards, next_states, done_flags = self.replay_buffer.sample(batch_size)
+        batch = self.replay_buffer.sample(batch_size)
+        states_actor, states_critic, actions, rewards, next_states_actor, next_states_critic, done_flags, time_durations = batch
 
         predicted_q_values = []
         target_q_values = []
 
         for i in range(batch_size):
 
-            current_state = torch.FloatTensor(states[i]).to(device)
+            current_state_critic = torch.FloatTensor(states_critic[i]).to(device)
             current_action = torch.FloatTensor(actions[i]).to(device)
             reward = torch.FloatTensor([rewards[i]]).to(device)
 
-            current_q_value = torch.mean(self.q_net(current_state, current_action), 0)
+            current_q_value = torch.mean(self.q_net(current_state_critic, current_action), 0)
 
             target_q_value = reward
-            if not done_flags[i] and next_states[i].size > 0:
-                next_state = torch.FloatTensor(next_states[i]).to(device)
+            if not done_flags[i] and next_states_actor[i].size > 0:
+                next_state_actor = torch.FloatTensor(next_states_actor[i]).to(device)
+                next_state_critic = torch.FloatTensor(next_states_critic[i]).to(device)
                 with torch.no_grad():
-                    next_action = self.target_policy_net(next_state)
-                    next_q_value = torch.mean(self.target_q_net(next_state, next_action), 0)
-                target_q_value += self.gamma * next_q_value
+                    next_action = self.target_policy_net(next_state_actor)
+                    next_q_value = torch.mean(self.target_q_net(next_state_critic, next_action), 0)
+                target_q_value += self.gamma ** time_durations[i] * next_q_value
 
             predicted_q_values.append(current_q_value)
             target_q_values.append(target_q_value)
@@ -254,9 +281,10 @@ class MADDPG:
         predicted_q_values = []
 
         for i in range(batch_size):
-            current_state = torch.FloatTensor(states[i]).to(device)
-            predicted_action = self.policy_net(current_state)
-            predicted_q = torch.mean(self.q_net(current_state, predicted_action), 0)
+            current_state_actor = torch.FloatTensor(states_actor[i]).to(device)
+            current_state_critic = torch.FloatTensor(states_critic[i]).to(device)
+            predicted_action = self.policy_net(current_state_actor)
+            predicted_q = torch.mean(self.q_net(current_state_critic, predicted_action), 0)
             predicted_q_values.append(predicted_q)
 
         predicted_q_values = torch.stack(predicted_q_values).to(device)
