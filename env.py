@@ -256,7 +256,11 @@ class Environment(object):
             self.process_events_at_current_time()
             self.update_env_stats()
             time_duration = self.time - previous_time
-            return 0.0, self.get_state(), self.done(), 0, 0, time_duration
+            idle_energy = (STATIC_POWER_COEFF * self.processor_count) * time_duration
+            self.total_energy_consumed += idle_energy
+            energy_penalty = ENERGY_PENALTY_COEFF * idle_energy
+            global_reward = -energy_penalty
+            return global_reward, self.get_state(), self.done(), 0, 0, time_duration
 
         indices_by_priority = np.argsort(scheduling_priorities)[::-1]
         exec_indices = indices_by_priority[:min(self.processor_count, len(self.active_instances))]
@@ -310,7 +314,8 @@ class Environment(object):
         # Calculate reward
         energy_penalty = ENERGY_PENALTY_COEFF * step_energy
         norm_energy_penalty = energy_penalty# / (self.stats.get("system_load", 0) + 1e-6)
-        global_reward = completed_count - missed_count - norm_energy_penalty
+        # global_reward = 0.005 * completed_count - 0.05 * missed_count - 0.1 * norm_energy_penalty
+        global_reward = - 0.1 * norm_energy_penalty
 
         self.update_env_stats()
         return global_reward, self.get_state(), self.done(), completed_count, missed_count, duration

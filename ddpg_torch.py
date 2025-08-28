@@ -258,12 +258,15 @@ class MADDPG:
             current_q_value = torch.mean(self.q_net(current_state_critic, current_action), 0)
 
             target_q_value = reward
-            if not done_flags[i] and next_states_actor[i].size > 0:
-                next_state_actor = torch.FloatTensor(next_states_actor[i]).to(device)
-                next_state_critic = torch.FloatTensor(next_states_critic[i]).to(device)
-                with torch.no_grad():
-                    next_action = self.target_policy_net(next_state_actor)
-                    next_q_value = torch.mean(self.target_q_net(next_state_critic, next_action), 0)
+            if not done_flags[i]:
+                if next_states_actor[i].size > 0:
+                    next_state_actor = torch.FloatTensor(next_states_actor[i]).to(device)
+                    next_state_critic = torch.FloatTensor(next_states_critic[i]).to(device)
+                    with torch.no_grad():
+                        next_action = self.target_policy_net(next_state_actor)
+                        next_q_value = torch.mean(self.target_q_net(next_state_critic, next_action), 0)
+                else:
+                    next_q_value = torch.tensor([-1.0]).to(device)
                 target_q_value += self.gamma ** time_durations[i] * next_q_value
 
             predicted_q_values.append(current_q_value)
