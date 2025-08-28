@@ -2,7 +2,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from config import *
-from env import Environment, Task
+from env import Environment, Task, InstanceStatus
 from ddpg_torch import MADDPG
 from task_gen import StaffordRandFixedSum, gen_periods
 
@@ -88,9 +88,8 @@ def run_simulation(
 
     Args:
         environment (Environment): The simulation environment.
-        scheduler_type (str): 'rl' or 'gedf'.
+        scheduler_type (str): 'rl', 'gedf', or 'es-dvfs'.
         rl_agent (MADDPG, optional): The RL agent, required if scheduler_type is 'rl'.
-        utilization_level (float, optional): The target utilization level for the environment reset.
 
     Returns:
         tuple: (success_ratio, total_energy_consumed)
@@ -101,18 +100,13 @@ def run_simulation(
 
     next_state = environment.get_state()
 
-    for step in range(MAX_STEPS):
-
+    while not environment.done():
         current_state = next_state
         num_active_instances = len(environment.active_instances)
 
         if scheduler_type == 'rl':
-
-            if rl_agent is None:
-                raise ValueError("RL agent must be provided for 'rl' scheduler type.")
-
             if num_active_instances > 0:
-                action = rl_agent.target_policy_net.select_action(current_state, noise_std=0.0)
+                action = rl_agent.policy_net.select_action(current_state, noise_std=0.0)
                 scheduling_priorities = action[:, 0]
                 frequency_scales = action[:, 1]
 
@@ -120,24 +114,18 @@ def run_simulation(
                 level_indices = np.floor(frequency_scales * num_levels).astype(int)
                 level_indices = np.clip(level_indices, 0, num_levels - 1)
                 frequency_scales = np.array([DVFS_LEVELS[i] for i in level_indices]).astype(np.float32)
-
             else:
                 scheduling_priorities = np.array([])
                 frequency_scales = np.array([])
 
         elif scheduler_type == 'gedf':
-            if num_active_instances > 0:
-                scheduling_priorities, frequency_scales = gedf_scheduler(environment.active_instances)
-            else:
-                scheduling_priorities = np.array([])
-                frequency_scales = np.array([])
+            scheduling_priorities, frequency_scales = gedf_scheduler(environment.active_instances)
 
         elif scheduler_type == 'es-dvfs':
             scheduling_priorities, frequency_scales = es_dvfs_scheduler(environment.active_instances)
 
         else:
             raise ValueError(f"Unknown scheduler type: {scheduler_type}")
-
 
         transition = environment.step(scheduling_priorities, frequency_scales)
         global_reward, next_state, is_done, num_completed, num_missed = transition
@@ -176,8 +164,8 @@ def plot_results(utilization_levels, results, save_path):
     ax1.bar(x, results['gedf']['normalized_energy'], width,
         label='GEDF Energy (Normalized)', color='tab:green', alpha=0.5)
 
-    ax1.bar(x + width, results['es-dvfs']['normalized_energy'], width,
-        label='ES-DVFS Energy (Normalized)', color='tab:blue', alpha=0.5)
+    # ax1.bar(x + width, results['es-dvfs']['normalized_energy'], width,
+    #     label='ES-DVFS Energy (Normalized)', color='tab:blue', alpha=0.5)
 
     ax1.set_xlabel('System Utilization (Load)', fontsize=14)
     ax1.set_ylabel('Normalized Total Energy Consumed', fontsize=14)
@@ -197,10 +185,10 @@ def plot_results(utilization_levels, results, save_path):
         x, results['gedf']['success_ratio'],
         marker='x', linestyle='-', color='tab:green', label='GEDF Success Ratio'
     )
-    ax2.plot(
-        x, results['es-dvfs']['success_ratio'],
-        marker='s', linestyle='-', color='tab:blue', label='ES-DVFS Success Ratio'
-    )
+    # ax2.plot(
+    #     x, results['es-dvfs']['success_ratio'],
+    #     marker='s', linestyle='-', color='tab:blue', label='ES-DVFS Success Ratio'
+    # )
     ax2.tick_params(axis='y', labelsize=12)
 
     # Combine legends from both axes
@@ -209,7 +197,7 @@ def plot_results(utilization_levels, results, save_path):
     ax2.legend(lines + lines2, labels + labels2, loc='best', fontsize=12)
 
     fig.tight_layout()
-    plt.title('Performance Comparison: RL Agent vs GEDF vs ES-DVFS', fontsize=16)
+    plt.title('Performance Comparison', fontsize=16)
 
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.close()
@@ -291,12 +279,11 @@ def main():
         'es-dvfs': {'success_ratio': [], 'energy': []}
     }
 
-    num_runs_per_utilization = 10
+    num_runs_per_utilization = 32
 
     for util in utilization_levels:
 
         print(f"\n--- Testing Utilization: {util:.2f} ---")
-        target_system_utilization = util * environment.processor_count
 
         rl_success_temp, rl_energy_temp = [], []
         gedf_success_temp, gedf_energy_temp = [], []
@@ -305,74 +292,45 @@ def main():
         for i in range(num_runs_per_utilization):
 
             print(f"  Run {i+1}/{num_runs_per_utilization}")
-            utilizations = StaffordRandFixedSum(environment.task_count, target_system_utilization, 1).flatten()
-            periods = gen_periods(environment.task_count, 1, MIN_PERIOD, MAX_PERIOD, 1.0, "logunif").flatten()
-            periods = periods.round().astype(int) # periods are integers for now
 
-            task_set_for_run = []
-            for utilization, period in zip(utilizations, periods):
-                task_set_for_run.append(Task(utilization, period))
-
-            environment.reset()
-            environment.task_set = task_set_for_run
-            environment.active_instances = []
-            environment.arrive_instances()
-            environment.update_env_stats()
-            print("Debug: actual utilization:", environment.calc_mean_utilization())
-
+            environment.reset(util)
             success_rl, energy_rl = run_simulation(environment, 'rl', rl_agent=rl_agent)
             rl_success_temp.append(success_rl)
             rl_energy_temp.append(energy_rl)
 
-            for task in task_set_for_run:
-                task.instance_count = 0
-
-            environment.reset()
-            environment.task_set = task_set_for_run
-            environment.active_instances = []
-            environment.arrive_instances()
-            environment.update_env_stats()
-
+            environment.reset(util)
             success_gedf, energy_gedf = run_simulation(environment, 'gedf')
             gedf_success_temp.append(success_gedf)
             gedf_energy_temp.append(energy_gedf)
 
-            for task in task_set_for_run:
-                task.instance_count = 0
-
-            environment.reset()
-            environment.task_set = task_set_for_run
-            environment.active_instances = []
-            environment.arrive_instances()
-            environment.update_env_stats()
-
-            success_es_dvfs, energy_es_dvfs = run_simulation(environment, 'es-dvfs')
-            es_dvfs_success_temp.append(success_es_dvfs)
-            es_dvfs_energy_temp.append(energy_es_dvfs)
+            # environment.reset(util)
+            # success_es_dvfs, energy_es_dvfs = run_simulation(environment, 'es-dvfs')
+            # es_dvfs_success_temp.append(success_es_dvfs)
+            # es_dvfs_energy_temp.append(energy_es_dvfs)
 
         avg_rl_success = np.mean(rl_success_temp)
         avg_rl_energy = np.mean(rl_energy_temp)
         avg_gedf_success = np.mean(gedf_success_temp)
         avg_gedf_energy = np.mean(gedf_energy_temp)
-        avg_es_dvfs_success = np.mean(es_dvfs_success_temp)
-        avg_es_dvfs_energy = np.mean(es_dvfs_energy_temp)
+        # avg_es_dvfs_success = np.mean(es_dvfs_success_temp)
+        # avg_es_dvfs_energy = np.mean(es_dvfs_energy_temp)
 
         results['rl']['success_ratio'].append(avg_rl_success)
         results['rl']['energy'].append(avg_rl_energy)
         results['gedf']['success_ratio'].append(avg_gedf_success)
         results['gedf']['energy'].append(avg_gedf_energy)
-        results['es-dvfs']['success_ratio'].append(avg_es_dvfs_success)
-        results['es-dvfs']['energy'].append(avg_es_dvfs_energy)
+        # results['es-dvfs']['success_ratio'].append(avg_es_dvfs_success)
+        # results['es-dvfs']['energy'].append(avg_es_dvfs_energy)
 
         print(f"  Avg RL   - Success: {avg_rl_success:.2f}%, Energy: {avg_rl_energy:.2f}")
         print(f"  Avg GEDF - Success: {avg_gedf_success:.2f}%, Energy: {avg_gedf_energy:.2f}")
-        print(f"  Avg ES-DVFS - Success: {avg_es_dvfs_success:.2f}%, Energy: {avg_es_dvfs_energy:.2f}")
+        # print(f"  Avg ES-DVFS - Success: {avg_es_dvfs_success:.2f}%, Energy: {avg_es_dvfs_energy:.2f}")
 
     # Normalize energy values for plotting
     max_energy = np.max(results['rl']['energy'] + results['gedf']['energy'] + results['es-dvfs']['energy'])
     results['rl']['normalized_energy'] = [e / max_energy for e in results['rl']['energy']]
     results['gedf']['normalized_energy'] = [e / max_energy for e in results['gedf']['energy']]
-    results['es-dvfs']['normalized_energy'] = [e / max_energy for e in results['es-dvfs']['energy']]
+    # results['es-dvfs']['normalized_energy'] = [e / max_energy for e in results['es-dvfs']['energy']]
 
     # Plotting results
     plot_path = os.path.join(SAVE_PATH, 'test_result.png')
@@ -380,7 +338,7 @@ def main():
 
     # Save summary to file
     summary_path = os.path.join(SAVE_PATH, 'test_summary.txt')
-    save_summary(utilization_levels, results, summary_path)
+    # save_summary(utilization_levels, results, summary_path)
 
 
 if __name__ == '__main__':

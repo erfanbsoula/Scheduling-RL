@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import torch
 from config import *
 from env import Environment
 from ddpg_torch import ReplayBuffer, MADDPG
@@ -7,6 +8,8 @@ import matplotlib.pyplot as plt
 
 np.set_printoptions(precision=4, suppress=True)
 
+np.random.seed(199686)
+torch.manual_seed(199686)
 
 environment = Environment()
 replay_buffer = ReplayBuffer(BUFFER_SIZE)
@@ -62,7 +65,7 @@ for i_episode in range(1, MAX_EPISODES+1):
         global_reward, next_state, is_done, num_completed, num_missed = transition
 
         if num_active_instances > 0:
-             replay_buffer.push(current_state, action, global_reward, next_state, is_done)
+            replay_buffer.push(current_state, action, global_reward, next_state, is_done)
 
         episode_reward_sum += global_reward
         total_completed_in_episode += num_completed
@@ -94,6 +97,7 @@ for i_episode in range(1, MAX_EPISODES+1):
     print(f"Avg Q_Loss: {avg_q_loss:.4f}, Avg Policy_Loss: {avg_policy_loss:.4f}")
     print(f"Noise Scale: {noise_scale:.4f}")
     print(f"Replay Buffer Size: {len(replay_buffer)}")
+    print(f"Total Steps: {step + 1}")
 
     if i_episode % CHECKPOINT_INTERVAL == 0 or i_episode == MAX_EPISODES:
 
