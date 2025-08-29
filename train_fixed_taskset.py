@@ -13,19 +13,17 @@ SEED = 199686
 np.random.seed(SEED)
 torch.manual_seed(SEED)
 
-# Configure save path for the fixed task set training
-FIXED_TASK_SET_SAVE_PATH = 'saves/fixed_taskset/'
-os.makedirs(FIXED_TASK_SET_SAVE_PATH, exist_ok=True)
+os.makedirs(SAVE_PATH, exist_ok=True)
 
 environment = Environment()
 replay_buffer = ReplayBuffer(BUFFER_SIZE)
 
 algorithm = MADDPG(replay_buffer)
 
-start_noise_scale = 0.2
+start_noise_scale = float(os.getenv('GRID_START_NOISE_SCALE', 0.1))
 end_noise_scale = 0.001
 noise_decay = (end_noise_scale / start_noise_scale) ** (1 / MAX_EPISODES)
-noise_scale = 0.0
+noise_scale = start_noise_scale
 
 rewards_log = []
 success_ratio_log = []
@@ -56,7 +54,7 @@ def generate_fixed_task_set(per_core_utilization=None):
     
     # Save task set parameters for reproducibility
     np.savez(
-        os.path.join(FIXED_TASK_SET_SAVE_PATH, 'task_set_params.npz'),
+        os.path.join(SAVE_PATH, 'task_set_params.npz'),
         utilizations=utilizations,
         periods=periods,
         system_utilization=target_util,
@@ -217,23 +215,24 @@ for i_episode in range(1, MAX_EPISODES+1):
         plt.ylabel("Energy")
         
         plt.tight_layout()
-        plt.savefig(os.path.join(FIXED_TASK_SET_SAVE_PATH, "training_metrics.png"), dpi=300, bbox_inches='tight')
+        plt.savefig(os.path.join(SAVE_PATH, "training_metrics.png"), dpi=300, bbox_inches='tight')
         plt.close()
 
         plt.plot(frequency_scale_log)
         plt.title("Frequency Scale Trend")
         plt.xlabel("Steps")
         plt.ylabel("Frequency Scale")
-        plt.savefig(os.path.join(FIXED_TASK_SET_SAVE_PATH, "frequency_scales.png"), dpi=300, bbox_inches='tight')
+        plt.savefig(os.path.join(SAVE_PATH, "frequency_scales.png"), dpi=300, bbox_inches='tight')
+        plt.close()
 
         # Save model checkpoints
-        model_path = os.path.join(FIXED_TASK_SET_SAVE_PATH, f"ep_{i_episode}")
+        model_path = os.path.join(SAVE_PATH, f"ep_{i_episode}")
         algorithm.save_model(model_path)
         print(f"Models saved to {model_path}")
         
         # Save training metrics
         np.savez(
-            os.path.join(FIXED_TASK_SET_SAVE_PATH, "training_metrics.npz"),
+            os.path.join(SAVE_PATH, "training_metrics.npz"),
             rewards=np.array(rewards_log),
             success_ratios=np.array(success_ratio_log),
             energy_consumption=np.array(energy_consumption_log)

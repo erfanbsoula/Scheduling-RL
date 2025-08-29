@@ -16,7 +16,10 @@ from config import (
     HIDDEN_DIM,
     Q_LEARNING_RATE,
     POLICY_LEARNING_RATE,
-    TARGET_UPDATE_DELAY
+    TARGET_UPDATE_DELAY,
+    STATIC_POWER_COEFF,
+    ENERGY_PENALTY_COEFF,
+    PROCESSOR_COUNT
 )
 
 if GPU:
@@ -266,7 +269,10 @@ class MADDPG:
                         next_action = self.target_policy_net(next_state_actor)
                         next_q_value = torch.mean(self.target_q_net(next_state_critic, next_action), 0)
                 else:
-                    next_q_value = torch.tensor([-1.0]).to(device)
+                    idle_energy = (STATIC_POWER_COEFF * PROCESSOR_COUNT) * time_durations[i]
+                    energy_penalty = ENERGY_PENALTY_COEFF * idle_energy
+                    next_q_value = torch.tensor([-energy_penalty]).to(device)
+
                 target_q_value += self.gamma ** time_durations[i] * next_q_value
 
             predicted_q_values.append(current_q_value)

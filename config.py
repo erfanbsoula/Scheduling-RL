@@ -1,3 +1,5 @@
+import os
+
 ########################################
 # Device configuration parameters
 
@@ -41,8 +43,21 @@ MAX_LOAD = 0.75
 MIN_PERIOD = 100
 MAX_PERIOD = 1000
 
+INSTANCE_COMPLETION_REWARD = 0.1
+INSTANCE_MISS_PENALTY = 2.0
+
 STATIC_POWER_COEFF = 0.3
 DYNAMIC_POWER_COEFF = 0.7
-ENERGY_PENALTY_COEFF = 0.01
+ENERGY_PENALTY_COEFF = 0.005
 
 ########################################
+# For grid search launches from cli
+
+SAVE_PATH = os.getenv('GRID_SAVE_PATH', SAVE_PATH)
+Q_LEARNING_RATE = float(os.getenv('GRID_Q_LEARNING_RATE', 1e-4))
+POLICY_LEARNING_RATE = float(os.getenv('GRID_POLICY_LEARNING_RATE', 1e-4))
+SOFT_UPDATE_TAU = float(os.getenv('GRID_SOFT_UPDATE_TAU', 1e-3))
+DISCOUNT_RATE = float(os.getenv('GRID_DISCOUNT_RATE', 0.999))
+INSTANCE_COMPLETION_REWARD = float(os.getenv('GRID_INSTANCE_COMPLETION_REWARD', 0.1))
+INSTANCE_MISS_PENALTY = float(os.getenv('GRID_INSTANCE_MISS_PENALTY', 2.0))
+ENERGY_PENALTY_COEFF = float(os.getenv('GRID_ENERGY_PENALTY_COEFF', 0.005))

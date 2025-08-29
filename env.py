@@ -7,6 +7,8 @@ from config import (
     INSTANCES_PER_TASK,
     MIN_LOAD, MAX_LOAD,
     MIN_PERIOD, MAX_PERIOD,
+    INSTANCE_COMPLETION_REWARD,
+    INSTANCE_MISS_PENALTY,
     STATIC_POWER_COEFF,
     DYNAMIC_POWER_COEFF,
     ENERGY_PENALTY_COEFF,
@@ -277,16 +279,20 @@ class Environment(object):
         next_timestamp = min(next_event_in_queue, earliest_completion_time)
         duration = next_timestamp - self.time
 
-        step_energy = 0.0
+        num_active_processors = len(exec_indices)
+        num_idle_processors = self.processor_count - num_active_processors
+        idle_energy = (num_idle_processors * STATIC_POWER_COEFF) * duration
+
+        active_energy = 0.0
         for i in exec_indices:
             instance = self.active_instances[i]
             freq = frequency_scales[i]
             instance.execute(duration, freq)
-            
             static_power = STATIC_POWER_COEFF * freq
             dynamic_power = DYNAMIC_POWER_COEFF * (freq ** 3)
-            step_energy += (static_power + dynamic_power) * duration
+            active_energy += (static_power + dynamic_power) * duration
 
+        step_energy = idle_energy + active_energy
         self.total_energy_consumed += step_energy
 
         # Advance simulation time
@@ -312,10 +318,9 @@ class Environment(object):
         ]
 
         # Calculate reward
-        energy_penalty = ENERGY_PENALTY_COEFF * step_energy
-        norm_energy_penalty = energy_penalty# / (self.stats.get("system_load", 0) + 1e-6)
-        # global_reward = 0.005 * completed_count - 0.05 * missed_count - 0.1 * norm_energy_penalty
-        global_reward = - 0.1 * norm_energy_penalty
+        global_reward = INSTANCE_COMPLETION_REWARD * completed_count
+        global_reward -= INSTANCE_MISS_PENALTY * missed_count
+        global_reward -= ENERGY_PENALTY_COEFF * step_energy
 
         self.update_env_stats()
         return global_reward, self.get_state(), self.done(), completed_count, missed_count, duration
