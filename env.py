@@ -2,6 +2,8 @@ from typing import List, Any
 from enum import Enum
 import numpy as np
 from config import (
+    CRITIC_STATE_DIM,
+    ACTOR_STATE_DIM,
     PROCESSOR_COUNT,
     TASK_PER_PROCESSOR,
     INSTANCES_PER_TASK,
@@ -172,6 +174,7 @@ class Environment(object):
         self.time = 0.0
         self.processor_count = PROCESSOR_COUNT
         self.task_count = 0
+        self.total_instances = 0
         self.task_set: List[Task] = []
         self.event_queue = EventQueue()
         self.instance_arrival_count = 0
@@ -193,6 +196,7 @@ class Environment(object):
 
         self.time = 0.0
         self.task_count = self.processor_count * TASK_PER_PROCESSOR
+        self.total_instances = self.task_count * INSTANCES_PER_TASK
 
         if per_core_utilization is None:
             per_core_utilization = np.random.uniform(MIN_LOAD, MAX_LOAD)
@@ -333,8 +337,10 @@ class Environment(object):
                 if isinstance(value, dict):
                     for stat in value:
                         self.stats[key][stat] = 0
-                else:
-                    self.stats[key] = 0
+
+            self.stats["system_load"] = 0
+            self.stats["normalized_instance_count"] = 0
+            self.stats["arrived_instance_ratio"] = self.instance_arrival_count / self.total_instances
             return
 
         total_load = sum(
@@ -359,14 +365,10 @@ class Environment(object):
         self.stats["laxity"]["mean"] = np.mean(instance_laxities)
         self.stats["laxity"]["max"] = np.max(instance_laxities)
 
-        total_instances = self.task_count * INSTANCES_PER_TASK
-        self.stats["arrived_instance_ratio"] = self.instance_arrival_count / total_instances
+        self.stats["arrived_instance_ratio"] = self.instance_arrival_count / self.total_instances
 
 
     def get_state(self):
-
-        if len(self.active_instances) == 0:
-            return np.array([]), np.array([])
 
         global_state_critic = [
             self.stats["system_load"],
@@ -384,10 +386,16 @@ class Environment(object):
         ]
         global_state_critic = np.array(global_state_critic, dtype=np.float32)
 
+        if len(self.active_instances) == 0:
+            local_observation = np.array([0., 0., 0., 0.], dtype=np.float32)
+            state_critic = np.concatenate((local_observation, global_state_critic))
+            state_critic = state_critic.reshape(1, CRITIC_STATE_DIM)
+            state_actor = np.zeros((0, ACTOR_STATE_DIM), dtype=np.float32)
+            return state_actor, state_critic
+
         global_state_actor = [
             self.stats["system_load"],
             self.stats["normalized_instance_count"],
-            self.stats["arrived_instance_ratio"],
         ]
         global_state_actor = np.array(global_state_actor, dtype=np.float32)
 
@@ -406,6 +414,7 @@ class Environment(object):
             local_observations.append(local_obs)
 
         local_observations = np.array(local_observations, dtype=np.float32)
+
         global_observations_actor = np.tile(global_state_actor, (len(self.active_instances), 1))
         global_observations_critic = np.tile(global_state_critic, (len(self.active_instances), 1))
 

@@ -153,7 +153,9 @@ class ActorNetwork(nn.Module):
             x = self.linear3(x)
 
         if noise_std > 0:
-            x += self.normal_distribution.sample(x.shape).to(device) * noise_std
+            noise = self.normal_distribution.sample(x.shape).to(device) * noise_std
+            x[:, 0] += noise[:, 0]
+            x[:, 1] += 0.02 * noise[:, 1]
 
         action = torch.sigmoid(x)
 
@@ -262,16 +264,18 @@ class MADDPG:
 
             target_q_value = reward
             if not done_flags[i]:
+
                 if next_states_actor[i].size > 0:
                     next_state_actor = torch.FloatTensor(next_states_actor[i]).to(device)
-                    next_state_critic = torch.FloatTensor(next_states_critic[i]).to(device)
                     with torch.no_grad():
                         next_action = self.target_policy_net(next_state_actor)
-                        next_q_value = torch.mean(self.target_q_net(next_state_critic, next_action), 0)
                 else:
-                    idle_energy = (STATIC_POWER_COEFF * PROCESSOR_COUNT) * time_durations[i]
-                    energy_penalty = ENERGY_PENALTY_COEFF * idle_energy
-                    next_q_value = torch.tensor([-energy_penalty]).to(device)
+                    next_action = np.zeros((1, ACTION_DIM), dtype=np.float32)
+                    next_action = torch.FloatTensor(next_action).to(device)
+                
+                next_state_critic = torch.FloatTensor(next_states_critic[i]).to(device)
+                with torch.no_grad():
+                    next_q_value = torch.mean(self.target_q_net(next_state_critic, next_action), 0)
 
                 target_q_value += self.gamma ** time_durations[i] * next_q_value
 
@@ -290,11 +294,12 @@ class MADDPG:
         predicted_q_values = []
 
         for i in range(batch_size):
-            current_state_actor = torch.FloatTensor(states_actor[i]).to(device)
-            current_state_critic = torch.FloatTensor(states_critic[i]).to(device)
-            predicted_action = self.policy_net(current_state_actor)
-            predicted_q = torch.mean(self.q_net(current_state_critic, predicted_action), 0)
-            predicted_q_values.append(predicted_q)
+            if states_actor[i].size > 0:
+                current_state_actor = torch.FloatTensor(states_actor[i]).to(device)
+                current_state_critic = torch.FloatTensor(states_critic[i]).to(device)
+                predicted_action = self.policy_net(current_state_actor)
+                predicted_q = torch.mean(self.q_net(current_state_critic, predicted_action), 0)
+                predicted_q_values.append(predicted_q)
 
         predicted_q_values = torch.stack(predicted_q_values).to(device)
 
