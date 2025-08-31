@@ -137,8 +137,9 @@ def run_simulation(
         if is_done:
             break
 
-    total_tasks_in_episode = environment.task_count * INSTANCES_PER_TASK
-    success_ratio = (total_completed_in_episode / total_tasks_in_episode * 100)
+    # Changed to use actual counts instead of pre-defined instance count
+    total_tasks_in_episode = total_completed_in_episode + total_missed_in_episode
+    success_ratio = (total_completed_in_episode / total_tasks_in_episode * 100) if total_tasks_in_episode > 0 else 0
 
     return success_ratio, environment.total_energy_consumed
 

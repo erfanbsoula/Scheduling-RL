@@ -82,7 +82,6 @@ for i_episode in range(1, MAX_EPISODES+1):
     # End of episode
     rewards_log.append(episode_reward_sum)
 
-    # total_tasks_in_episode = environment.task_count * INSTANCES_PER_TASK
     total_tasks_in_episode = total_completed_in_episode + total_missed_in_episode
     success_ratio = total_completed_in_episode / total_tasks_in_episode * 100
     avg_q_loss = np.mean(q_loss_list) if q_loss_list else 0

@@ -6,7 +6,6 @@ from config import (
     ACTOR_STATE_DIM,
     PROCESSOR_COUNT,
     TASK_PER_PROCESSOR,
-    INSTANCES_PER_TASK,
     MIN_LOAD, MAX_LOAD,
     MIN_PERIOD, MAX_PERIOD,
     INSTANCE_COMPLETION_REWARD,
@@ -14,6 +13,7 @@ from config import (
     STATIC_POWER_COEFF,
     DYNAMIC_POWER_COEFF,
     ENERGY_PENALTY_COEFF,
+    MAX_EPISODE_TIME,
 )
 from task_gen import StaffordRandFixedSum, gen_periods
 import heapq
@@ -105,12 +105,14 @@ class InstanceStatus(Enum):
 
 class Instance:
 
-    def __init__(self, arrival_time: float, deadline: float, total_work_units: float):
+    def __init__(self, arrival_time: float, deadline: float, total_work_units: float,
+                 task_index: int):
         self.arrival_time = arrival_time
         self.deadline = deadline
         self.initial_work_units = total_work_units
         self.remaining_work_units = total_work_units
         self.status = InstanceStatus.PENDING
+        self.task_index = task_index
 
 
     def execute(self, duration: float, frequency_scale: float = 1.0):
@@ -150,21 +152,21 @@ class Instance:
 
 class Task:
 
-    def __init__(self, task_target_utilization: float, task_period: float):
+    def __init__(self, index: int, task_target_utilization: float, task_period: float):
 
+        self.index = index
         self.relative_deadline = task_period
         self.work_units = task_period * task_target_utilization
         self.mean_arrival_interval = task_period
-        self.arrival_intervals = np.random.exponential(
-            self.mean_arrival_interval, INSTANCES_PER_TASK
-        )
-        self.arrival_intervals = np.clip(self.arrival_intervals, 0.1, None)
-        self.arrival_times = np.cumsum(self.arrival_intervals)
 
-        self.instances: List[Instance] = [
-            Instance(arrival_time, arrival_time + self.relative_deadline, self.work_units)
-            for arrival_time in self.arrival_times
-        ]
+
+    def create_instance(self, time: float) -> Instance:
+
+        arrival_interval = np.random.exponential(self.mean_arrival_interval)
+        arrival_interval = max(arrival_interval, 0.1)
+        arrival_time = time + arrival_interval
+        deadline = arrival_time + self.relative_deadline
+        return Instance(arrival_time, deadline, self.work_units, self.index)
 
 
 class Environment(object):
@@ -173,19 +175,17 @@ class Environment(object):
 
         self.time = 0.0
         self.processor_count = PROCESSOR_COUNT
-        self.task_count = 0
-        self.total_instances = 0
+        self.task_count = PROCESSOR_COUNT * TASK_PER_PROCESSOR
         self.task_set: List[Task] = []
         self.event_queue = EventQueue()
         self.instance_arrival_count = 0
         self.active_instances: List[Instance] = []
         self.total_energy_consumed = 0.0
 
-        self.state_dim = 16
         self.stats = {
-            "system_load": 0,
+            "simulation_progress": 0,
             "normalized_instance_count": 0,
-            "arrived_instance_ratio": 0,
+            "system_load": 0,
             "remaining_work_units": {"min": 0, "mean": 0, "max": 0},
             "deadline": {"min": 0, "mean": 0, "max": 0},
             "laxity": {"min": 0, "mean": 0, "max": 0}
@@ -195,8 +195,9 @@ class Environment(object):
     def reset(self, per_core_utilization: float = None):
 
         self.time = 0.0
-        self.task_count = self.processor_count * TASK_PER_PROCESSOR
-        self.total_instances = self.task_count * INSTANCES_PER_TASK
+        self.instance_arrival_count = 0
+        self.active_instances = []
+        self.total_energy_consumed = 0.0
 
         if per_core_utilization is None:
             per_core_utilization = np.random.uniform(MIN_LOAD, MAX_LOAD)
@@ -205,23 +206,23 @@ class Environment(object):
         utilizations = StaffordRandFixedSum(self.task_count, target_util, 1).flatten()
         periods = gen_periods(self.task_count, 1, MIN_PERIOD, MAX_PERIOD, 0.1, "logunif").flatten()
 
-        self.task_set.clear()
-        for task_util, task_period in zip(utilizations, periods):
-            self.task_set.append(Task(task_util, task_period))
+        self.task_set = [
+            Task(idx, utilizations[idx], periods[idx]) for idx in range(self.task_count)
+        ]
 
         self.event_queue.reset()
         for task in self.task_set:
-            for instance in task.instances:
-                self.event_queue.push_event(Event(instance.arrival_time, EventType.ARRIVAL, instance))
-                self.event_queue.push_event(Event(instance.deadline, EventType.DEADLINE, instance))
-
-        self.instance_arrival_count = 0
-        self.active_instances = []
-        self.total_energy_consumed = 0.0
+            instance = task.create_instance(self.time)
+            self.push_instance_to_event_queue(instance)
 
         self.time = self.event_queue.peek_next_timestamp()
         self.process_events_at_current_time()
         self.update_env_stats()
+    
+
+    def push_instance_to_event_queue(self, instance: Instance):
+        self.event_queue.push_event(Event(instance.arrival_time, EventType.ARRIVAL, instance))
+        self.event_queue.push_event(Event(instance.deadline, EventType.DEADLINE, instance))
 
 
     def process_events_at_current_time(self):
@@ -234,6 +235,10 @@ class Environment(object):
             if event.event_type == EventType.ARRIVAL:
                 self.active_instances.append(instance)
                 self.instance_arrival_count += 1
+
+                parent_task = self.task_set[instance.task_index]
+                next_instance = parent_task.create_instance(self.time)
+                self.push_instance_to_event_queue(next_instance)
 
 
     def step(self, scheduling_priorities: np.ndarray, frequency_scales: np.ndarray):
@@ -332,15 +337,16 @@ class Environment(object):
 
     def update_env_stats(self):
 
+        self.stats["simulation_progress"] = self.time / MAX_EPISODE_TIME
+
         if len(self.active_instances) == 0:
             for key, value in self.stats.items():
                 if isinstance(value, dict):
                     for stat in value:
                         self.stats[key][stat] = 0
 
-            self.stats["system_load"] = 0
             self.stats["normalized_instance_count"] = 0
-            self.stats["arrived_instance_ratio"] = self.instance_arrival_count / self.total_instances
+            self.stats["system_load"] = 0
             return
 
         total_load = sum(
@@ -365,15 +371,13 @@ class Environment(object):
         self.stats["laxity"]["mean"] = np.mean(instance_laxities)
         self.stats["laxity"]["max"] = np.max(instance_laxities)
 
-        self.stats["arrived_instance_ratio"] = self.instance_arrival_count / self.total_instances
-
 
     def get_state(self):
 
         global_state_critic = [
-            self.stats["system_load"],
+            self.stats["simulation_progress"],
             self.stats["normalized_instance_count"],
-            self.stats["arrived_instance_ratio"],
+            self.stats["system_load"],
             self.stats["remaining_work_units"]["min"] / MAX_PERIOD,
             self.stats["remaining_work_units"]["mean"] / MAX_PERIOD,
             self.stats["remaining_work_units"]["max"] / MAX_PERIOD,
@@ -394,8 +398,8 @@ class Environment(object):
             return state_actor, state_critic
 
         global_state_actor = [
-            self.stats["system_load"],
             self.stats["normalized_instance_count"],
+            self.stats["system_load"],
         ]
         global_state_actor = np.array(global_state_actor, dtype=np.float32)
 
@@ -425,9 +429,8 @@ class Environment(object):
 
 
     def done(self) -> bool:
-        return self.event_queue.is_empty()
+        return self.time >= MAX_EPISODE_TIME or self.event_queue.is_empty()
 
-
-    def calc_mean_utilization(self) -> float:
-        utils = [task.work_units / np.mean(task.arrival_intervals) for task in self.task_set]
-        return np.sum(utils) / self.processor_count
+    # def calc_mean_utilization(self) -> float:
+    #     utils = [task.work_units / np.mean(task.arrival_intervals) for task in self.task_set]
+    #     return np.sum(utils) / self.processor_count

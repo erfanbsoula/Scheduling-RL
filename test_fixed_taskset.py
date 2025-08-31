@@ -2,7 +2,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from config import *
-from env import Environment, Task, Event, EventType, InstanceStatus
+from env import Environment, Task
 from ddpg_torch import MADDPG
 from test import gedf_scheduler, es_dvfs_scheduler
 
@@ -24,23 +24,19 @@ class TaskSetEnvironment(Environment):
             task_periods: Array of periods for each task
         """
         self.time = 0.0
-        self.task_count = self.processor_count * TASK_PER_PROCESSOR
-        self.total_instances = self.task_count * INSTANCES_PER_TASK
-
-        self.task_set.clear()
-        # Create tasks with fixed utilizations and periods but new arrival times
-        for task_util, task_period in zip(task_utilizations, task_periods):
-            self.task_set.append(Task(task_util, task_period))
-
-        self.event_queue.reset()
-        for task in self.task_set:
-            for instance in task.instances:
-                self.event_queue.push_event(Event(instance.arrival_time, EventType.ARRIVAL, instance))
-                self.event_queue.push_event(Event(instance.deadline, EventType.DEADLINE, instance))
-
         self.instance_arrival_count = 0
         self.active_instances = []
         self.total_energy_consumed = 0.0
+
+        self.task_set = [
+            Task(idx, task_utilizations[idx], task_periods[idx])
+            for idx in range(self.task_count)
+        ]
+
+        self.event_queue.reset()
+        for task in self.task_set:
+            instance = task.create_instance(self.time)
+            self.push_instance_to_event_queue(instance)
 
         self.time = self.event_queue.peek_next_timestamp()
         self.process_events_at_current_time()

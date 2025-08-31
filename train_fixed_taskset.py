@@ -4,7 +4,7 @@ import torch
 import matplotlib.pyplot as plt
 
 from config import *
-from env import Environment, Task, Event, EventType
+from env import Environment, Task
 from ddpg_torch import ReplayBuffer, MADDPG
 from task_gen import StaffordRandFixedSum, gen_periods
 
@@ -90,27 +90,24 @@ class TaskSetEnvironment(Environment):
         but regenerate arrival times.
         """
         self.time = 0.0
-        self.task_count = self.processor_count * TASK_PER_PROCESSOR
-        self.total_instances = self.task_count * INSTANCES_PER_TASK
-
-        self.task_set.clear()
-        # Create tasks with fixed utilizations and periods but new arrival times
-        for task_util, task_period in zip(fixed_utilizations, fixed_periods):
-            self.task_set.append(Task(task_util, task_period))
-
-        self.event_queue.reset()
-        for task in self.task_set:
-            for instance in task.instances:
-                self.event_queue.push_event(Event(instance.arrival_time, EventType.ARRIVAL, instance))
-                self.event_queue.push_event(Event(instance.deadline, EventType.DEADLINE, instance))
-
         self.instance_arrival_count = 0
         self.active_instances = []
         self.total_energy_consumed = 0.0
 
+        self.task_set = [
+            Task(idx, fixed_utilizations[idx], fixed_periods[idx])
+            for idx in range(self.task_count)
+        ]
+
+        self.event_queue.reset()
+        for task in self.task_set:
+            instance = task.create_instance(self.time)
+            self.push_instance_to_event_queue(instance)
+
         self.time = self.event_queue.peek_next_timestamp()
         self.process_events_at_current_time()
         self.update_env_stats()
+
 
 # Use our custom environment class
 environment = TaskSetEnvironment()
@@ -122,14 +119,13 @@ for i_episode in range(1, MAX_EPISODES+1):
     noise_scale *= noise_decay
 
     print(f"--- Episode {i_episode} ---")
-    util = environment.calc_mean_utilization()
-    print(f"Utilization: {util if util is not None else 'N/A':.4f}")
 
     q_loss_list = []
     policy_loss_list = []
     episode_reward_sum = 0
     total_completed_in_episode = 0
     total_missed_in_episode = 0
+    frequency_scale_log_tmp = []
 
     for step in range(MAX_STEPS):
         current_state_actor, current_state_critic = next_state
