@@ -14,6 +14,7 @@ from config import (
     DYNAMIC_POWER_COEFF,
     ENERGY_PENALTY_COEFF,
     MAX_EPISODE_TIME,
+    LAXITY_REWARD_K
 )
 from task_gen import StaffordRandFixedSum, gen_periods
 import heapq
@@ -267,7 +268,7 @@ class Environment(object):
             self.process_events_at_current_time()
             self.update_env_stats()
             time_duration = self.time - previous_time
-            idle_energy = (STATIC_POWER_COEFF * self.processor_count) * time_duration
+            idle_energy = (STATIC_POWER_COEFF * 0.25 * self.processor_count) * time_duration
             self.total_energy_consumed += idle_energy
             energy_penalty = ENERGY_PENALTY_COEFF * idle_energy
             global_reward = -energy_penalty
@@ -308,9 +309,12 @@ class Environment(object):
         self.time = next_timestamp
 
         completed_count, missed_count = 0, 0
+        efficiency_reward = 0.0
         for instance in self.active_instances:
             instance.update_status(self.time)
             if instance.status == InstanceStatus.COMPLETED:
+                final_laxity = max(0, instance.deadline - self.time)
+                efficiency_reward -= np.exp(LAXITY_REWARD_K * final_laxity) - 1
                 completed_count += 1
             elif instance.status == InstanceStatus.MISSED:
                 missed_count += 1
@@ -327,7 +331,7 @@ class Environment(object):
         ]
 
         # Calculate reward
-        global_reward = INSTANCE_COMPLETION_REWARD * completed_count
+        global_reward = INSTANCE_COMPLETION_REWARD * efficiency_reward
         global_reward -= INSTANCE_MISS_PENALTY * missed_count
         global_reward -= ENERGY_PENALTY_COEFF * step_energy
 
@@ -391,7 +395,7 @@ class Environment(object):
         global_state_critic = np.array(global_state_critic, dtype=np.float32)
 
         if len(self.active_instances) == 0:
-            local_observation = np.array([0., 0., 0., 0.], dtype=np.float32)
+            local_observation = np.array([0., 0., 0.], dtype=np.float32)
             state_critic = np.concatenate((local_observation, global_state_critic))
             state_critic = state_critic.reshape(1, CRITIC_STATE_DIM)
             state_actor = np.zeros((0, ACTOR_STATE_DIM), dtype=np.float32)
@@ -400,19 +404,25 @@ class Environment(object):
         global_state_actor = [
             self.stats["normalized_instance_count"],
             self.stats["system_load"],
+            self.stats["remaining_work_units"]["min"] / MAX_PERIOD,
+            self.stats["remaining_work_units"]["mean"] / MAX_PERIOD,
+            self.stats["remaining_work_units"]["max"] / MAX_PERIOD,
+            self.stats["deadline"]["min"] / MAX_PERIOD,
+            self.stats["deadline"]["mean"] / MAX_PERIOD,
+            self.stats["deadline"]["max"] / MAX_PERIOD,
         ]
         global_state_actor = np.array(global_state_actor, dtype=np.float32)
 
-        mean_remaining_work_units = self.stats["remaining_work_units"]["mean"] + 1e-6
-        mean_deadline = self.stats["deadline"]["mean"] + 1e-6
-        mean_laxity = self.stats["laxity"]["mean"] + 1e-6
+        # mean_remaining_work_units = self.stats["remaining_work_units"]["mean"] + 1e-6
+        # mean_deadline = self.stats["deadline"]["mean"] + 1e-6
+        # mean_laxity = self.stats["laxity"]["mean"] + 1e-6
 
         local_observations = []
         for instance in self.active_instances:
             local_obs = [
-                (instance.relative_deadline(self.time) - self.stats["deadline"]["min"]) / mean_deadline,
-                (instance.laxity(self.time) - self.stats["laxity"]["min"]) / mean_laxity,
-                instance.remaining_work_units / mean_remaining_work_units,
+                instance.relative_deadline(self.time) / MAX_PERIOD,
+                # instance.laxity(self.time) / MAX_PERIOD,
+                instance.remaining_work_units / MAX_PERIOD,
                 instance.remaining_work_units / instance.initial_work_units,
             ]
             local_observations.append(local_obs)

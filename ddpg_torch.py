@@ -13,13 +13,11 @@ from config import (
     CRITIC_STATE_DIM,
     ACTOR_STATE_DIM,
     ACTION_DIM,
-    HIDDEN_DIM,
+    ACTOR_HIDDEN_DIM,
+    CRITIC_HIDDEN_DIM,
     Q_LEARNING_RATE,
     POLICY_LEARNING_RATE,
     TARGET_UPDATE_DELAY,
-    STATIC_POWER_COEFF,
-    ENERGY_PENALTY_COEFF,
-    PROCESSOR_COUNT
 )
 
 if GPU:
@@ -155,7 +153,7 @@ class ActorNetwork(nn.Module):
         if noise_std > 0:
             noise = self.normal_distribution.sample(x.shape).to(device) * noise_std
             x[:, 0] += noise[:, 0]
-            x[:, 1] += 0.02 * noise[:, 1]
+            x[:, 1] += 0.1 * noise[0, 1]
 
         action = torch.sigmoid(x)
 
@@ -213,7 +211,8 @@ class MADDPG:
         critic_state_dim: int = CRITIC_STATE_DIM,
         actor_state_dim: int = ACTOR_STATE_DIM,
         action_dim: int = ACTION_DIM,
-        hidden_dim: List[int] = HIDDEN_DIM,
+        actor_hidden_dim: List[int] = ACTOR_HIDDEN_DIM,
+        critic_hidden_dim: List[int] = CRITIC_HIDDEN_DIM,
         q_lr: float = Q_LEARNING_RATE,
         policy_lr: float = POLICY_LEARNING_RATE,
         target_update_delay: int = TARGET_UPDATE_DELAY
@@ -221,13 +220,13 @@ class MADDPG:
         self.replay_buffer: ReplayBuffer = replay_buffer
         self.gamma = gamma
 
-        self.policy_net = ActorNetwork(actor_state_dim, action_dim, hidden_dim).to(device)
-        self.target_policy_net = ActorNetwork(actor_state_dim, action_dim, hidden_dim).to(device)
+        self.policy_net = ActorNetwork(actor_state_dim, action_dim, actor_hidden_dim).to(device)
+        self.target_policy_net = ActorNetwork(actor_state_dim, action_dim, actor_hidden_dim).to(device)
         self.target_policy_net.load_state_dict(self.policy_net.state_dict())
         self.policy_optimizer = optim.Adam(self.policy_net.parameters(), lr=policy_lr)
 
-        self.q_net = QNetwork(critic_state_dim + action_dim, hidden_dim).to(device)
-        self.target_q_net = QNetwork(critic_state_dim + action_dim, hidden_dim).to(device)
+        self.q_net = QNetwork(critic_state_dim + action_dim, critic_hidden_dim).to(device)
+        self.target_q_net = QNetwork(critic_state_dim + action_dim, critic_hidden_dim).to(device)
         self.target_q_net.load_state_dict(self.q_net.state_dict())
         self.q_optimizer = optim.Adam(self.q_net.parameters(), lr=q_lr)
         self.q_criterion = nn.MSELoss()

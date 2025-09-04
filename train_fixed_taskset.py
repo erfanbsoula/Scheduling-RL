@@ -139,12 +139,13 @@ for i_episode in range(1, MAX_EPISODES+1):
 
         scheduling_priorities = action[:, 0]
         frequency_scales = action[:, 1]
+        frequency_scales = 0.25 + frequency_scales * 0.75
 
-        if frequency_scales.size > 0:
-            num_levels = len(DVFS_LEVELS)
-            level_indices = np.floor(action[:, 1] * num_levels).astype(int)
-            level_indices = np.clip(level_indices, 0, num_levels - 1)
-            frequency_scales = np.array([DVFS_LEVELS[i] for i in level_indices]).astype(np.float32)
+        # if frequency_scales.size > 0:
+        #     num_levels = len(DVFS_LEVELS)
+        #     level_indices = np.floor(action[:, 1] * num_levels).astype(int)
+        #     level_indices = np.clip(level_indices, 0, num_levels - 1)
+        #     frequency_scales = np.array([DVFS_LEVELS[i] for i in level_indices]).astype(np.float32)
 
         transition = environment.step(scheduling_priorities, frequency_scales)
         global_reward, next_state, is_done, num_completed, num_missed, time_duration = transition
