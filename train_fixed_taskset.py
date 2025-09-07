@@ -22,7 +22,7 @@ replay_buffer = ReplayBuffer(BUFFER_SIZE)
 
 algorithm = MADDPG(replay_buffer)
 
-start_noise_scale = float(os.getenv('START_NOISE_SCALE', 0.5))
+start_noise_scale = float(os.getenv('START_NOISE_SCALE', 0.1))
 end_noise_scale = 2e-2
 noise_decay = (end_noise_scale / start_noise_scale) ** (1 / MAX_EPISODES)
 noise_scale = start_noise_scale
@@ -77,7 +77,7 @@ def log_frequency_scales(algorithm: MADDPG, state: np.ndarray):
         frequency_scale_log_tmp.append(x.item())
 
 # Generate the fixed task set parameters
-fixed_utilizations, fixed_periods = generate_fixed_task_set(0.7)
+fixed_utilizations, fixed_periods = generate_fixed_task_set(0.6)
 
 class TaskSetEnvironment(Environment):
     """

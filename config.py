@@ -16,7 +16,7 @@ ACTOR_STATE_DIM = 11
 ACTION_DIM = 2
 ACTOR_HIDDEN_DIM = [16, 8]
 CRITIC_HIDDEN_DIM = [32, 12]
-SAVE_PATH = 'saves/experiment-2/'
+SAVE_PATH = 'saves/experiment-3/'
 
 BUFFER_SIZE = 1e6
 MAX_EPISODES = 200
