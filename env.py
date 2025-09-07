@@ -13,8 +13,7 @@ from config import (
     STATIC_POWER_COEFF,
     DYNAMIC_POWER_COEFF,
     ENERGY_PENALTY_COEFF,
-    MAX_EPISODE_TIME,
-    LAXITY_REWARD_K
+    MAX_EPISODE_TIME
 )
 from task_gen import StaffordRandFixedSum, gen_periods
 import heapq
@@ -309,13 +308,15 @@ class Environment(object):
         self.time = next_timestamp
 
         completed_count, missed_count = 0, 0
-        efficiency_reward = 0.0
+        efficiency_reward = 0
         for instance in self.active_instances:
             instance.update_status(self.time)
             if instance.status == InstanceStatus.COMPLETED:
-                final_laxity = max(0, instance.deadline - self.time)
-                efficiency_reward -= np.exp(LAXITY_REWARD_K * final_laxity) - 1
                 completed_count += 1
+                final_laxity = max(0, instance.deadline - self.time)
+                initial_time = self.task_set[instance.task_index].relative_deadline
+                if final_laxity / initial_time < 0.1:
+                    efficiency_reward += 1
             elif instance.status == InstanceStatus.MISSED:
                 missed_count += 1
 
@@ -353,9 +354,7 @@ class Environment(object):
             self.stats["system_load"] = 0
             return
 
-        total_load = sum(
-            i.remaining_work_units / i.relative_deadline(self.time) for i in self.active_instances
-        )
+        total_load = sum(i.remaining_work_units for i in self.active_instances)
         self.stats["system_load"] = total_load / self.processor_count
         self.stats["normalized_instance_count"] = len(self.active_instances) / self.task_count
 
@@ -381,7 +380,7 @@ class Environment(object):
         global_state_critic = [
             self.stats["simulation_progress"],
             self.stats["normalized_instance_count"],
-            self.stats["system_load"],
+            self.stats["system_load"] / MAX_PERIOD,
             self.stats["remaining_work_units"]["min"] / MAX_PERIOD,
             self.stats["remaining_work_units"]["mean"] / MAX_PERIOD,
             self.stats["remaining_work_units"]["max"] / MAX_PERIOD,
@@ -403,7 +402,7 @@ class Environment(object):
 
         global_state_actor = [
             self.stats["normalized_instance_count"],
-            self.stats["system_load"],
+            self.stats["system_load"] / MAX_PERIOD,
             self.stats["remaining_work_units"]["min"] / MAX_PERIOD,
             self.stats["remaining_work_units"]["mean"] / MAX_PERIOD,
             self.stats["remaining_work_units"]["max"] / MAX_PERIOD,

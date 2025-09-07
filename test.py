@@ -67,13 +67,16 @@ def es_dvfs_scheduler(active_instances: list):
     I_j = max_intensity
 
     speed = max(h_k, I_j)
-    speed = min(DVFS_LEVELS, key=lambda x: abs(x - speed))
+    frequency_scales = np.full(num_active_instances, speed, dtype=np.float32)
+
+    num_levels = len(DVFS_LEVELS)
+    level_indices = np.floor(frequency_scales * num_levels).astype(int)
+    level_indices = np.clip(level_indices, 0, num_levels - 1)
+    frequency_scales = np.array([DVFS_LEVELS[i] for i in level_indices]).astype(np.float32)
 
     scheduling_priorities = np.zeros(num_active_instances, dtype=float)
     for i in range(num_active_instances):
         scheduling_priorities[i] = 1 / (active_instances[i].deadline + 1e-6)
-
-    frequency_scales = np.full(num_active_instances, speed, dtype=np.float32)
 
     return scheduling_priorities, frequency_scales
 

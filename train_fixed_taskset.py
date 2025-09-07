@@ -22,8 +22,8 @@ replay_buffer = ReplayBuffer(BUFFER_SIZE)
 
 algorithm = MADDPG(replay_buffer)
 
-start_noise_scale = float(os.getenv('GRID_START_NOISE_SCALE', 0.1))
-end_noise_scale = 1e-4
+start_noise_scale = float(os.getenv('START_NOISE_SCALE', 0.5))
+end_noise_scale = 2e-2
 noise_decay = (end_noise_scale / start_noise_scale) ** (1 / MAX_EPISODES)
 noise_scale = start_noise_scale
 
@@ -132,14 +132,13 @@ for i_episode in range(1, MAX_EPISODES+1):
         num_active_instances = len(environment.active_instances)
 
         if num_active_instances > 0:
-            action = algorithm.policy_net.select_action(current_state_actor, noise_std=noise_scale)
+            action = algorithm.policy_net.select_action(current_state_actor, noise_width=noise_scale)
             log_frequency_scales(algorithm, current_state_actor)
         else:
             action = np.zeros((1, ACTION_DIM), dtype=np.float32)
 
         scheduling_priorities = action[:, 0]
         frequency_scales = action[:, 1]
-        frequency_scales = 0.25 + frequency_scales * 0.75
 
         # if frequency_scales.size > 0:
         #     num_levels = len(DVFS_LEVELS)

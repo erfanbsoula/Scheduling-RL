@@ -71,7 +71,7 @@ def run_simulation(
 
         if scheduler_type == 'rl':
             if num_active_instances > 0:
-                action = rl_agent.policy_net.select_action(current_state_actor, noise_std=0.0)
+                action = rl_agent.policy_net.select_action(current_state_actor, noise_width=0.0)
                 scheduling_priorities = action[:, 0]
                 frequency_scales = action[:, 1]
 

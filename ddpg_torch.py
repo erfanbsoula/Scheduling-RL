@@ -131,7 +131,7 @@ class ActorNetwork(nn.Module):
         return x
 
 
-    def select_action(self, state: np.ndarray, noise_std: float = 0.0) -> np.ndarray:
+    def select_action(self, state: np.ndarray, noise_width: float = 0.0) -> np.ndarray:
         """
         Selects actions for the given states without any gradient flow.
         Adds optional Gaussian noise (for exploration).
@@ -146,16 +146,21 @@ class ActorNetwork(nn.Module):
         state = torch.FloatTensor(state).to(device)
 
         with torch.no_grad():
-            x = torch.tanh(self.linear1(state))
-            x = torch.tanh(self.linear2(x))
-            x = self.linear3(x)
+            action_tensor = self(state)
 
-        if noise_std > 0:
-            noise = self.normal_distribution.sample(x.shape).to(device) * noise_std
-            x[:, 0] += noise[:, 0]
-            x[:, 1] += 0.1 * noise[0, 1]
+        lower_bound = action_tensor - noise_width
+        upper_bound = action_tensor + noise_width
 
-        action = torch.sigmoid(x)
+        upper_shift = (upper_bound - 1.0).clamp(min=0)
+        lower_shift = (lower_bound - 0.0).clamp(max=0).abs()
+
+        final_lower = lower_bound - upper_shift + lower_shift
+        final_upper = upper_bound - upper_shift + lower_shift
+
+        random_sample = torch.rand_like(action_tensor)
+        scaled_sample = random_sample * (final_upper - final_lower)
+
+        action = final_lower + scaled_sample
 
         return action.cpu().numpy().astype(np.float32)
 
