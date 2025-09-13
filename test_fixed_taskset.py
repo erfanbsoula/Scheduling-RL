@@ -308,4 +308,4 @@ def save_fixed_taskset_summary(results, utilization):
 
 
 if __name__ == '__main__':
-    test_fixed_taskset()
+    test_fixed_taskset(100)

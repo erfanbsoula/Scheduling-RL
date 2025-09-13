@@ -11,7 +11,7 @@ from task_gen import StaffordRandFixedSum, gen_periods
 np.set_printoptions(precision=4, suppress=True)
 
 # Set fixed seeds for reproducibility
-SEED = 199686
+SEED = 199687
 np.random.seed(SEED)
 torch.manual_seed(SEED)
 
@@ -22,7 +22,7 @@ replay_buffer = ReplayBuffer(BUFFER_SIZE)
 
 algorithm = MADDPG(replay_buffer)
 
-start_noise_scale = float(os.getenv('START_NOISE_SCALE', 0.1))
+start_noise_scale = float(os.getenv('START_NOISE_SCALE', 0.2))
 end_noise_scale = 2e-2
 noise_decay = (end_noise_scale / start_noise_scale) ** (1 / MAX_EPISODES)
 noise_scale = start_noise_scale
@@ -77,7 +77,7 @@ def log_frequency_scales(algorithm: MADDPG, state: np.ndarray):
         frequency_scale_log_tmp.append(x.item())
 
 # Generate the fixed task set parameters
-fixed_utilizations, fixed_periods = generate_fixed_task_set(0.6)
+fixed_utilizations, fixed_periods = generate_fixed_task_set(0.8)
 
 class TaskSetEnvironment(Environment):
     """
