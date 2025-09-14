@@ -1,0 +1,26 @@
+Fixed Task Set Test Results - Per-core Utilization: 0.5000
+
+--- Success Ratio Summary ---
+Scheduler  | Avg (%)    | Std Dev    | Min (%)    | Max (%)   
+------------------------------------------------------------
+RL         | 99.79      | 0.10       | 99.43      | 99.93     
+GEDF       | 100.00     | 0.00       | 100.00     | 100.00    
+ES-DVFS    | 57.12      | 2.46       | 50.41      | 66.39     
+
+--- Energy Consumption Summary ---
+Scheduler  | Avg        | Std Dev    | Min        | Max       
+------------------------------------------------------------
+RL         | 1430.96    | 74.85      | 1205.64    | 1589.07   
+GEDF       | 2476.52    | 60.77      | 2367.07    | 2629.20   
+ES-DVFS    | 419.08     | 25.16      | 368.09     | 499.67    
+
+--- Energy Savings ---
+RL vs GEDF: 42.22% savings
+RL vs ES-DVFS: -241.45% savings
+
+--- Task Completion Statistics ---
+Scheduler  | Avg Completed   | Avg Missed      | Success Rate   
+-----------------------------------------------------------------
+RL         | 1437.53         | 2.99            | 99.79          %
+GEDF       | 1455.36         | 0.00            | 100.00         %
+ES-DVFS    | 810.80          | 609.15          | 57.10          %

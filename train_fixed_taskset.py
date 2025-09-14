@@ -11,7 +11,7 @@ from task_gen import StaffordRandFixedSum, gen_periods
 np.set_printoptions(precision=4, suppress=True)
 
 # Set fixed seeds for reproducibility
-SEED = 199687
+SEED = 19968
 np.random.seed(SEED)
 torch.manual_seed(SEED)
 
@@ -77,7 +77,7 @@ def log_frequency_scales(algorithm: MADDPG, state: np.ndarray):
         frequency_scale_log_tmp.append(x.item())
 
 # Generate the fixed task set parameters
-fixed_utilizations, fixed_periods = generate_fixed_task_set(0.8)
+fixed_utilizations, fixed_periods = generate_fixed_task_set(0.5)
 
 class TaskSetEnvironment(Environment):
     """

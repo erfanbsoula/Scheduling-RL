@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=array
 #SBATCH --output=./saves/experiment-%a/train.out
-#SBATCH --array=0-5
+#SBATCH --array=8-11
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
@@ -16,4 +16,4 @@ mkdir -p "$SAVE_PATH"
 HYPER_LINE=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" hyperparams.txt)
 export $HYPER_LINE
 
-srun --unbuffered python3 train_fixed_taskset.py
+srun --unbuffered python3 train_fixed_taskset.py && srun --unbuffered python3 test_fixed_taskset.py
