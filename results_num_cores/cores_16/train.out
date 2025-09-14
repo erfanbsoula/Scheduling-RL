@@ -1,0 +1,2546 @@
+Generated fixed task set with 48 tasks
+System utilization: 8.0000 (0.5000 per core)
+Task utilizations: [0.1467 0.0571 0.0515 0.0881 0.018  0.1848 0.0038 0.269  0.3606 0.0831
+ 0.0502 0.4297 0.2738 0.171  0.0431 0.1431 0.0464 0.2322 0.0224 0.105
+ 0.6701 0.1111 0.0116 0.2506 0.1947 0.091  0.3723 0.0722 0.0285 0.255
+ 0.1259 0.2075 0.3081 0.1205 0.1938 0.3085 0.1998 0.0853 0.5606 0.1283
+ 0.0358 0.1391 0.2775 0.0789 0.0467 0.0398 0.0402 0.2669]
+Task periods: [11.4 22.1 15.  24.5 56.6 16.  14.4 17.8 17.8 19.7 22.2 78.4 67.4 28.6
+ 34.6 39.5 91.8 76.6 95.  17.9 22.8 56.8 25.7 78.3 13.5 65.6 78.2 50.2
+ 27.4 86.4 42.  15.1 27.9 54.9 76.4 98.2 72.9 27.4 39.6 79.  62.4 30.3
+ 71.8 35.7 22.5 20.5 16.4 92.8]
+--- Episode 1 ---
+Episode Reward: -43.728953296412996
+Episode Success Ratio: 96.07%
+Total Completed: 1490/1551
+Total Missed: 61/1551
+Total Energy Consumed: 4504.14
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 0.0166
+Noise Scale: 0.1977
+Replay Buffer Size: 3117
+Total Steps: 3117
+--- Episode 2 ---
+Episode Reward: -48.261136005786106
+Episode Success Ratio: 98.57%
+Total Completed: 1591/1614
+Total Missed: 23/1614
+Total Energy Consumed: 6237.31
+Avg Q_Loss: 0.0007, Avg Policy_Loss: 0.0214
+Noise Scale: 0.1954
+Replay Buffer Size: 6359
+Total Steps: 3242
+--- Episode 3 ---
+Episode Reward: -54.67248932834025
+Episode Success Ratio: 100.00%
+Total Completed: 1561/1561
+Total Missed: 0/1561
+Total Energy Consumed: 7810.36
+Avg Q_Loss: 0.0006, Avg Policy_Loss: 0.0276
+Noise Scale: 0.1932
+Replay Buffer Size: 9500
+Total Steps: 3141
+--- Episode 4 ---
+Episode Reward: -55.51163447345876
+Episode Success Ratio: 100.00%
+Total Completed: 1537/1537
+Total Missed: 0/1537
+Total Energy Consumed: 7930.23
+Avg Q_Loss: 0.0005, Avg Policy_Loss: 0.0339
+Noise Scale: 0.1910
+Replay Buffer Size: 12581
+Total Steps: 3081
+--- Episode 5 ---
+Episode Reward: -56.233220135295475
+Episode Success Ratio: 100.00%
+Total Completed: 1595/1595
+Total Missed: 0/1595
+Total Energy Consumed: 8033.32
+Avg Q_Loss: 0.0005, Avg Policy_Loss: 0.0401
+Noise Scale: 0.1888
+Replay Buffer Size: 15784
+Total Steps: 3203
+--- Episode 6 ---
+Episode Reward: -56.34693543855127
+Episode Success Ratio: 100.00%
+Total Completed: 1606/1606
+Total Missed: 0/1606
+Total Energy Consumed: 8049.56
+Avg Q_Loss: 0.0004, Avg Policy_Loss: 0.0456
+Noise Scale: 0.1867
+Replay Buffer Size: 19003
+Total Steps: 3219
+--- Episode 7 ---
+Episode Reward: -56.367993882911534
+Episode Success Ratio: 100.00%
+Total Completed: 1596/1596
+Total Missed: 0/1596
+Total Energy Consumed: 8052.57
+Avg Q_Loss: 0.0004, Avg Policy_Loss: 0.0500
+Noise Scale: 0.1845
+Replay Buffer Size: 22203
+Total Steps: 3200
+--- Episode 8 ---
+Episode Reward: -57.41537572925653
+Episode Success Ratio: 99.94%
+Total Completed: 1570/1571
+Total Missed: 1/1571
+Total Energy Consumed: 8173.63
+Avg Q_Loss: 0.0004, Avg Policy_Loss: 0.0547
+Noise Scale: 0.1824
+Replay Buffer Size: 25356
+Total Steps: 3153
+--- Episode 9 ---
+Episode Reward: -59.61168298793588
+Episode Success Ratio: 100.00%
+Total Completed: 1630/1630
+Total Missed: 0/1630
+Total Energy Consumed: 8515.95
+Avg Q_Loss: 0.0003, Avg Policy_Loss: 0.0598
+Noise Scale: 0.1803
+Replay Buffer Size: 28624
+Total Steps: 3268
+--- Episode 10 ---
+Episode Reward: -56.16926950547918
+Episode Success Ratio: 100.00%
+Total Completed: 1541/1541
+Total Missed: 0/1541
+Total Energy Consumed: 8024.18
+Avg Q_Loss: 0.0003, Avg Policy_Loss: 0.0660
+Noise Scale: 0.1783
+Replay Buffer Size: 31716
+Total Steps: 3092
+--- Episode 11 ---
+Episode Reward: -52.39389252074825
+Episode Success Ratio: 98.00%
+Total Completed: 1613/1646
+Total Missed: 33/1646
+Total Energy Consumed: 6541.98
+Avg Q_Loss: 0.0003, Avg Policy_Loss: 0.0721
+Noise Scale: 0.1762
+Replay Buffer Size: 35019
+Total Steps: 3303
+--- Episode 12 ---
+Episode Reward: -56.23438546588854
+Episode Success Ratio: 91.98%
+Total Completed: 1490/1620
+Total Missed: 130/1620
+Total Energy Consumed: 4319.20
+Avg Q_Loss: 0.0004, Avg Policy_Loss: 0.0769
+Noise Scale: 0.1742
+Replay Buffer Size: 38284
+Total Steps: 3265
+--- Episode 13 ---
+Episode Reward: -89.96437766851335
+Episode Success Ratio: 77.14%
+Total Completed: 1208/1566
+Total Missed: 358/1566
+Total Energy Consumed: 2623.48
+Avg Q_Loss: 0.0006, Avg Policy_Loss: 0.0837
+Noise Scale: 0.1722
+Replay Buffer Size: 41445
+Total Steps: 3161
+--- Episode 14 ---
+Episode Reward: -130.24800642172485
+Episode Success Ratio: 61.59%
+Total Completed: 938/1523
+Total Missed: 585/1523
+Total Energy Consumed: 1892.57
+Avg Q_Loss: 0.0008, Avg Policy_Loss: 0.0913
+Noise Scale: 0.1702
+Replay Buffer Size: 44521
+Total Steps: 3076
+--- Episode 15 ---
+Episode Reward: -178.8967016915314
+Episode Success Ratio: 48.02%
+Total Completed: 778/1620
+Total Missed: 842/1620
+Total Energy Consumed: 1499.53
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.1017
+Noise Scale: 0.1683
+Replay Buffer Size: 47782
+Total Steps: 3261
+--- Episode 16 ---
+Episode Reward: -158.24375703483193
+Episode Success Ratio: 53.55%
+Total Completed: 853/1593
+Total Missed: 740/1593
+Total Energy Consumed: 1463.39
+Avg Q_Loss: 0.0017, Avg Policy_Loss: 0.1144
+Noise Scale: 0.1664
+Replay Buffer Size: 50998
+Total Steps: 3216
+--- Episode 17 ---
+Episode Reward: -164.04260266554851
+Episode Success Ratio: 52.34%
+Total Completed: 840/1605
+Total Missed: 765/1605
+Total Energy Consumed: 1577.51
+Avg Q_Loss: 0.0019, Avg Policy_Loss: 0.1239
+Noise Scale: 0.1644
+Replay Buffer Size: 54241
+Total Steps: 3243
+--- Episode 18 ---
+Episode Reward: -124.86288171331768
+Episode Success Ratio: 63.50%
+Total Completed: 962/1515
+Total Missed: 553/1515
+Total Energy Consumed: 2037.55
+Avg Q_Loss: 0.0024, Avg Policy_Loss: 0.1401
+Noise Scale: 0.1626
+Replay Buffer Size: 57314
+Total Steps: 3073
+--- Episode 19 ---
+Episode Reward: -59.78935400013724
+Episode Success Ratio: 87.42%
+Total Completed: 1334/1526
+Total Missed: 192/1526
+Total Energy Consumed: 3055.62
+Avg Q_Loss: 0.0023, Avg Policy_Loss: 0.1486
+Noise Scale: 0.1607
+Replay Buffer Size: 60382
+Total Steps: 3068
+--- Episode 20 ---
+Episode Reward: -53.01903317960184
+Episode Success Ratio: 92.10%
+Total Completed: 1492/1620
+Total Missed: 128/1620
+Total Energy Consumed: 3917.00
+Avg Q_Loss: 0.0022, Avg Policy_Loss: 0.1560
+Noise Scale: 0.1589
+Replay Buffer Size: 63634
+Total Steps: 3252
+--- Episode 21 ---
+Episode Reward: -48.35761986659846
+Episode Success Ratio: 95.28%
+Total Completed: 1514/1589
+Total Missed: 75/1589
+Total Energy Consumed: 4765.37
+Avg Q_Loss: 0.0022, Avg Policy_Loss: 0.1642
+Noise Scale: 0.1570
+Replay Buffer Size: 66831
+Total Steps: 3197
+--- Episode 22 ---
+Episode Reward: -50.334412479253295
+Episode Success Ratio: 97.71%
+Total Completed: 1536/1572
+Total Missed: 36/1572
+Total Energy Consumed: 6162.06
+Avg Q_Loss: 0.0022, Avg Policy_Loss: 0.1710
+Noise Scale: 0.1552
+Replay Buffer Size: 69988
+Total Steps: 3157
+--- Episode 23 ---
+Episode Reward: -49.981915831554915
+Episode Success Ratio: 100.00%
+Total Completed: 1529/1529
+Total Missed: 0/1529
+Total Energy Consumed: 7140.27
+Avg Q_Loss: 0.0020, Avg Policy_Loss: 0.1757
+Noise Scale: 0.1535
+Replay Buffer Size: 73052
+Total Steps: 3064
+--- Episode 24 ---
+Episode Reward: -55.72988772437188
+Episode Success Ratio: 99.94%
+Total Completed: 1558/1559
+Total Missed: 1/1559
+Total Energy Consumed: 7932.84
+Avg Q_Loss: 0.0020, Avg Policy_Loss: 0.1821
+Noise Scale: 0.1517
+Replay Buffer Size: 76175
+Total Steps: 3123
+--- Episode 25 ---
+Episode Reward: -60.96585339404218
+Episode Success Ratio: 100.00%
+Total Completed: 1669/1669
+Total Missed: 0/1669
+Total Energy Consumed: 8709.41
+Avg Q_Loss: 0.0020, Avg Policy_Loss: 0.1885
+Noise Scale: 0.1500
+Replay Buffer Size: 79520
+Total Steps: 3345
+--- Episode 26 ---
+Episode Reward: -60.83175130951278
+Episode Success Ratio: 100.00%
+Total Completed: 1616/1616
+Total Missed: 0/1616
+Total Energy Consumed: 8690.25
+Avg Q_Loss: 0.0017, Avg Policy_Loss: 0.1922
+Noise Scale: 0.1483
+Replay Buffer Size: 82759
+Total Steps: 3239
+--- Episode 27 ---
+Episode Reward: -58.62402692629678
+Episode Success Ratio: 100.00%
+Total Completed: 1557/1557
+Total Missed: 0/1557
+Total Energy Consumed: 8374.86
+Avg Q_Loss: 0.0017, Avg Policy_Loss: 0.2000
+Noise Scale: 0.1466
+Replay Buffer Size: 85875
+Total Steps: 3116
+--- Episode 28 ---
+Episode Reward: -63.81397624016239
+Episode Success Ratio: 100.00%
+Total Completed: 1706/1706
+Total Missed: 0/1706
+Total Energy Consumed: 9116.28
+Avg Q_Loss: 0.0017, Avg Policy_Loss: 0.2062
+Noise Scale: 0.1449
+Replay Buffer Size: 89299
+Total Steps: 3424
+--- Episode 29 ---
+Episode Reward: -61.401119434675344
+Episode Success Ratio: 100.00%
+Total Completed: 1691/1691
+Total Missed: 0/1691
+Total Energy Consumed: 8771.59
+Avg Q_Loss: 0.0016, Avg Policy_Loss: 0.2126
+Noise Scale: 0.1432
+Replay Buffer Size: 92690
+Total Steps: 3391
+--- Episode 30 ---
+Episode Reward: -62.752423998363945
+Episode Success Ratio: 100.00%
+Total Completed: 1617/1617
+Total Missed: 0/1617
+Total Energy Consumed: 8964.63
+Avg Q_Loss: 0.0016, Avg Policy_Loss: 0.2187
+Noise Scale: 0.1416
+Replay Buffer Size: 95929
+Total Steps: 3239
+--- Episode 31 ---
+Episode Reward: -59.800422504708955
+Episode Success Ratio: 100.00%
+Total Completed: 1582/1582
+Total Missed: 0/1582
+Total Energy Consumed: 8542.92
+Avg Q_Loss: 0.0016, Avg Policy_Loss: 0.2263
+Noise Scale: 0.1400
+Replay Buffer Size: 99106
+Total Steps: 3177
+--- Episode 32 ---
+Episode Reward: -58.99942774253407
+Episode Success Ratio: 100.00%
+Total Completed: 1587/1587
+Total Missed: 0/1587
+Total Energy Consumed: 8428.49
+Avg Q_Loss: 0.0015, Avg Policy_Loss: 0.2315
+Noise Scale: 0.1384
+Replay Buffer Size: 102285
+Total Steps: 3179
+--- Episode 33 ---
+Episode Reward: -60.58668388637418
+Episode Success Ratio: 100.00%
+Total Completed: 1614/1614
+Total Missed: 0/1614
+Total Energy Consumed: 8655.24
+Avg Q_Loss: 0.0015, Avg Policy_Loss: 0.2384
+Noise Scale: 0.1368
+Replay Buffer Size: 105522
+Total Steps: 3237
+--- Episode 34 ---
+Episode Reward: -61.09460847106258
+Episode Success Ratio: 100.00%
+Total Completed: 1568/1568
+Total Missed: 0/1568
+Total Energy Consumed: 8727.80
+Avg Q_Loss: 0.0015, Avg Policy_Loss: 0.2455
+Noise Scale: 0.1352
+Replay Buffer Size: 108668
+Total Steps: 3146
+--- Episode 35 ---
+Episode Reward: -60.386504367105964
+Episode Success Ratio: 100.00%
+Total Completed: 1555/1555
+Total Missed: 0/1555
+Total Energy Consumed: 8626.64
+Avg Q_Loss: 0.0014, Avg Policy_Loss: 0.2502
+Noise Scale: 0.1337
+Replay Buffer Size: 111789
+Total Steps: 3121
+--- Episode 36 ---
+Episode Reward: -60.362812543712415
+Episode Success Ratio: 100.00%
+Total Completed: 1545/1545
+Total Missed: 0/1545
+Total Energy Consumed: 8623.26
+Avg Q_Loss: 0.0014, Avg Policy_Loss: 0.2568
+Noise Scale: 0.1321
+Replay Buffer Size: 114882
+Total Steps: 3093
+--- Episode 37 ---
+Episode Reward: -61.964322138271214
+Episode Success Ratio: 100.00%
+Total Completed: 1599/1599
+Total Missed: 0/1599
+Total Energy Consumed: 8852.05
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.2614
+Noise Scale: 0.1306
+Replay Buffer Size: 118090
+Total Steps: 3208
+--- Episode 38 ---
+Episode Reward: -61.977752264351345
+Episode Success Ratio: 100.00%
+Total Completed: 1606/1606
+Total Missed: 0/1606
+Total Energy Consumed: 8853.96
+Avg Q_Loss: 0.0014, Avg Policy_Loss: 0.2667
+Noise Scale: 0.1291
+Replay Buffer Size: 121311
+Total Steps: 3221
+--- Episode 39 ---
+Episode Reward: -61.65866563904831
+Episode Success Ratio: 100.00%
+Total Completed: 1606/1606
+Total Missed: 0/1606
+Total Energy Consumed: 8808.38
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.2727
+Noise Scale: 0.1277
+Replay Buffer Size: 124535
+Total Steps: 3224
+--- Episode 40 ---
+Episode Reward: -61.160362132091194
+Episode Success Ratio: 100.00%
+Total Completed: 1583/1583
+Total Missed: 0/1583
+Total Energy Consumed: 8737.19
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.2798
+Noise Scale: 0.1262
+Replay Buffer Size: 127711
+Total Steps: 3176
+--- Episode 41 ---
+Episode Reward: -61.49955144109963
+Episode Success Ratio: 100.00%
+Total Completed: 1587/1587
+Total Missed: 0/1587
+Total Energy Consumed: 8785.65
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.2846
+Noise Scale: 0.1247
+Replay Buffer Size: 130890
+Total Steps: 3179
+--- Episode 42 ---
+Episode Reward: -62.47681813125662
+Episode Success Ratio: 100.00%
+Total Completed: 1597/1597
+Total Missed: 0/1597
+Total Energy Consumed: 8925.26
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.2911
+Noise Scale: 0.1233
+Replay Buffer Size: 134090
+Total Steps: 3200
+--- Episode 43 ---
+Episode Reward: -61.476114174931475
+Episode Success Ratio: 100.00%
+Total Completed: 1566/1566
+Total Missed: 0/1566
+Total Energy Consumed: 8782.30
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.2966
+Noise Scale: 0.1219
+Replay Buffer Size: 137229
+Total Steps: 3139
+--- Episode 44 ---
+Episode Reward: -61.1238877114329
+Episode Success Ratio: 100.00%
+Total Completed: 1529/1529
+Total Missed: 0/1529
+Total Energy Consumed: 8731.98
+Avg Q_Loss: 0.0014, Avg Policy_Loss: 0.3024
+Noise Scale: 0.1205
+Replay Buffer Size: 140293
+Total Steps: 3064
+--- Episode 45 ---
+Episode Reward: -64.45761227167002
+Episode Success Ratio: 100.00%
+Total Completed: 1616/1616
+Total Missed: 0/1616
+Total Energy Consumed: 9208.23
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.3078
+Noise Scale: 0.1191
+Replay Buffer Size: 143535
+Total Steps: 3242
+--- Episode 46 ---
+Episode Reward: -61.25813424995498
+Episode Success Ratio: 100.00%
+Total Completed: 1560/1560
+Total Missed: 0/1560
+Total Energy Consumed: 8751.16
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.3141
+Noise Scale: 0.1178
+Replay Buffer Size: 146664
+Total Steps: 3129
+--- Episode 47 ---
+Episode Reward: -60.26998228093389
+Episode Success Ratio: 100.00%
+Total Completed: 1579/1579
+Total Missed: 0/1579
+Total Energy Consumed: 8610.00
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.3181
+Noise Scale: 0.1164
+Replay Buffer Size: 149830
+Total Steps: 3166
+--- Episode 48 ---
+Episode Reward: -61.77715694971831
+Episode Success Ratio: 100.00%
+Total Completed: 1559/1559
+Total Missed: 0/1559
+Total Energy Consumed: 8825.31
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.3251
+Noise Scale: 0.1151
+Replay Buffer Size: 152956
+Total Steps: 3126
+--- Episode 49 ---
+Episode Reward: -64.3862675532533
+Episode Success Ratio: 100.00%
+Total Completed: 1572/1572
+Total Missed: 0/1572
+Total Energy Consumed: 9198.04
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.3319
+Noise Scale: 0.1138
+Replay Buffer Size: 156108
+Total Steps: 3152
+--- Episode 50 ---
+Episode Reward: -62.575086470779254
+Episode Success Ratio: 100.00%
+Total Completed: 1566/1566
+Total Missed: 0/1566
+Total Energy Consumed: 8939.30
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.3371
+Noise Scale: 0.1125
+Replay Buffer Size: 159249
+Total Steps: 3141
+--- Episode 51 ---
+Episode Reward: -63.48185922081667
+Episode Success Ratio: 100.00%
+Total Completed: 1621/1621
+Total Missed: 0/1621
+Total Energy Consumed: 9068.84
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.3421
+Noise Scale: 0.1112
+Replay Buffer Size: 162496
+Total Steps: 3247
+--- Episode 52 ---
+Episode Reward: -62.123319747922544
+Episode Success Ratio: 100.00%
+Total Completed: 1542/1542
+Total Missed: 0/1542
+Total Energy Consumed: 8874.76
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.3476
+Noise Scale: 0.1099
+Replay Buffer Size: 165587
+Total Steps: 3091
+--- Episode 53 ---
+Episode Reward: -63.807602198742266
+Episode Success Ratio: 100.00%
+Total Completed: 1600/1600
+Total Missed: 0/1600
+Total Energy Consumed: 9115.37
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.3529
+Noise Scale: 0.1087
+Replay Buffer Size: 168795
+Total Steps: 3208
+--- Episode 54 ---
+Episode Reward: -61.43459399743434
+Episode Success Ratio: 100.00%
+Total Completed: 1575/1575
+Total Missed: 0/1575
+Total Energy Consumed: 8776.37
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.3606
+Noise Scale: 0.1074
+Replay Buffer Size: 171949
+Total Steps: 3154
+--- Episode 55 ---
+Episode Reward: -63.969889926543495
+Episode Success Ratio: 100.00%
+Total Completed: 1613/1613
+Total Missed: 0/1613
+Total Energy Consumed: 9138.56
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.3660
+Noise Scale: 0.1062
+Replay Buffer Size: 175186
+Total Steps: 3237
+--- Episode 56 ---
+Episode Reward: -63.57011827943054
+Episode Success Ratio: 100.00%
+Total Completed: 1567/1567
+Total Missed: 0/1567
+Total Energy Consumed: 9081.45
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.3699
+Noise Scale: 0.1050
+Replay Buffer Size: 178329
+Total Steps: 3143
+--- Episode 57 ---
+Episode Reward: -63.98397812729655
+Episode Success Ratio: 100.00%
+Total Completed: 1541/1541
+Total Missed: 0/1541
+Total Energy Consumed: 9140.57
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.3776
+Noise Scale: 0.1038
+Replay Buffer Size: 181420
+Total Steps: 3091
+--- Episode 58 ---
+Episode Reward: -61.69996206192948
+Episode Success Ratio: 100.00%
+Total Completed: 1584/1584
+Total Missed: 0/1584
+Total Energy Consumed: 8814.28
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.3821
+Noise Scale: 0.1026
+Replay Buffer Size: 184594
+Total Steps: 3174
+--- Episode 59 ---
+Episode Reward: -62.24739478181501
+Episode Success Ratio: 100.00%
+Total Completed: 1546/1546
+Total Missed: 0/1546
+Total Energy Consumed: 8892.48
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.3860
+Noise Scale: 0.1014
+Replay Buffer Size: 187694
+Total Steps: 3100
+--- Episode 60 ---
+Episode Reward: -61.6020554913622
+Episode Success Ratio: 100.00%
+Total Completed: 1605/1605
+Total Missed: 0/1605
+Total Energy Consumed: 8800.29
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.3903
+Noise Scale: 0.1002
+Replay Buffer Size: 190905
+Total Steps: 3211
+--- Episode 61 ---
+Episode Reward: -65.37409713695673
+Episode Success Ratio: 100.00%
+Total Completed: 1635/1635
+Total Missed: 0/1635
+Total Energy Consumed: 9339.16
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.3960
+Noise Scale: 0.0991
+Replay Buffer Size: 194181
+Total Steps: 3276
+--- Episode 62 ---
+Episode Reward: -63.30495644018316
+Episode Success Ratio: 100.00%
+Total Completed: 1604/1604
+Total Missed: 0/1604
+Total Energy Consumed: 9043.57
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.4029
+Noise Scale: 0.0980
+Replay Buffer Size: 197399
+Total Steps: 3218
+--- Episode 63 ---
+Episode Reward: -60.58540409729095
+Episode Success Ratio: 100.00%
+Total Completed: 1559/1559
+Total Missed: 0/1559
+Total Energy Consumed: 8655.06
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.4056
+Noise Scale: 0.0968
+Replay Buffer Size: 200522
+Total Steps: 3123
+--- Episode 64 ---
+Episode Reward: -63.116429519589815
+Episode Success Ratio: 100.00%
+Total Completed: 1592/1592
+Total Missed: 0/1592
+Total Energy Consumed: 9016.63
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.4128
+Noise Scale: 0.0957
+Replay Buffer Size: 203714
+Total Steps: 3192
+--- Episode 65 ---
+Episode Reward: -62.3851786137355
+Episode Success Ratio: 100.00%
+Total Completed: 1560/1560
+Total Missed: 0/1560
+Total Energy Consumed: 8912.17
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.4163
+Noise Scale: 0.0946
+Replay Buffer Size: 206844
+Total Steps: 3130
+--- Episode 66 ---
+Episode Reward: -63.348127693322965
+Episode Success Ratio: 100.00%
+Total Completed: 1578/1578
+Total Missed: 0/1578
+Total Energy Consumed: 9049.73
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.4232
+Noise Scale: 0.0935
+Replay Buffer Size: 210006
+Total Steps: 3162
+--- Episode 67 ---
+Episode Reward: -64.5524049106126
+Episode Success Ratio: 100.00%
+Total Completed: 1578/1578
+Total Missed: 0/1578
+Total Energy Consumed: 9221.77
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.4290
+Noise Scale: 0.0925
+Replay Buffer Size: 213171
+Total Steps: 3165
+--- Episode 68 ---
+Episode Reward: -67.08589486459589
+Episode Success Ratio: 100.00%
+Total Completed: 1603/1603
+Total Missed: 0/1603
+Total Energy Consumed: 9583.70
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.4355
+Noise Scale: 0.0914
+Replay Buffer Size: 216387
+Total Steps: 3216
+--- Episode 69 ---
+Episode Reward: -64.75306394685732
+Episode Success Ratio: 100.00%
+Total Completed: 1592/1592
+Total Missed: 0/1592
+Total Energy Consumed: 9250.44
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.4418
+Noise Scale: 0.0904
+Replay Buffer Size: 219579
+Total Steps: 3192
+--- Episode 70 ---
+Episode Reward: -68.06134309065077
+Episode Success Ratio: 100.00%
+Total Completed: 1646/1646
+Total Missed: 0/1646
+Total Energy Consumed: 9723.05
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 0.4484
+Noise Scale: 0.0893
+Replay Buffer Size: 222880
+Total Steps: 3301
+--- Episode 71 ---
+Episode Reward: -64.86757971347009
+Episode Success Ratio: 100.00%
+Total Completed: 1592/1592
+Total Missed: 0/1592
+Total Energy Consumed: 9266.80
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.4563
+Noise Scale: 0.0883
+Replay Buffer Size: 226076
+Total Steps: 3196
+--- Episode 72 ---
+Episode Reward: -65.78323161697531
+Episode Success Ratio: 100.00%
+Total Completed: 1578/1578
+Total Missed: 0/1578
+Total Energy Consumed: 9397.60
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.4605
+Noise Scale: 0.0873
+Replay Buffer Size: 229240
+Total Steps: 3164
+--- Episode 73 ---
+Episode Reward: -66.3089521010677
+Episode Success Ratio: 99.94%
+Total Completed: 1614/1615
+Total Missed: 1/1615
+Total Energy Consumed: 9444.14
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.4676
+Noise Scale: 0.0863
+Replay Buffer Size: 232476
+Total Steps: 3236
+--- Episode 74 ---
+Episode Reward: -63.942350608630164
+Episode Success Ratio: 100.00%
+Total Completed: 1581/1581
+Total Missed: 0/1581
+Total Energy Consumed: 9134.62
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.4743
+Noise Scale: 0.0853
+Replay Buffer Size: 235648
+Total Steps: 3172
+--- Episode 75 ---
+Episode Reward: -65.19019695393
+Episode Success Ratio: 100.00%
+Total Completed: 1585/1585
+Total Missed: 0/1585
+Total Energy Consumed: 9312.89
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.4808
+Noise Scale: 0.0843
+Replay Buffer Size: 238826
+Total Steps: 3178
+--- Episode 76 ---
+Episode Reward: -65.57231034953571
+Episode Success Ratio: 100.00%
+Total Completed: 1629/1629
+Total Missed: 0/1629
+Total Energy Consumed: 9367.47
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 0.4895
+Noise Scale: 0.0834
+Replay Buffer Size: 242093
+Total Steps: 3267
+--- Episode 77 ---
+Episode Reward: -68.7813764738487
+Episode Success Ratio: 100.00%
+Total Completed: 1640/1640
+Total Missed: 0/1640
+Total Energy Consumed: 9825.91
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 0.4952
+Noise Scale: 0.0824
+Replay Buffer Size: 245388
+Total Steps: 3295
+--- Episode 78 ---
+Episode Reward: -63.04014609074695
+Episode Success Ratio: 100.00%
+Total Completed: 1554/1554
+Total Missed: 0/1554
+Total Energy Consumed: 9005.74
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.5007
+Noise Scale: 0.0815
+Replay Buffer Size: 248508
+Total Steps: 3120
+--- Episode 79 ---
+Episode Reward: -67.36209631171367
+Episode Success Ratio: 100.00%
+Total Completed: 1599/1599
+Total Missed: 0/1599
+Total Energy Consumed: 9623.16
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.5089
+Noise Scale: 0.0805
+Replay Buffer Size: 251718
+Total Steps: 3210
+--- Episode 80 ---
+Episode Reward: -67.8461766276185
+Episode Success Ratio: 100.00%
+Total Completed: 1614/1614
+Total Missed: 0/1614
+Total Energy Consumed: 9692.31
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.5140
+Noise Scale: 0.0796
+Replay Buffer Size: 254956
+Total Steps: 3238
+--- Episode 81 ---
+Episode Reward: -64.82006365979315
+Episode Success Ratio: 100.00%
+Total Completed: 1593/1593
+Total Missed: 0/1593
+Total Energy Consumed: 9260.01
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 0.5216
+Noise Scale: 0.0787
+Replay Buffer Size: 258146
+Total Steps: 3190
+--- Episode 82 ---
+Episode Reward: -66.33403728652198
+Episode Success Ratio: 100.00%
+Total Completed: 1606/1606
+Total Missed: 0/1606
+Total Energy Consumed: 9476.29
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.5281
+Noise Scale: 0.0778
+Replay Buffer Size: 261366
+Total Steps: 3220
+--- Episode 83 ---
+Episode Reward: -65.88576894393157
+Episode Success Ratio: 100.00%
+Total Completed: 1580/1580
+Total Missed: 0/1580
+Total Energy Consumed: 9412.25
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 0.5345
+Noise Scale: 0.0769
+Replay Buffer Size: 264532
+Total Steps: 3166
+--- Episode 84 ---
+Episode Reward: -68.98890153498772
+Episode Success Ratio: 100.00%
+Total Completed: 1611/1611
+Total Missed: 0/1611
+Total Energy Consumed: 9855.56
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 0.5401
+Noise Scale: 0.0760
+Replay Buffer Size: 267764
+Total Steps: 3232
+--- Episode 85 ---
+Episode Reward: -64.37931489218799
+Episode Success Ratio: 100.00%
+Total Completed: 1525/1525
+Total Missed: 0/1525
+Total Energy Consumed: 9197.04
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 0.5466
+Noise Scale: 0.0752
+Replay Buffer Size: 270823
+Total Steps: 3059
+--- Episode 86 ---
+Episode Reward: -64.61136503344515
+Episode Success Ratio: 100.00%
+Total Completed: 1595/1595
+Total Missed: 0/1595
+Total Energy Consumed: 9230.19
+Avg Q_Loss: 0.0008, Avg Policy_Loss: 0.5531
+Noise Scale: 0.0743
+Replay Buffer Size: 274023
+Total Steps: 3200
+--- Episode 87 ---
+Episode Reward: -67.00501439900837
+Episode Success Ratio: 100.00%
+Total Completed: 1673/1673
+Total Missed: 0/1673
+Total Energy Consumed: 9572.14
+Avg Q_Loss: 0.0008, Avg Policy_Loss: 0.5624
+Noise Scale: 0.0735
+Replay Buffer Size: 277373
+Total Steps: 3350
+--- Episode 88 ---
+Episode Reward: -63.78433766554794
+Episode Success Ratio: 100.00%
+Total Completed: 1561/1561
+Total Missed: 0/1561
+Total Energy Consumed: 9112.05
+Avg Q_Loss: 0.0008, Avg Policy_Loss: 0.5692
+Noise Scale: 0.0726
+Replay Buffer Size: 280499
+Total Steps: 3126
+--- Episode 89 ---
+Episode Reward: -78.48300204009462
+Episode Success Ratio: 91.93%
+Total Completed: 1446/1573
+Total Missed: 127/1573
+Total Energy Consumed: 7583.29
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 0.5761
+Noise Scale: 0.0718
+Replay Buffer Size: 283680
+Total Steps: 3181
+--- Episode 90 ---
+Episode Reward: -177.6900212152513
+Episode Success Ratio: 47.89%
+Total Completed: 736/1537
+Total Missed: 801/1537
+Total Energy Consumed: 2498.57
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 0.5785
+Noise Scale: 0.0710
+Replay Buffer Size: 286782
+Total Steps: 3102
+--- Episode 91 ---
+Episode Reward: -169.87947565972667
+Episode Success Ratio: 53.58%
+Total Completed: 830/1549
+Total Missed: 719/1549
+Total Energy Consumed: 3725.64
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.5870
+Noise Scale: 0.0702
+Replay Buffer Size: 289912
+Total Steps: 3130
+--- Episode 92 ---
+Episode Reward: -141.16219158993167
+Episode Success Ratio: 64.81%
+Total Completed: 1015/1566
+Total Missed: 551/1566
+Total Energy Consumed: 4423.17
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.5969
+Noise Scale: 0.0693
+Replay Buffer Size: 293069
+Total Steps: 3157
+--- Episode 93 ---
+Episode Reward: -108.63545214218911
+Episode Success Ratio: 76.18%
+Total Completed: 1199/1574
+Total Missed: 375/1574
+Total Energy Consumed: 4805.06
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.6047
+Noise Scale: 0.0686
+Replay Buffer Size: 296240
+Total Steps: 3171
+--- Episode 94 ---
+Episode Reward: -90.56913035850792
+Episode Success Ratio: 82.50%
+Total Completed: 1278/1549
+Total Missed: 271/1549
+Total Energy Consumed: 5195.59
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.6140
+Noise Scale: 0.0678
+Replay Buffer Size: 299355
+Total Steps: 3115
+--- Episode 95 ---
+Episode Reward: -79.42835089460648
+Episode Success Ratio: 88.14%
+Total Completed: 1442/1636
+Total Missed: 194/1636
+Total Energy Consumed: 5804.05
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.6185
+Noise Scale: 0.0670
+Replay Buffer Size: 302648
+Total Steps: 3293
+--- Episode 96 ---
+Episode Reward: -78.22284951724964
+Episode Success Ratio: 89.65%
+Total Completed: 1438/1604
+Total Missed: 166/1604
+Total Energy Consumed: 6431.84
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.6252
+Noise Scale: 0.0662
+Replay Buffer Size: 305875
+Total Steps: 3227
+--- Episode 97 ---
+Episode Reward: -68.68187508077315
+Episode Success Ratio: 92.34%
+Total Completed: 1470/1592
+Total Missed: 122/1592
+Total Energy Consumed: 6325.98
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.6296
+Noise Scale: 0.0655
+Replay Buffer Size: 309077
+Total Steps: 3202
+--- Episode 98 ---
+Episode Reward: -73.9182785412675
+Episode Success Ratio: 90.73%
+Total Completed: 1449/1597
+Total Missed: 148/1597
+Total Energy Consumed: 6331.18
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.6360
+Noise Scale: 0.0647
+Replay Buffer Size: 312283
+Total Steps: 3206
+--- Episode 99 ---
+Episode Reward: -72.09639487795732
+Episode Success Ratio: 94.34%
+Total Completed: 1600/1696
+Total Missed: 96/1696
+Total Energy Consumed: 7556.63
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.6436
+Noise Scale: 0.0640
+Replay Buffer Size: 315690
+Total Steps: 3407
+--- Episode 100 ---
+Episode Reward: -72.49723791733464
+Episode Success Ratio: 92.06%
+Total Completed: 1495/1624
+Total Missed: 129/1624
+Total Energy Consumed: 6671.03
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.6505
+Noise Scale: 0.0632
+Replay Buffer Size: 318948
+Total Steps: 3258
+Models saved to ./saves/experiment-15/ep_100
+--- Episode 101 ---
+Episode Reward: -77.31269439458242
+Episode Success Ratio: 90.51%
+Total Completed: 1507/1665
+Total Missed: 158/1665
+Total Energy Consumed: 6530.38
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.6578
+Noise Scale: 0.0625
+Replay Buffer Size: 322300
+Total Steps: 3352
+--- Episode 102 ---
+Episode Reward: -89.03551165752877
+Episode Success Ratio: 83.53%
+Total Completed: 1268/1518
+Total Missed: 250/1518
+Total Energy Consumed: 5576.50
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.6602
+Noise Scale: 0.0618
+Replay Buffer Size: 325360
+Total Steps: 3060
+--- Episode 103 ---
+Episode Reward: -91.8714909160673
+Episode Success Ratio: 84.18%
+Total Completed: 1320/1568
+Total Missed: 248/1568
+Total Energy Consumed: 6038.78
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.6698
+Noise Scale: 0.0611
+Replay Buffer Size: 328512
+Total Steps: 3152
+--- Episode 104 ---
+Episode Reward: -95.94648447133655
+Episode Success Ratio: 82.92%
+Total Completed: 1316/1587
+Total Missed: 271/1587
+Total Energy Consumed: 5963.78
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.6752
+Noise Scale: 0.0604
+Replay Buffer Size: 331699
+Total Steps: 3187
+--- Episode 105 ---
+Episode Reward: -78.57828486217512
+Episode Success Ratio: 88.51%
+Total Completed: 1387/1567
+Total Missed: 180/1567
+Total Energy Consumed: 6082.61
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.6799
+Noise Scale: 0.0597
+Replay Buffer Size: 334846
+Total Steps: 3147
+--- Episode 106 ---
+Episode Reward: -69.75721453423968
+Episode Success Ratio: 92.35%
+Total Completed: 1473/1595
+Total Missed: 122/1595
+Total Energy Consumed: 6479.60
+Avg Q_Loss: 0.0014, Avg Policy_Loss: 0.6849
+Noise Scale: 0.0590
+Replay Buffer Size: 338048
+Total Steps: 3202
+--- Episode 107 ---
+Episode Reward: -70.62457519589519
+Episode Success Ratio: 91.73%
+Total Completed: 1431/1560
+Total Missed: 129/1560
+Total Energy Consumed: 6403.51
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.6884
+Noise Scale: 0.0583
+Replay Buffer Size: 341179
+Total Steps: 3131
+--- Episode 108 ---
+Episode Reward: -65.6221560992106
+Episode Success Ratio: 94.10%
+Total Completed: 1482/1575
+Total Missed: 93/1575
+Total Energy Consumed: 6717.45
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.6946
+Noise Scale: 0.0577
+Replay Buffer Size: 344339
+Total Steps: 3160
+--- Episode 109 ---
+Episode Reward: -58.16717801844364
+Episode Success Ratio: 95.55%
+Total Completed: 1481/1550
+Total Missed: 69/1550
+Total Energy Consumed: 6338.17
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.6986
+Noise Scale: 0.0570
+Replay Buffer Size: 347449
+Total Steps: 3110
+--- Episode 110 ---
+Episode Reward: -58.03470615087301
+Episode Success Ratio: 97.86%
+Total Completed: 1555/1589
+Total Missed: 34/1589
+Total Energy Consumed: 7319.24
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.7045
+Noise Scale: 0.0564
+Replay Buffer Size: 350639
+Total Steps: 3190
+--- Episode 111 ---
+Episode Reward: -55.34934283743677
+Episode Success Ratio: 98.52%
+Total Completed: 1598/1622
+Total Missed: 24/1622
+Total Energy Consumed: 7221.33
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.7081
+Noise Scale: 0.0557
+Replay Buffer Size: 353896
+Total Steps: 3257
+--- Episode 112 ---
+Episode Reward: -57.41974024413298
+Episode Success Ratio: 97.80%
+Total Completed: 1555/1590
+Total Missed: 35/1590
+Total Energy Consumed: 7202.82
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.7109
+Noise Scale: 0.0551
+Replay Buffer Size: 357088
+Total Steps: 3192
+--- Episode 113 ---
+Episode Reward: -55.505060626780285
+Episode Success Ratio: 98.67%
+Total Completed: 1554/1575
+Total Missed: 21/1575
+Total Energy Consumed: 7329.29
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.7170
+Noise Scale: 0.0545
+Replay Buffer Size: 360249
+Total Steps: 3161
+--- Episode 114 ---
+Episode Reward: -54.2397171905472
+Episode Success Ratio: 98.12%
+Total Completed: 1568/1598
+Total Missed: 30/1598
+Total Energy Consumed: 6891.39
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.7208
+Noise Scale: 0.0538
+Replay Buffer Size: 363458
+Total Steps: 3209
+--- Episode 115 ---
+Episode Reward: -53.61987746346556
+Episode Success Ratio: 97.60%
+Total Completed: 1503/1540
+Total Missed: 37/1540
+Total Energy Consumed: 6602.84
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.7239
+Noise Scale: 0.0532
+Replay Buffer Size: 366549
+Total Steps: 3091
+--- Episode 116 ---
+Episode Reward: -50.87685475169786
+Episode Success Ratio: 97.34%
+Total Completed: 1501/1542
+Total Missed: 41/1542
+Total Energy Consumed: 6096.69
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.7287
+Noise Scale: 0.0526
+Replay Buffer Size: 369649
+Total Steps: 3100
+--- Episode 117 ---
+Episode Reward: -55.550438504742154
+Episode Success Ratio: 98.24%
+Total Completed: 1616/1645
+Total Missed: 29/1645
+Total Energy Consumed: 7107.21
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.7317
+Noise Scale: 0.0520
+Replay Buffer Size: 372953
+Total Steps: 3304
+--- Episode 118 ---
+Episode Reward: -55.28986914440231
+Episode Success Ratio: 98.35%
+Total Completed: 1614/1641
+Total Missed: 27/1641
+Total Energy Consumed: 7127.12
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.7373
+Noise Scale: 0.0514
+Replay Buffer Size: 376249
+Total Steps: 3296
+--- Episode 119 ---
+Episode Reward: -54.87315700646463
+Episode Success Ratio: 97.85%
+Total Completed: 1547/1581
+Total Missed: 34/1581
+Total Energy Consumed: 6867.59
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.7401
+Noise Scale: 0.0508
+Replay Buffer Size: 379425
+Total Steps: 3176
+--- Episode 120 ---
+Episode Reward: -52.616874263883695
+Episode Success Ratio: 98.51%
+Total Completed: 1587/1611
+Total Missed: 24/1611
+Total Energy Consumed: 6830.98
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.7456
+Noise Scale: 0.0502
+Replay Buffer Size: 382658
+Total Steps: 3233
+--- Episode 121 ---
+Episode Reward: -54.114949112302575
+Episode Success Ratio: 97.99%
+Total Completed: 1558/1590
+Total Missed: 32/1590
+Total Energy Consumed: 6816.42
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.7498
+Noise Scale: 0.0497
+Replay Buffer Size: 385851
+Total Steps: 3193
+--- Episode 122 ---
+Episode Reward: -50.824036967401554
+Episode Success Ratio: 97.86%
+Total Completed: 1558/1592
+Total Missed: 34/1592
+Total Energy Consumed: 6289.15
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.7539
+Noise Scale: 0.0491
+Replay Buffer Size: 389047
+Total Steps: 3196
+--- Episode 123 ---
+Episode Reward: -52.76395909904125
+Episode Success Ratio: 98.76%
+Total Completed: 1668/1689
+Total Missed: 21/1689
+Total Energy Consumed: 6937.71
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.7594
+Noise Scale: 0.0485
+Replay Buffer Size: 392440
+Total Steps: 3393
+--- Episode 124 ---
+Episode Reward: -52.66144796558334
+Episode Success Ratio: 98.41%
+Total Completed: 1606/1632
+Total Missed: 26/1632
+Total Energy Consumed: 6780.21
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.7621
+Noise Scale: 0.0480
+Replay Buffer Size: 395715
+Total Steps: 3275
+--- Episode 125 ---
+Episode Reward: -51.591119767267514
+Episode Success Ratio: 97.85%
+Total Completed: 1546/1580
+Total Missed: 34/1580
+Total Energy Consumed: 6398.73
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.7652
+Noise Scale: 0.0474
+Replay Buffer Size: 398886
+Total Steps: 3171
+--- Episode 126 ---
+Episode Reward: -57.540509842176505
+Episode Success Ratio: 99.76%
+Total Completed: 1645/1649
+Total Missed: 4/1649
+Total Energy Consumed: 8105.79
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.7731
+Noise Scale: 0.0469
+Replay Buffer Size: 402197
+Total Steps: 3311
+--- Episode 127 ---
+Episode Reward: -50.97302578968703
+Episode Success Ratio: 99.39%
+Total Completed: 1618/1628
+Total Missed: 10/1628
+Total Energy Consumed: 6996.15
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.7751
+Noise Scale: 0.0463
+Replay Buffer Size: 405468
+Total Steps: 3271
+--- Episode 128 ---
+Episode Reward: -49.53788247029412
+Episode Success Ratio: 99.81%
+Total Completed: 1612/1615
+Total Missed: 3/1615
+Total Energy Consumed: 6991.13
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.7808
+Noise Scale: 0.0458
+Replay Buffer Size: 408710
+Total Steps: 3242
+--- Episode 129 ---
+Episode Reward: -47.67546980279473
+Episode Success Ratio: 99.37%
+Total Completed: 1571/1581
+Total Missed: 10/1581
+Total Energy Consumed: 6525.07
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.7850
+Noise Scale: 0.0453
+Replay Buffer Size: 411887
+Total Steps: 3177
+--- Episode 130 ---
+Episode Reward: -49.851660226961116
+Episode Success Ratio: 99.52%
+Total Completed: 1646/1654
+Total Missed: 8/1654
+Total Energy Consumed: 6893.09
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.7922
+Noise Scale: 0.0448
+Replay Buffer Size: 415204
+Total Steps: 3317
+--- Episode 131 ---
+Episode Reward: -50.451417486322114
+Episode Success Ratio: 99.36%
+Total Completed: 1547/1557
+Total Missed: 10/1557
+Total Energy Consumed: 6921.63
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.7941
+Noise Scale: 0.0443
+Replay Buffer Size: 418331
+Total Steps: 3127
+--- Episode 132 ---
+Episode Reward: -44.84942975179397
+Episode Success Ratio: 99.55%
+Total Completed: 1559/1566
+Total Missed: 7/1566
+Total Energy Consumed: 6207.06
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.7977
+Noise Scale: 0.0438
+Replay Buffer Size: 421475
+Total Steps: 3144
+--- Episode 133 ---
+Episode Reward: -47.075804246930865
+Episode Success Ratio: 99.48%
+Total Completed: 1533/1541
+Total Missed: 8/1541
+Total Energy Consumed: 6496.54
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.8015
+Noise Scale: 0.0433
+Replay Buffer Size: 424569
+Total Steps: 3094
+--- Episode 134 ---
+Episode Reward: -46.57445106020341
+Episode Success Ratio: 99.68%
+Total Completed: 1545/1550
+Total Missed: 5/1550
+Total Energy Consumed: 6510.64
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.8077
+Noise Scale: 0.0428
+Replay Buffer Size: 427684
+Total Steps: 3115
+--- Episode 135 ---
+Episode Reward: -48.391930265513594
+Episode Success Ratio: 99.81%
+Total Completed: 1586/1589
+Total Missed: 3/1589
+Total Energy Consumed: 6827.42
+Avg Q_Loss: 0.0014, Avg Policy_Loss: 0.8138
+Noise Scale: 0.0423
+Replay Buffer Size: 430875
+Total Steps: 3191
+--- Episode 136 ---
+Episode Reward: -49.285483923678335
+Episode Success Ratio: 99.61%
+Total Completed: 1536/1542
+Total Missed: 6/1542
+Total Energy Consumed: 6869.35
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.8142
+Noise Scale: 0.0418
+Replay Buffer Size: 433973
+Total Steps: 3098
+--- Episode 137 ---
+Episode Reward: -50.88540839020006
+Episode Success Ratio: 99.82%
+Total Completed: 1641/1644
+Total Missed: 3/1644
+Total Energy Consumed: 7183.63
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.8187
+Noise Scale: 0.0413
+Replay Buffer Size: 437277
+Total Steps: 3304
+--- Episode 138 ---
+Episode Reward: -46.82941363043614
+Episode Success Ratio: 100.00%
+Total Completed: 1568/1568
+Total Missed: 0/1568
+Total Energy Consumed: 6689.92
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.8263
+Noise Scale: 0.0408
+Replay Buffer Size: 440428
+Total Steps: 3151
+--- Episode 139 ---
+Episode Reward: -51.20585928951137
+Episode Success Ratio: 100.00%
+Total Completed: 1683/1683
+Total Missed: 0/1683
+Total Energy Consumed: 7315.12
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.8301
+Noise Scale: 0.0404
+Replay Buffer Size: 443803
+Total Steps: 3375
+--- Episode 140 ---
+Episode Reward: -43.086198283355856
+Episode Success Ratio: 99.94%
+Total Completed: 1540/1541
+Total Missed: 1/1541
+Total Energy Consumed: 6126.60
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.8349
+Noise Scale: 0.0399
+Replay Buffer Size: 446901
+Total Steps: 3098
+--- Episode 141 ---
+Episode Reward: -43.25830590685469
+Episode Success Ratio: 100.00%
+Total Completed: 1527/1527
+Total Missed: 0/1527
+Total Energy Consumed: 6179.76
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.8386
+Noise Scale: 0.0394
+Replay Buffer Size: 449967
+Total Steps: 3066
+--- Episode 142 ---
+Episode Reward: -50.432568524585015
+Episode Success Ratio: 100.00%
+Total Completed: 1667/1667
+Total Missed: 0/1667
+Total Energy Consumed: 7204.65
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.8405
+Noise Scale: 0.0390
+Replay Buffer Size: 453315
+Total Steps: 3348
+--- Episode 143 ---
+Episode Reward: -49.5147494163463
+Episode Success Ratio: 100.00%
+Total Completed: 1585/1585
+Total Missed: 0/1585
+Total Energy Consumed: 7073.54
+Avg Q_Loss: 0.0014, Avg Policy_Loss: 0.8472
+Noise Scale: 0.0386
+Replay Buffer Size: 456498
+Total Steps: 3183
+--- Episode 144 ---
+Episode Reward: -46.12559726558174
+Episode Success Ratio: 100.00%
+Total Completed: 1604/1604
+Total Missed: 0/1604
+Total Energy Consumed: 6589.37
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.8513
+Noise Scale: 0.0381
+Replay Buffer Size: 459721
+Total Steps: 3223
+--- Episode 145 ---
+Episode Reward: -45.48354887180404
+Episode Success Ratio: 100.00%
+Total Completed: 1581/1581
+Total Missed: 0/1581
+Total Energy Consumed: 6497.65
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.8563
+Noise Scale: 0.0377
+Replay Buffer Size: 462898
+Total Steps: 3177
+--- Episode 146 ---
+Episode Reward: -42.80026079082899
+Episode Success Ratio: 99.93%
+Total Completed: 1506/1507
+Total Missed: 1/1507
+Total Energy Consumed: 6085.75
+Avg Q_Loss: 0.0014, Avg Policy_Loss: 0.8611
+Noise Scale: 0.0372
+Replay Buffer Size: 465925
+Total Steps: 3027
+--- Episode 147 ---
+Episode Reward: -43.333470939679856
+Episode Success Ratio: 100.00%
+Total Completed: 1553/1553
+Total Missed: 0/1553
+Total Energy Consumed: 6190.50
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.8633
+Noise Scale: 0.0368
+Replay Buffer Size: 469047
+Total Steps: 3122
+--- Episode 148 ---
+Episode Reward: -46.808206627541864
+Episode Success Ratio: 100.00%
+Total Completed: 1654/1654
+Total Missed: 0/1654
+Total Energy Consumed: 6686.89
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.8691
+Noise Scale: 0.0364
+Replay Buffer Size: 472368
+Total Steps: 3321
+--- Episode 149 ---
+Episode Reward: -44.1865146803503
+Episode Success Ratio: 100.00%
+Total Completed: 1605/1605
+Total Missed: 0/1605
+Total Energy Consumed: 6312.36
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.8721
+Noise Scale: 0.0360
+Replay Buffer Size: 475594
+Total Steps: 3226
+--- Episode 150 ---
+Episode Reward: -46.47749501910171
+Episode Success Ratio: 100.00%
+Total Completed: 1561/1561
+Total Missed: 0/1561
+Total Energy Consumed: 6639.64
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.8792
+Noise Scale: 0.0356
+Replay Buffer Size: 478730
+Total Steps: 3136
+--- Episode 151 ---
+Episode Reward: -43.37910224283197
+Episode Success Ratio: 99.87%
+Total Completed: 1547/1549
+Total Missed: 2/1549
+Total Energy Consumed: 6139.87
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.8809
+Noise Scale: 0.0352
+Replay Buffer Size: 481841
+Total Steps: 3111
+--- Episode 152 ---
+Episode Reward: -50.56035935948653
+Episode Success Ratio: 100.00%
+Total Completed: 1583/1583
+Total Missed: 0/1583
+Total Energy Consumed: 7222.91
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.8845
+Noise Scale: 0.0348
+Replay Buffer Size: 485022
+Total Steps: 3181
+--- Episode 153 ---
+Episode Reward: -41.95757622008501
+Episode Success Ratio: 100.00%
+Total Completed: 1503/1503
+Total Missed: 0/1503
+Total Energy Consumed: 5993.94
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.8895
+Noise Scale: 0.0344
+Replay Buffer Size: 488044
+Total Steps: 3022
+--- Episode 154 ---
+Episode Reward: -44.154153019419965
+Episode Success Ratio: 99.93%
+Total Completed: 1494/1495
+Total Missed: 1/1495
+Total Energy Consumed: 6279.16
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.8948
+Noise Scale: 0.0340
+Replay Buffer Size: 491046
+Total Steps: 3002
+--- Episode 155 ---
+Episode Reward: -42.90088458825466
+Episode Success Ratio: 100.00%
+Total Completed: 1548/1548
+Total Missed: 0/1548
+Total Energy Consumed: 6128.70
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.8977
+Noise Scale: 0.0336
+Replay Buffer Size: 494158
+Total Steps: 3112
+--- Episode 156 ---
+Episode Reward: -47.10419238025263
+Episode Success Ratio: 100.00%
+Total Completed: 1568/1568
+Total Missed: 0/1568
+Total Energy Consumed: 6729.17
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.9015
+Noise Scale: 0.0332
+Replay Buffer Size: 497311
+Total Steps: 3153
+--- Episode 157 ---
+Episode Reward: -49.783526388105926
+Episode Success Ratio: 100.00%
+Total Completed: 1643/1643
+Total Missed: 0/1643
+Total Energy Consumed: 7111.93
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.9069
+Noise Scale: 0.0328
+Replay Buffer Size: 500610
+Total Steps: 3299
+--- Episode 158 ---
+Episode Reward: -44.55183818079819
+Episode Success Ratio: 100.00%
+Total Completed: 1609/1609
+Total Missed: 0/1609
+Total Energy Consumed: 6364.55
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.9109
+Noise Scale: 0.0324
+Replay Buffer Size: 503843
+Total Steps: 3233
+--- Episode 159 ---
+Episode Reward: -44.99259653788564
+Episode Success Ratio: 100.00%
+Total Completed: 1549/1549
+Total Missed: 0/1549
+Total Energy Consumed: 6427.51
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 0.9137
+Noise Scale: 0.0321
+Replay Buffer Size: 506957
+Total Steps: 3114
+--- Episode 160 ---
+Episode Reward: -45.27684201035359
+Episode Success Ratio: 100.00%
+Total Completed: 1661/1661
+Total Missed: 0/1661
+Total Energy Consumed: 6468.12
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.9215
+Noise Scale: 0.0317
+Replay Buffer Size: 510294
+Total Steps: 3337
+--- Episode 161 ---
+Episode Reward: -42.6036043004185
+Episode Success Ratio: 100.00%
+Total Completed: 1563/1563
+Total Missed: 0/1563
+Total Energy Consumed: 6086.23
+Avg Q_Loss: 0.0014, Avg Policy_Loss: 0.9222
+Noise Scale: 0.0313
+Replay Buffer Size: 513434
+Total Steps: 3140
+--- Episode 162 ---
+Episode Reward: -45.12187744632328
+Episode Success Ratio: 100.00%
+Total Completed: 1575/1575
+Total Missed: 0/1575
+Total Energy Consumed: 6445.98
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.9286
+Noise Scale: 0.0310
+Replay Buffer Size: 516602
+Total Steps: 3168
+--- Episode 163 ---
+Episode Reward: -50.09308432299854
+Episode Success Ratio: 100.00%
+Total Completed: 1632/1632
+Total Missed: 0/1632
+Total Energy Consumed: 7156.15
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.9301
+Noise Scale: 0.0306
+Replay Buffer Size: 519882
+Total Steps: 3280
+--- Episode 164 ---
+Episode Reward: -50.63721148565337
+Episode Success Ratio: 100.00%
+Total Completed: 1632/1632
+Total Missed: 0/1632
+Total Energy Consumed: 7233.89
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.9357
+Noise Scale: 0.0303
+Replay Buffer Size: 523163
+Total Steps: 3281
+--- Episode 165 ---
+Episode Reward: -41.25565365537901
+Episode Success Ratio: 100.00%
+Total Completed: 1570/1570
+Total Missed: 0/1570
+Total Energy Consumed: 5893.66
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.9405
+Noise Scale: 0.0299
+Replay Buffer Size: 526322
+Total Steps: 3159
+--- Episode 166 ---
+Episode Reward: -44.841034406834815
+Episode Success Ratio: 100.00%
+Total Completed: 1583/1583
+Total Missed: 0/1583
+Total Energy Consumed: 6405.86
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.9446
+Noise Scale: 0.0296
+Replay Buffer Size: 529501
+Total Steps: 3179
+--- Episode 167 ---
+Episode Reward: -44.187264483303906
+Episode Success Ratio: 100.00%
+Total Completed: 1584/1584
+Total Missed: 0/1584
+Total Energy Consumed: 6312.47
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.9471
+Noise Scale: 0.0292
+Replay Buffer Size: 532684
+Total Steps: 3183
+--- Episode 168 ---
+Episode Reward: -47.923193283314816
+Episode Success Ratio: 100.00%
+Total Completed: 1610/1610
+Total Missed: 0/1610
+Total Energy Consumed: 6846.17
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.9539
+Noise Scale: 0.0289
+Replay Buffer Size: 535921
+Total Steps: 3237
+--- Episode 169 ---
+Episode Reward: -49.05346630325057
+Episode Success Ratio: 100.00%
+Total Completed: 1559/1559
+Total Missed: 0/1559
+Total Energy Consumed: 7007.64
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.9555
+Noise Scale: 0.0286
+Replay Buffer Size: 539055
+Total Steps: 3134
+--- Episode 170 ---
+Episode Reward: -45.33767451477125
+Episode Success Ratio: 100.00%
+Total Completed: 1562/1562
+Total Missed: 0/1562
+Total Energy Consumed: 6476.81
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.9598
+Noise Scale: 0.0283
+Replay Buffer Size: 542195
+Total Steps: 3140
+--- Episode 171 ---
+Episode Reward: -42.49097617857723
+Episode Success Ratio: 100.00%
+Total Completed: 1543/1543
+Total Missed: 0/1543
+Total Energy Consumed: 6070.14
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 0.9650
+Noise Scale: 0.0279
+Replay Buffer Size: 545299
+Total Steps: 3104
+--- Episode 172 ---
+Episode Reward: -49.6674045672893
+Episode Success Ratio: 100.00%
+Total Completed: 1574/1574
+Total Missed: 0/1574
+Total Energy Consumed: 7095.34
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.9698
+Noise Scale: 0.0276
+Replay Buffer Size: 548460
+Total Steps: 3161
+--- Episode 173 ---
+Episode Reward: -42.322535587974095
+Episode Success Ratio: 100.00%
+Total Completed: 1539/1539
+Total Missed: 0/1539
+Total Energy Consumed: 6046.08
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.9723
+Noise Scale: 0.0273
+Replay Buffer Size: 551551
+Total Steps: 3091
+--- Episode 174 ---
+Episode Reward: -45.74468524999717
+Episode Success Ratio: 100.00%
+Total Completed: 1579/1579
+Total Missed: 0/1579
+Total Energy Consumed: 6534.95
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 0.9771
+Noise Scale: 0.0270
+Replay Buffer Size: 554725
+Total Steps: 3174
+--- Episode 175 ---
+Episode Reward: -41.331669534016335
+Episode Success Ratio: 100.00%
+Total Completed: 1588/1588
+Total Missed: 0/1588
+Total Energy Consumed: 5904.52
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 0.9801
+Noise Scale: 0.0267
+Replay Buffer Size: 557916
+Total Steps: 3191
+--- Episode 176 ---
+Episode Reward: -44.2597070751186
+Episode Success Ratio: 100.00%
+Total Completed: 1534/1534
+Total Missed: 0/1534
+Total Energy Consumed: 6322.82
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.9851
+Noise Scale: 0.0264
+Replay Buffer Size: 560997
+Total Steps: 3081
+--- Episode 177 ---
+Episode Reward: -49.51568920801481
+Episode Success Ratio: 100.00%
+Total Completed: 1632/1632
+Total Missed: 0/1632
+Total Energy Consumed: 7073.67
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 0.9911
+Noise Scale: 0.0261
+Replay Buffer Size: 564279
+Total Steps: 3282
+--- Episode 178 ---
+Episode Reward: -44.440617800307045
+Episode Success Ratio: 100.00%
+Total Completed: 1568/1568
+Total Missed: 0/1568
+Total Energy Consumed: 6348.66
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 0.9939
+Noise Scale: 0.0258
+Replay Buffer Size: 567430
+Total Steps: 3151
+--- Episode 179 ---
+Episode Reward: -47.48391237140052
+Episode Success Ratio: 100.00%
+Total Completed: 1577/1577
+Total Missed: 0/1577
+Total Energy Consumed: 6783.42
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 0.9978
+Noise Scale: 0.0255
+Replay Buffer Size: 570603
+Total Steps: 3173
+--- Episode 180 ---
+Episode Reward: -42.4063859336967
+Episode Success Ratio: 100.00%
+Total Completed: 1491/1491
+Total Missed: 0/1491
+Total Energy Consumed: 6058.06
+Avg Q_Loss: 0.0015, Avg Policy_Loss: 1.0034
+Noise Scale: 0.0252
+Replay Buffer Size: 573604
+Total Steps: 3001
+--- Episode 181 ---
+Episode Reward: -48.24670550922789
+Episode Success Ratio: 100.00%
+Total Completed: 1628/1628
+Total Missed: 0/1628
+Total Energy Consumed: 6892.39
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 1.0078
+Noise Scale: 0.0249
+Replay Buffer Size: 576881
+Total Steps: 3277
+--- Episode 182 ---
+Episode Reward: -43.00845336993935
+Episode Success Ratio: 100.00%
+Total Completed: 1529/1529
+Total Missed: 0/1529
+Total Energy Consumed: 6144.06
+Avg Q_Loss: 0.0008, Avg Policy_Loss: 1.0111
+Noise Scale: 0.0246
+Replay Buffer Size: 579957
+Total Steps: 3076
+--- Episode 183 ---
+Episode Reward: -42.77134854365654
+Episode Success Ratio: 100.00%
+Total Completed: 1533/1533
+Total Missed: 0/1533
+Total Energy Consumed: 6110.19
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 1.0176
+Noise Scale: 0.0243
+Replay Buffer Size: 583043
+Total Steps: 3086
+--- Episode 184 ---
+Episode Reward: -47.6422789752319
+Episode Success Ratio: 100.00%
+Total Completed: 1621/1621
+Total Missed: 0/1621
+Total Energy Consumed: 6806.04
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 1.0191
+Noise Scale: 0.0240
+Replay Buffer Size: 586304
+Total Steps: 3261
+--- Episode 185 ---
+Episode Reward: -46.832368492620674
+Episode Success Ratio: 100.00%
+Total Completed: 1529/1529
+Total Missed: 0/1529
+Total Energy Consumed: 6690.34
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 1.0242
+Noise Scale: 0.0238
+Replay Buffer Size: 589380
+Total Steps: 3076
+--- Episode 186 ---
+Episode Reward: -44.19062742152356
+Episode Success Ratio: 100.00%
+Total Completed: 1546/1546
+Total Missed: 0/1546
+Total Energy Consumed: 6312.95
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 1.0251
+Noise Scale: 0.0235
+Replay Buffer Size: 592491
+Total Steps: 3111
+--- Episode 187 ---
+Episode Reward: -44.961686581525946
+Episode Success Ratio: 99.94%
+Total Completed: 1557/1558
+Total Missed: 1/1558
+Total Energy Consumed: 6394.53
+Avg Q_Loss: 0.0009, Avg Policy_Loss: 1.0324
+Noise Scale: 0.0232
+Replay Buffer Size: 595623
+Total Steps: 3132
+--- Episode 188 ---
+Episode Reward: -41.93237132818427
+Episode Success Ratio: 100.00%
+Total Completed: 1575/1575
+Total Missed: 0/1575
+Total Energy Consumed: 5990.34
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 1.0331
+Noise Scale: 0.0230
+Replay Buffer Size: 598793
+Total Steps: 3170
+--- Episode 189 ---
+Episode Reward: -43.9861531888984
+Episode Success Ratio: 99.87%
+Total Completed: 1554/1556
+Total Missed: 2/1556
+Total Energy Consumed: 6226.59
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 1.0376
+Noise Scale: 0.0227
+Replay Buffer Size: 601922
+Total Steps: 3129
+--- Episode 190 ---
+Episode Reward: -43.98195611383976
+Episode Success Ratio: 100.00%
+Total Completed: 1566/1566
+Total Missed: 0/1566
+Total Energy Consumed: 6283.14
+Avg Q_Loss: 0.0015, Avg Policy_Loss: 1.0424
+Noise Scale: 0.0224
+Replay Buffer Size: 605069
+Total Steps: 3147
+--- Episode 191 ---
+Episode Reward: -44.306467856749585
+Episode Success Ratio: 100.00%
+Total Completed: 1520/1520
+Total Missed: 0/1520
+Total Energy Consumed: 6329.50
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 1.0472
+Noise Scale: 0.0222
+Replay Buffer Size: 608125
+Total Steps: 3056
+--- Episode 192 ---
+Episode Reward: -46.263359704800784
+Episode Success Ratio: 100.00%
+Total Completed: 1556/1556
+Total Missed: 0/1556
+Total Energy Consumed: 6609.05
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 1.0504
+Noise Scale: 0.0219
+Replay Buffer Size: 611253
+Total Steps: 3128
+--- Episode 193 ---
+Episode Reward: -49.00419912056325
+Episode Success Ratio: 100.00%
+Total Completed: 1648/1648
+Total Missed: 0/1648
+Total Energy Consumed: 7000.60
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 1.0541
+Noise Scale: 0.0217
+Replay Buffer Size: 614561
+Total Steps: 3308
+--- Episode 194 ---
+Episode Reward: -46.125094260945865
+Episode Success Ratio: 99.94%
+Total Completed: 1552/1553
+Total Missed: 1/1553
+Total Energy Consumed: 6560.73
+Avg Q_Loss: 0.0013, Avg Policy_Loss: 1.0600
+Noise Scale: 0.0214
+Replay Buffer Size: 617687
+Total Steps: 3126
+--- Episode 195 ---
+Episode Reward: -44.34147469691975
+Episode Success Ratio: 100.00%
+Total Completed: 1528/1528
+Total Missed: 0/1528
+Total Energy Consumed: 6334.50
+Avg Q_Loss: 0.0011, Avg Policy_Loss: 1.0606
+Noise Scale: 0.0212
+Replay Buffer Size: 620759
+Total Steps: 3072
+--- Episode 196 ---
+Episode Reward: -48.07474882124084
+Episode Success Ratio: 99.94%
+Total Completed: 1589/1590
+Total Missed: 1/1590
+Total Energy Consumed: 6839.25
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 1.0672
+Noise Scale: 0.0209
+Replay Buffer Size: 623960
+Total Steps: 3201
+--- Episode 197 ---
+Episode Reward: -45.27754457289538
+Episode Success Ratio: 100.00%
+Total Completed: 1543/1543
+Total Missed: 0/1543
+Total Energy Consumed: 6468.22
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 1.0710
+Noise Scale: 0.0207
+Replay Buffer Size: 627061
+Total Steps: 3101
+--- Episode 198 ---
+Episode Reward: -48.36110410847775
+Episode Success Ratio: 99.87%
+Total Completed: 1593/1595
+Total Missed: 2/1595
+Total Energy Consumed: 6851.59
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 1.0717
+Noise Scale: 0.0205
+Replay Buffer Size: 630268
+Total Steps: 3207
+--- Episode 199 ---
+Episode Reward: -45.15726680423607
+Episode Success Ratio: 100.00%
+Total Completed: 1596/1596
+Total Missed: 0/1596
+Total Energy Consumed: 6451.04
+Avg Q_Loss: 0.0010, Avg Policy_Loss: 1.0771
+Noise Scale: 0.0202
+Replay Buffer Size: 633479
+Total Steps: 3211
+--- Episode 200 ---
+Episode Reward: -45.94980936744267
+Episode Success Ratio: 100.00%
+Total Completed: 1558/1558
+Total Missed: 0/1558
+Total Energy Consumed: 6564.26
+Avg Q_Loss: 0.0012, Avg Policy_Loss: 1.0827
+Noise Scale: 0.0200
+Replay Buffer Size: 636615
+Total Steps: 3136
+Models saved to ./saves/experiment-15/ep_200
+Training finished.
+Starting fixed task set performance comparison...
+Loaded fixed task set with per-core utilization: 0.5000
+Testing with 100 different arrival time patterns
+Loading RL agent model from: ./saves/experiment-15/ep_200
+
+Test run 1/100
+RL   - Success: 100.00%, Energy: 6081.94, Completed: 1609, Missed: 0
+GEDF - Success: 100.00%, Energy: 10286.26, Completed: 1631, Missed: 0
+ES-DVFS - Success: 90.59%, Energy: 3639.47, Completed: 1396, Missed: 145
+
+Test run 2/100
+RL   - Success: 100.00%, Energy: 6012.30, Completed: 1566, Missed: 0
+GEDF - Success: 100.00%, Energy: 10417.07, Completed: 1612, Missed: 0
+ES-DVFS - Success: 93.13%, Energy: 3711.38, Completed: 1477, Missed: 109
+
+Test run 3/100
+RL   - Success: 100.00%, Energy: 6733.45, Completed: 1582, Missed: 0
+GEDF - Success: 100.00%, Energy: 10412.62, Completed: 1601, Missed: 0
+ES-DVFS - Success: 91.56%, Energy: 3315.26, Completed: 1464, Missed: 135
+
+Test run 4/100
+RL   - Success: 100.00%, Energy: 5962.81, Completed: 1635, Missed: 0
+GEDF - Success: 100.00%, Energy: 10292.28, Completed: 1617, Missed: 0
+ES-DVFS - Success: 91.70%, Energy: 4081.97, Completed: 1404, Missed: 127
+
+Test run 5/100
+RL   - Success: 100.00%, Energy: 5954.03, Completed: 1584, Missed: 0
+GEDF - Success: 100.00%, Energy: 10569.03, Completed: 1635, Missed: 0
+ES-DVFS - Success: 92.01%, Energy: 3936.60, Completed: 1370, Missed: 119
+
+Test run 6/100
+RL   - Success: 100.00%, Energy: 5941.78, Completed: 1623, Missed: 0
+GEDF - Success: 100.00%, Energy: 10250.72, Completed: 1560, Missed: 0
+ES-DVFS - Success: 92.34%, Energy: 3690.36, Completed: 1398, Missed: 116
+
+Test run 7/100
+RL   - Success: 100.00%, Energy: 6266.88, Completed: 1573, Missed: 0
+GEDF - Success: 100.00%, Energy: 9982.62, Completed: 1538, Missed: 0
+ES-DVFS - Success: 93.05%, Energy: 3955.26, Completed: 1472, Missed: 110
+
+Test run 8/100
+RL   - Success: 100.00%, Energy: 5497.92, Completed: 1504, Missed: 0
+GEDF - Success: 100.00%, Energy: 10534.27, Completed: 1630, Missed: 0
+ES-DVFS - Success: 93.18%, Energy: 4206.44, Completed: 1543, Missed: 113
+
+Test run 9/100
+RL   - Success: 100.00%, Energy: 6248.44, Completed: 1563, Missed: 0
+GEDF - Success: 100.00%, Energy: 10299.04, Completed: 1582, Missed: 0
+ES-DVFS - Success: 93.56%, Energy: 3667.25, Completed: 1452, Missed: 100
+
+Test run 10/100
+RL   - Success: 100.00%, Energy: 6891.78, Completed: 1656, Missed: 0
+GEDF - Success: 100.00%, Energy: 10694.69, Completed: 1600, Missed: 0
+ES-DVFS - Success: 92.07%, Energy: 3533.35, Completed: 1429, Missed: 123
+
+Test run 11/100
+RL   - Success: 100.00%, Energy: 6138.46, Completed: 1617, Missed: 0
+GEDF - Success: 100.00%, Energy: 10304.13, Completed: 1577, Missed: 0
+ES-DVFS - Success: 91.76%, Energy: 4265.80, Completed: 1525, Missed: 137
+
+Test run 12/100
+RL   - Success: 100.00%, Energy: 6668.37, Completed: 1593, Missed: 0
+GEDF - Success: 100.00%, Energy: 10480.21, Completed: 1557, Missed: 0
+ES-DVFS - Success: 92.89%, Energy: 4276.83, Completed: 1476, Missed: 113
+
+Test run 13/100
+RL   - Success: 100.00%, Energy: 6154.64, Completed: 1573, Missed: 0
+GEDF - Success: 100.00%, Energy: 10375.24, Completed: 1599, Missed: 0
+ES-DVFS - Success: 93.50%, Energy: 3966.91, Completed: 1468, Missed: 102
+
+Test run 14/100
+RL   - Success: 100.00%, Energy: 6881.31, Completed: 1654, Missed: 0
+GEDF - Success: 100.00%, Energy: 10503.77, Completed: 1641, Missed: 0
+ES-DVFS - Success: 92.61%, Energy: 3630.71, Completed: 1429, Missed: 114
+
+Test run 15/100
+RL   - Success: 100.00%, Energy: 5263.30, Completed: 1525, Missed: 0
+GEDF - Success: 100.00%, Energy: 10056.27, Completed: 1576, Missed: 0
+ES-DVFS - Success: 93.05%, Energy: 3818.92, Completed: 1487, Missed: 111
+
+Test run 16/100
+RL   - Success: 100.00%, Energy: 6584.58, Completed: 1583, Missed: 0
+GEDF - Success: 100.00%, Energy: 10215.53, Completed: 1567, Missed: 0
+ES-DVFS - Success: 92.48%, Energy: 3603.18, Completed: 1414, Missed: 115
+
+Test run 17/100
+RL   - Success: 100.00%, Energy: 5552.93, Completed: 1528, Missed: 0
+GEDF - Success: 100.00%, Energy: 10421.80, Completed: 1619, Missed: 0
+ES-DVFS - Success: 93.30%, Energy: 3928.49, Completed: 1463, Missed: 105
+
+Test run 18/100
+RL   - Success: 100.00%, Energy: 6180.86, Completed: 1616, Missed: 0
+GEDF - Success: 100.00%, Energy: 10723.64, Completed: 1653, Missed: 0
+ES-DVFS - Success: 92.88%, Energy: 3835.97, Completed: 1447, Missed: 111
+
+Test run 19/100
+RL   - Success: 100.00%, Energy: 5732.90, Completed: 1514, Missed: 0
+GEDF - Success: 100.00%, Energy: 10481.22, Completed: 1628, Missed: 0
+ES-DVFS - Success: 93.08%, Energy: 3954.05, Completed: 1506, Missed: 112
+
+Test run 20/100
+RL   - Success: 100.00%, Energy: 6111.23, Completed: 1568, Missed: 0
+GEDF - Success: 100.00%, Energy: 10396.04, Completed: 1555, Missed: 0
+ES-DVFS - Success: 92.99%, Energy: 3977.18, Completed: 1459, Missed: 110
+
+Test run 21/100
+RL   - Success: 100.00%, Energy: 6713.93, Completed: 1618, Missed: 0
+GEDF - Success: 100.00%, Energy: 10339.51, Completed: 1567, Missed: 0
+ES-DVFS - Success: 93.64%, Energy: 3981.09, Completed: 1516, Missed: 103
+
+Test run 22/100
+RL   - Success: 100.00%, Energy: 5979.31, Completed: 1628, Missed: 0
+GEDF - Success: 100.00%, Energy: 10133.87, Completed: 1570, Missed: 0
+ES-DVFS - Success: 92.53%, Energy: 3825.15, Completed: 1473, Missed: 119
+
+Test run 23/100
+RL   - Success: 100.00%, Energy: 5931.83, Completed: 1582, Missed: 0
+GEDF - Success: 100.00%, Energy: 10981.85, Completed: 1607, Missed: 0
+ES-DVFS - Success: 94.03%, Energy: 3986.63, Completed: 1450, Missed: 92
+
+Test run 24/100
+RL   - Success: 100.00%, Energy: 6179.91, Completed: 1593, Missed: 0
+GEDF - Success: 100.00%, Energy: 10354.74, Completed: 1596, Missed: 0
+ES-DVFS - Success: 92.84%, Energy: 3971.07, Completed: 1439, Missed: 111
+
+Test run 25/100
+RL   - Success: 100.00%, Energy: 5677.71, Completed: 1512, Missed: 0
+GEDF - Success: 100.00%, Energy: 10383.15, Completed: 1598, Missed: 0
+ES-DVFS - Success: 94.87%, Energy: 4325.94, Completed: 1552, Missed: 84
+
+Test run 26/100
+RL   - Success: 100.00%, Energy: 5559.76, Completed: 1563, Missed: 0
+GEDF - Success: 100.00%, Energy: 10072.20, Completed: 1533, Missed: 0
+ES-DVFS - Success: 93.86%, Energy: 3986.56, Completed: 1468, Missed: 96
+
+Test run 27/100
+RL   - Success: 100.00%, Energy: 6426.82, Completed: 1607, Missed: 0
+GEDF - Success: 100.00%, Energy: 10215.37, Completed: 1617, Missed: 0
+ES-DVFS - Success: 92.72%, Energy: 3744.24, Completed: 1413, Missed: 111
+
+Test run 28/100
+RL   - Success: 100.00%, Energy: 6698.38, Completed: 1641, Missed: 0
+GEDF - Success: 100.00%, Energy: 10325.07, Completed: 1590, Missed: 0
+ES-DVFS - Success: 92.85%, Energy: 4074.19, Completed: 1480, Missed: 114
+
+Test run 29/100
+RL   - Success: 100.00%, Energy: 6253.66, Completed: 1626, Missed: 0
+GEDF - Success: 100.00%, Energy: 10118.23, Completed: 1546, Missed: 0
+ES-DVFS - Success: 92.46%, Energy: 3523.26, Completed: 1386, Missed: 113
+
+Test run 30/100
+RL   - Success: 100.00%, Energy: 5669.19, Completed: 1506, Missed: 0
+GEDF - Success: 100.00%, Energy: 10384.83, Completed: 1567, Missed: 0
+ES-DVFS - Success: 93.32%, Energy: 4056.22, Completed: 1452, Missed: 104
+
+Test run 31/100
+RL   - Success: 100.00%, Energy: 6615.97, Completed: 1581, Missed: 0
+GEDF - Success: 100.00%, Energy: 10485.94, Completed: 1556, Missed: 0
+ES-DVFS - Success: 93.63%, Energy: 4304.07, Completed: 1558, Missed: 106
+
+Test run 32/100
+RL   - Success: 100.00%, Energy: 6057.96, Completed: 1587, Missed: 0
+GEDF - Success: 100.00%, Energy: 9946.17, Completed: 1638, Missed: 0
+ES-DVFS - Success: 92.48%, Energy: 4096.43, Completed: 1464, Missed: 119
+
+Test run 33/100
+RL   - Success: 100.00%, Energy: 5504.33, Completed: 1575, Missed: 0
+GEDF - Success: 100.00%, Energy: 10115.14, Completed: 1615, Missed: 0
+ES-DVFS - Success: 92.15%, Energy: 4093.32, Completed: 1480, Missed: 126
+
+Test run 34/100
+RL   - Success: 100.00%, Energy: 5725.06, Completed: 1588, Missed: 0
+GEDF - Success: 100.00%, Energy: 10305.68, Completed: 1645, Missed: 0
+ES-DVFS - Success: 91.46%, Energy: 3907.89, Completed: 1457, Missed: 136
+
+Test run 35/100
+RL   - Success: 100.00%, Energy: 6132.80, Completed: 1496, Missed: 0
+GEDF - Success: 100.00%, Energy: 10268.54, Completed: 1614, Missed: 0
+ES-DVFS - Success: 92.69%, Energy: 3793.46, Completed: 1459, Missed: 115
+
+Test run 36/100
+RL   - Success: 100.00%, Energy: 5793.47, Completed: 1527, Missed: 0
+GEDF - Success: 100.00%, Energy: 10319.25, Completed: 1601, Missed: 0
+ES-DVFS - Success: 93.17%, Energy: 4137.77, Completed: 1487, Missed: 109
+
+Test run 37/100
+RL   - Success: 100.00%, Energy: 5819.08, Completed: 1531, Missed: 0
+GEDF - Success: 100.00%, Energy: 10456.23, Completed: 1614, Missed: 0
+ES-DVFS - Success: 92.61%, Energy: 3935.14, Completed: 1466, Missed: 117
+
+Test run 38/100
+RL   - Success: 100.00%, Energy: 5834.21, Completed: 1550, Missed: 0
+GEDF - Success: 100.00%, Energy: 10582.68, Completed: 1609, Missed: 0
+ES-DVFS - Success: 92.99%, Energy: 4134.83, Completed: 1407, Missed: 106
+
+Test run 39/100
+RL   - Success: 100.00%, Energy: 5726.90, Completed: 1503, Missed: 0
+GEDF - Success: 100.00%, Energy: 10845.16, Completed: 1595, Missed: 0
+ES-DVFS - Success: 93.25%, Energy: 4104.81, Completed: 1505, Missed: 109
+
+Test run 40/100
+RL   - Success: 100.00%, Energy: 6220.79, Completed: 1610, Missed: 0
+GEDF - Success: 100.00%, Energy: 10456.79, Completed: 1595, Missed: 0
+ES-DVFS - Success: 93.86%, Energy: 3670.17, Completed: 1483, Missed: 97
+
+Test run 41/100
+RL   - Success: 100.00%, Energy: 5943.82, Completed: 1568, Missed: 0
+GEDF - Success: 100.00%, Energy: 10285.27, Completed: 1598, Missed: 0
+ES-DVFS - Success: 91.67%, Energy: 3996.96, Completed: 1464, Missed: 133
+
+Test run 42/100
+RL   - Success: 100.00%, Energy: 6075.52, Completed: 1499, Missed: 0
+GEDF - Success: 100.00%, Energy: 10625.99, Completed: 1586, Missed: 0
+ES-DVFS - Success: 93.98%, Energy: 3777.61, Completed: 1545, Missed: 99
+
+Test run 43/100
+RL   - Success: 100.00%, Energy: 6031.31, Completed: 1554, Missed: 0
+GEDF - Success: 100.00%, Energy: 10235.16, Completed: 1546, Missed: 0
+ES-DVFS - Success: 92.53%, Energy: 3456.71, Completed: 1413, Missed: 114
+
+Test run 44/100
+RL   - Success: 100.00%, Energy: 6418.40, Completed: 1597, Missed: 0
+GEDF - Success: 100.00%, Energy: 10549.78, Completed: 1597, Missed: 0
+ES-DVFS - Success: 93.15%, Energy: 3816.05, Completed: 1456, Missed: 107
+
+Test run 45/100
+RL   - Success: 100.00%, Energy: 5475.79, Completed: 1560, Missed: 0
+GEDF - Success: 100.00%, Energy: 10421.00, Completed: 1631, Missed: 0
+ES-DVFS - Success: 93.37%, Energy: 3637.19, Completed: 1436, Missed: 102
+
+Test run 46/100
+RL   - Success: 100.00%, Energy: 5968.62, Completed: 1581, Missed: 0
+GEDF - Success: 100.00%, Energy: 10327.52, Completed: 1566, Missed: 0
+ES-DVFS - Success: 93.26%, Energy: 3950.91, Completed: 1425, Missed: 103
+
+Test run 47/100
+RL   - Success: 100.00%, Energy: 5673.74, Completed: 1606, Missed: 0
+GEDF - Success: 100.00%, Energy: 10624.13, Completed: 1601, Missed: 0
+ES-DVFS - Success: 92.38%, Energy: 4566.16, Completed: 1503, Missed: 124
+
+Test run 48/100
+RL   - Success: 100.00%, Energy: 6497.31, Completed: 1628, Missed: 0
+GEDF - Success: 100.00%, Energy: 10666.36, Completed: 1616, Missed: 0
+ES-DVFS - Success: 92.08%, Energy: 3748.50, Completed: 1453, Missed: 125
+
+Test run 49/100
+RL   - Success: 100.00%, Energy: 5890.17, Completed: 1565, Missed: 0
+GEDF - Success: 100.00%, Energy: 10319.12, Completed: 1604, Missed: 0
+ES-DVFS - Success: 93.85%, Energy: 3822.09, Completed: 1419, Missed: 93
+
+Test run 50/100
+RL   - Success: 100.00%, Energy: 5369.17, Completed: 1534, Missed: 0
+GEDF - Success: 100.00%, Energy: 10815.28, Completed: 1637, Missed: 0
+ES-DVFS - Success: 93.25%, Energy: 3857.81, Completed: 1493, Missed: 108
+
+Test run 51/100
+RL   - Success: 100.00%, Energy: 6145.62, Completed: 1563, Missed: 0
+GEDF - Success: 100.00%, Energy: 10102.45, Completed: 1570, Missed: 0
+ES-DVFS - Success: 93.32%, Energy: 3663.48, Completed: 1452, Missed: 104
+
+Test run 52/100
+RL   - Success: 100.00%, Energy: 5585.59, Completed: 1499, Missed: 0
+GEDF - Success: 100.00%, Energy: 10720.66, Completed: 1573, Missed: 0
+ES-DVFS - Success: 92.37%, Energy: 4020.55, Completed: 1465, Missed: 121
+
+Test run 53/100
+RL   - Success: 100.00%, Energy: 6111.74, Completed: 1542, Missed: 0
+GEDF - Success: 100.00%, Energy: 10330.58, Completed: 1602, Missed: 0
+ES-DVFS - Success: 92.18%, Energy: 3926.13, Completed: 1450, Missed: 123
+
+Test run 54/100
+RL   - Success: 100.00%, Energy: 6060.59, Completed: 1550, Missed: 0
+GEDF - Success: 100.00%, Energy: 10398.21, Completed: 1612, Missed: 0
+ES-DVFS - Success: 92.55%, Energy: 4074.32, Completed: 1504, Missed: 121
+
+Test run 55/100
+RL   - Success: 100.00%, Energy: 6159.30, Completed: 1589, Missed: 0
+GEDF - Success: 100.00%, Energy: 10310.65, Completed: 1618, Missed: 0
+ES-DVFS - Success: 91.10%, Energy: 3629.27, Completed: 1402, Missed: 137
+
+Test run 56/100
+RL   - Success: 100.00%, Energy: 6307.97, Completed: 1620, Missed: 0
+GEDF - Success: 100.00%, Energy: 10170.96, Completed: 1569, Missed: 0
+ES-DVFS - Success: 92.97%, Energy: 4052.15, Completed: 1442, Missed: 109
+
+Test run 57/100
+RL   - Success: 100.00%, Energy: 6338.85, Completed: 1608, Missed: 0
+GEDF - Success: 100.00%, Energy: 10202.52, Completed: 1573, Missed: 0
+ES-DVFS - Success: 93.43%, Energy: 4072.16, Completed: 1493, Missed: 105
+
+Test run 58/100
+RL   - Success: 100.00%, Energy: 5744.81, Completed: 1592, Missed: 0
+GEDF - Success: 100.00%, Energy: 10399.17, Completed: 1603, Missed: 0
+ES-DVFS - Success: 93.44%, Energy: 4158.15, Completed: 1453, Missed: 102
+
+Test run 59/100
+RL   - Success: 100.00%, Energy: 6045.22, Completed: 1602, Missed: 0
+GEDF - Success: 100.00%, Energy: 10914.26, Completed: 1669, Missed: 0
+ES-DVFS - Success: 91.87%, Energy: 3844.03, Completed: 1458, Missed: 129
+
+Test run 60/100
+RL   - Success: 100.00%, Energy: 6190.01, Completed: 1589, Missed: 0
+GEDF - Success: 100.00%, Energy: 10253.80, Completed: 1541, Missed: 0
+ES-DVFS - Success: 94.04%, Energy: 4014.14, Completed: 1514, Missed: 96
+
+Test run 61/100
+RL   - Success: 100.00%, Energy: 6145.67, Completed: 1594, Missed: 0
+GEDF - Success: 100.00%, Energy: 10375.49, Completed: 1534, Missed: 0
+ES-DVFS - Success: 92.73%, Energy: 4143.25, Completed: 1442, Missed: 113
+
+Test run 62/100
+RL   - Success: 100.00%, Energy: 5329.51, Completed: 1537, Missed: 0
+GEDF - Success: 100.00%, Energy: 10505.32, Completed: 1559, Missed: 0
+ES-DVFS - Success: 93.07%, Energy: 3903.29, Completed: 1451, Missed: 108
+
+Test run 63/100
+RL   - Success: 100.00%, Energy: 6260.45, Completed: 1594, Missed: 0
+GEDF - Success: 100.00%, Energy: 10090.10, Completed: 1539, Missed: 0
+ES-DVFS - Success: 93.39%, Energy: 4164.89, Completed: 1497, Missed: 106
+
+Test run 64/100
+RL   - Success: 100.00%, Energy: 6120.12, Completed: 1603, Missed: 0
+GEDF - Success: 100.00%, Energy: 10474.81, Completed: 1589, Missed: 0
+ES-DVFS - Success: 92.83%, Energy: 3922.76, Completed: 1450, Missed: 112
+
+Test run 65/100
+RL   - Success: 100.00%, Energy: 5941.64, Completed: 1587, Missed: 0
+GEDF - Success: 100.00%, Energy: 9976.87, Completed: 1563, Missed: 0
+ES-DVFS - Success: 93.80%, Energy: 4359.80, Completed: 1513, Missed: 100
+
+Test run 66/100
+RL   - Success: 100.00%, Energy: 5801.35, Completed: 1611, Missed: 0
+GEDF - Success: 100.00%, Energy: 10372.63, Completed: 1662, Missed: 0
+ES-DVFS - Success: 92.49%, Energy: 3830.19, Completed: 1368, Missed: 111
+
+Test run 67/100
+RL   - Success: 100.00%, Energy: 5669.06, Completed: 1528, Missed: 0
+GEDF - Success: 100.00%, Energy: 10168.67, Completed: 1540, Missed: 0
+ES-DVFS - Success: 94.88%, Energy: 4178.44, Completed: 1481, Missed: 80
+
+Test run 68/100
+RL   - Success: 100.00%, Energy: 5380.58, Completed: 1534, Missed: 0
+GEDF - Success: 100.00%, Energy: 10366.13, Completed: 1554, Missed: 0
+ES-DVFS - Success: 93.67%, Energy: 4230.16, Completed: 1479, Missed: 100
+
+Test run 69/100
+RL   - Success: 100.00%, Energy: 6233.36, Completed: 1601, Missed: 0
+GEDF - Success: 100.00%, Energy: 10095.27, Completed: 1567, Missed: 0
+ES-DVFS - Success: 92.74%, Energy: 3725.18, Completed: 1468, Missed: 115
+
+Test run 70/100
+RL   - Success: 100.00%, Energy: 6015.61, Completed: 1615, Missed: 0
+GEDF - Success: 100.00%, Energy: 10985.60, Completed: 1655, Missed: 0
+ES-DVFS - Success: 92.72%, Energy: 3901.25, Completed: 1478, Missed: 116
+
+Test run 71/100
+RL   - Success: 100.00%, Energy: 6686.33, Completed: 1607, Missed: 0
+GEDF - Success: 100.00%, Energy: 9992.01, Completed: 1578, Missed: 0
+ES-DVFS - Success: 92.13%, Energy: 3558.76, Completed: 1452, Missed: 124
+
+Test run 72/100
+RL   - Success: 100.00%, Energy: 5925.56, Completed: 1604, Missed: 0
+GEDF - Success: 100.00%, Energy: 10428.71, Completed: 1629, Missed: 0
+ES-DVFS - Success: 92.48%, Energy: 3855.58, Completed: 1488, Missed: 121
+
+Test run 73/100
+RL   - Success: 100.00%, Energy: 5709.68, Completed: 1553, Missed: 0
+GEDF - Success: 100.00%, Energy: 10718.89, Completed: 1657, Missed: 0
+ES-DVFS - Success: 93.53%, Energy: 3775.26, Completed: 1417, Missed: 98
+
+Test run 74/100
+RL   - Success: 100.00%, Energy: 6130.17, Completed: 1540, Missed: 0
+GEDF - Success: 100.00%, Energy: 10612.70, Completed: 1582, Missed: 0
+ES-DVFS - Success: 93.51%, Energy: 3988.70, Completed: 1499, Missed: 104
+
+Test run 75/100
+RL   - Success: 100.00%, Energy: 6661.72, Completed: 1679, Missed: 0
+GEDF - Success: 100.00%, Energy: 10538.25, Completed: 1572, Missed: 0
+ES-DVFS - Success: 91.88%, Energy: 3221.49, Completed: 1369, Missed: 121
+
+Test run 76/100
+RL   - Success: 100.00%, Energy: 5915.38, Completed: 1599, Missed: 0
+GEDF - Success: 100.00%, Energy: 9884.49, Completed: 1591, Missed: 0
+ES-DVFS - Success: 93.55%, Energy: 3691.45, Completed: 1422, Missed: 98
+
+Test run 77/100
+RL   - Success: 100.00%, Energy: 5669.23, Completed: 1615, Missed: 0
+GEDF - Success: 100.00%, Energy: 10221.10, Completed: 1587, Missed: 0
+ES-DVFS - Success: 92.78%, Energy: 3781.48, Completed: 1464, Missed: 114
+
+Test run 78/100
+RL   - Success: 100.00%, Energy: 6024.24, Completed: 1530, Missed: 0
+GEDF - Success: 100.00%, Energy: 10330.98, Completed: 1660, Missed: 0
+ES-DVFS - Success: 92.52%, Energy: 3884.94, Completed: 1422, Missed: 115
+
+Test run 79/100
+RL   - Success: 100.00%, Energy: 5953.41, Completed: 1522, Missed: 0
+GEDF - Success: 100.00%, Energy: 10661.95, Completed: 1653, Missed: 0
+ES-DVFS - Success: 92.76%, Energy: 3767.42, Completed: 1461, Missed: 114
+
+Test run 80/100
+RL   - Success: 100.00%, Energy: 5918.56, Completed: 1502, Missed: 0
+GEDF - Success: 100.00%, Energy: 10356.95, Completed: 1630, Missed: 0
+ES-DVFS - Success: 93.73%, Energy: 3923.82, Completed: 1510, Missed: 101
+
+Test run 81/100
+RL   - Success: 100.00%, Energy: 6256.27, Completed: 1577, Missed: 0
+GEDF - Success: 100.00%, Energy: 10331.96, Completed: 1547, Missed: 0
+ES-DVFS - Success: 93.14%, Energy: 4011.84, Completed: 1493, Missed: 110
+
+Test run 82/100
+RL   - Success: 100.00%, Energy: 5746.42, Completed: 1592, Missed: 0
+GEDF - Success: 100.00%, Energy: 10337.09, Completed: 1542, Missed: 0
+ES-DVFS - Success: 92.68%, Energy: 3496.12, Completed: 1392, Missed: 110
+
+Test run 83/100
+RL   - Success: 100.00%, Energy: 5522.48, Completed: 1560, Missed: 0
+GEDF - Success: 100.00%, Energy: 10671.82, Completed: 1648, Missed: 0
+ES-DVFS - Success: 92.55%, Energy: 3522.89, Completed: 1354, Missed: 109
+
+Test run 84/100
+RL   - Success: 100.00%, Energy: 5712.86, Completed: 1528, Missed: 0
+GEDF - Success: 100.00%, Energy: 10519.53, Completed: 1641, Missed: 0
+ES-DVFS - Success: 92.93%, Energy: 3998.75, Completed: 1537, Missed: 117
+
+Test run 85/100
+RL   - Success: 100.00%, Energy: 6108.33, Completed: 1546, Missed: 0
+GEDF - Success: 100.00%, Energy: 10446.72, Completed: 1583, Missed: 0
+ES-DVFS - Success: 94.00%, Energy: 3843.61, Completed: 1488, Missed: 95
+
+Test run 86/100
+RL   - Success: 100.00%, Energy: 5674.01, Completed: 1553, Missed: 0
+GEDF - Success: 100.00%, Energy: 10692.50, Completed: 1640, Missed: 0
+ES-DVFS - Success: 93.28%, Energy: 3989.25, Completed: 1471, Missed: 106
+
+Test run 87/100
+RL   - Success: 100.00%, Energy: 6080.98, Completed: 1566, Missed: 0
+GEDF - Success: 100.00%, Energy: 10093.94, Completed: 1587, Missed: 0
+ES-DVFS - Success: 93.29%, Energy: 3898.76, Completed: 1488, Missed: 107
+
+Test run 88/100
+RL   - Success: 100.00%, Energy: 6089.52, Completed: 1588, Missed: 0
+GEDF - Success: 100.00%, Energy: 10709.13, Completed: 1573, Missed: 0
+ES-DVFS - Success: 92.50%, Energy: 3735.66, Completed: 1443, Missed: 117
+
+Test run 89/100
+RL   - Success: 100.00%, Energy: 6617.46, Completed: 1642, Missed: 0
+GEDF - Success: 100.00%, Energy: 10206.98, Completed: 1556, Missed: 0
+ES-DVFS - Success: 94.19%, Energy: 4334.72, Completed: 1507, Missed: 93
+
+Test run 90/100
+RL   - Success: 100.00%, Energy: 6249.04, Completed: 1531, Missed: 0
+GEDF - Success: 100.00%, Energy: 10309.77, Completed: 1652, Missed: 0
+ES-DVFS - Success: 93.82%, Energy: 3768.52, Completed: 1488, Missed: 98
+
+Test run 91/100
+RL   - Success: 100.00%, Energy: 6236.11, Completed: 1655, Missed: 0
+GEDF - Success: 100.00%, Energy: 10758.55, Completed: 1620, Missed: 0
+ES-DVFS - Success: 93.59%, Energy: 4212.31, Completed: 1519, Missed: 104
+
+Test run 92/100
+RL   - Success: 100.00%, Energy: 5782.81, Completed: 1585, Missed: 0
+GEDF - Success: 100.00%, Energy: 10238.66, Completed: 1561, Missed: 0
+ES-DVFS - Success: 93.83%, Energy: 3874.18, Completed: 1474, Missed: 97
+
+Test run 93/100
+RL   - Success: 100.00%, Energy: 6414.36, Completed: 1674, Missed: 0
+GEDF - Success: 100.00%, Energy: 10206.30, Completed: 1638, Missed: 0
+ES-DVFS - Success: 92.64%, Energy: 3847.65, Completed: 1410, Missed: 112
+
+Test run 94/100
+RL   - Success: 100.00%, Energy: 6917.31, Completed: 1610, Missed: 0
+GEDF - Success: 100.00%, Energy: 10597.07, Completed: 1652, Missed: 0
+ES-DVFS - Success: 92.61%, Energy: 3727.20, Completed: 1454, Missed: 116
+
+Test run 95/100
+RL   - Success: 100.00%, Energy: 6273.93, Completed: 1634, Missed: 0
+GEDF - Success: 100.00%, Energy: 10083.56, Completed: 1531, Missed: 0
+ES-DVFS - Success: 93.58%, Energy: 4219.08, Completed: 1458, Missed: 100
+
+Test run 96/100
+RL   - Success: 100.00%, Energy: 5954.50, Completed: 1548, Missed: 0
+GEDF - Success: 100.00%, Energy: 10181.75, Completed: 1622, Missed: 0
+ES-DVFS - Success: 91.99%, Energy: 3714.15, Completed: 1402, Missed: 122
+
+Test run 97/100
+RL   - Success: 100.00%, Energy: 5591.23, Completed: 1560, Missed: 0
+GEDF - Success: 100.00%, Energy: 10444.98, Completed: 1625, Missed: 0
+ES-DVFS - Success: 92.29%, Energy: 3986.88, Completed: 1412, Missed: 118
+
+Test run 98/100
+RL   - Success: 100.00%, Energy: 5657.43, Completed: 1511, Missed: 0
+GEDF - Success: 100.00%, Energy: 10305.13, Completed: 1616, Missed: 0
+ES-DVFS - Success: 92.07%, Energy: 4054.92, Completed: 1520, Missed: 131
+
+Test run 99/100
+RL   - Success: 100.00%, Energy: 6482.36, Completed: 1558, Missed: 0
+GEDF - Success: 100.00%, Energy: 10409.97, Completed: 1638, Missed: 0
+ES-DVFS - Success: 92.68%, Energy: 4379.96, Completed: 1494, Missed: 118
+
+Test run 100/100
+RL   - Success: 100.00%, Energy: 6480.01, Completed: 1580, Missed: 0
+GEDF - Success: 100.00%, Energy: 9952.48, Completed: 1578, Missed: 0
+ES-DVFS - Success: 93.52%, Energy: 4043.27, Completed: 1530, Missed: 106
+Results plot saved to ./saves/experiment-15/fixed_taskset_results.png
+Fixed Task Set Test Results - Per-core Utilization: 0.5000
+
+--- Success Ratio Summary ---
+Scheduler  | Avg (%)    | Std Dev    | Min (%)    | Max (%)   
+------------------------------------------------------------
+RL         | 100.00     | 0.00       | 100.00     | 100.00    
+GEDF       | 100.00     | 0.00       | 100.00     | 100.00    
+ES-DVFS    | 92.92      | 0.75       | 90.59      | 94.88     
+
+--- Energy Consumption Summary ---
+Scheduler  | Avg        | Std Dev    | Min        | Max       
+------------------------------------------------------------
+RL         | 6047.54    | 369.11     | 5263.30    | 6917.31   
+GEDF       | 10381.15   | 230.83     | 9884.49    | 10985.60  
+ES-DVFS    | 3912.00    | 236.57     | 3221.49    | 4566.16   
+
+--- Energy Savings ---
+RL vs GEDF: 41.75% savings
+RL vs ES-DVFS: -54.59% savings
+
+--- Task Completion Statistics ---
+Scheduler  | Avg Completed   | Avg Missed      | Success Rate   
+-----------------------------------------------------------------
+RL         | 1576.89         | 0.00            | 100.00         %
+GEDF       | 1597.14         | 0.00            | 100.00         %
+ES-DVFS    | 1461.79         | 111.26          | 92.93          %
+Summary saved to ./saves/experiment-15/fixed_taskset_summary.txt

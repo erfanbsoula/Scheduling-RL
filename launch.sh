@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=array
 #SBATCH --output=./saves/experiment-%a/train.out
-#SBATCH --array=8-11
+#SBATCH --array=0-19
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=4G
-#SBATCH --time=01:00:00
+#SBATCH --time=03:00:00
 
 source /home/erfan/pyenv/bin/activate
 
