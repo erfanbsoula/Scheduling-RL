@@ -15,9 +15,11 @@ from config import (
     ACTION_DIM,
     ACTOR_HIDDEN_DIM,
     CRITIC_HIDDEN_DIM,
+    BATCH_SIZE,
     Q_LEARNING_RATE,
     POLICY_LEARNING_RATE,
     TARGET_UPDATE_DELAY,
+    SOFT_UPDATE_TAU
 )
 
 if GPU:
@@ -212,6 +214,7 @@ class MADDPG:
     def __init__(
         self,
         replay_buffer: ReplayBuffer,
+        batch_size: int = BATCH_SIZE,
         gamma: float = DISCOUNT_RATE,
         critic_state_dim: int = CRITIC_STATE_DIM,
         actor_state_dim: int = ACTOR_STATE_DIM,
@@ -223,6 +226,7 @@ class MADDPG:
         target_update_delay: int = TARGET_UPDATE_DELAY
     ):
         self.replay_buffer: ReplayBuffer = replay_buffer
+        self.batch_size = batch_size
         self.gamma = gamma
 
         self.policy_net = ActorNetwork(actor_state_dim, action_dim, actor_hidden_dim).to(device)
@@ -240,7 +244,7 @@ class MADDPG:
         self.update_cnt = 0
 
 
-    def update(self, batch_size: int, soft_tau: float) -> Tuple[float, float]:
+    def update(self, soft_tau: float = SOFT_UPDATE_TAU) -> Tuple[float, float]:
         """
         Performs a single update step for the actor and critic networks using a batch of experiences.
 
@@ -252,13 +256,13 @@ class MADDPG:
             Tuple[float, float]: Average Q-network loss and policy-network loss for this update step.
         """
         self.update_cnt += 1
-        batch = self.replay_buffer.sample(batch_size)
+        batch = self.replay_buffer.sample(self.batch_size)
         states_actor, states_critic, actions, rewards, next_states_actor, next_states_critic, done_flags, time_durations = batch
 
         predicted_q_values = []
         target_q_values = []
 
-        for i in range(batch_size):
+        for i in range(self.batch_size):
 
             current_state_critic = torch.FloatTensor(states_critic[i]).to(device)
             current_action = torch.FloatTensor(actions[i]).to(device)
@@ -297,7 +301,7 @@ class MADDPG:
 
         predicted_q_values = []
 
-        for i in range(batch_size):
+        for i in range(self.batch_size):
             if states_actor[i].size > 0:
                 current_state_actor = torch.FloatTensor(states_actor[i]).to(device)
                 current_state_critic = torch.FloatTensor(states_critic[i]).to(device)

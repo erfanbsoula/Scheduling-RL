@@ -6,7 +6,8 @@ from config import (
     ACTOR_STATE_DIM,
     PROCESSOR_COUNT,
     TASK_PER_PROCESSOR,
-    MIN_LOAD, MAX_LOAD,
+    DEFAULT_MIN_LOAD,
+    DEFAULT_MAX_LOAD,
     MIN_PERIOD, MAX_PERIOD,
     INSTANCE_COMPLETION_REWARD,
     INSTANCE_MISS_PENALTY,
@@ -200,7 +201,7 @@ class Environment(object):
         self.total_energy_consumed = 0.0
 
         if per_core_utilization is None:
-            per_core_utilization = np.random.uniform(MIN_LOAD, MAX_LOAD)
+            per_core_utilization = np.random.uniform(DEFAULT_MIN_LOAD, DEFAULT_MAX_LOAD)
 
         target_util = per_core_utilization * self.processor_count
         utilizations = StaffordRandFixedSum(self.task_count, target_util, 1).flatten()
@@ -308,15 +309,10 @@ class Environment(object):
         self.time = next_timestamp
 
         completed_count, missed_count = 0, 0
-        efficiency_reward = 0
         for instance in self.active_instances:
             instance.update_status(self.time)
             if instance.status == InstanceStatus.COMPLETED:
                 completed_count += 1
-                final_laxity = max(0, instance.deadline - self.time)
-                initial_time = self.task_set[instance.task_index].relative_deadline
-                if final_laxity / initial_time < 0.1:
-                    efficiency_reward += 1
             elif instance.status == InstanceStatus.MISSED:
                 missed_count += 1
 
@@ -332,7 +328,7 @@ class Environment(object):
         ]
 
         # Calculate reward
-        global_reward = INSTANCE_COMPLETION_REWARD * efficiency_reward
+        global_reward = INSTANCE_COMPLETION_REWARD * completed_count
         global_reward -= INSTANCE_MISS_PENALTY * missed_count
         global_reward -= ENERGY_PENALTY_COEFF * step_energy
 

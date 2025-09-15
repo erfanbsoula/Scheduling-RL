@@ -3,47 +3,20 @@ from matplotlib import pyplot as plt
 import re
 import os
 
-utilizations = []
-results = {
-    'rl': {'success_ratio': [], 'energy': []},
-    'gedf': {'success_ratio': [], 'energy': []},
-    'es-dvfs': {'success_ratio': [], 'energy': []}
-}
 
-
-def read_stat(path):
-
-    with open(path) as file:
-        text = file.read()
-
-    pattern = r'^RL\s*\|\s*([^\|\s]*)'
-    matching_lines = re.findall(pattern, text, re.MULTILINE)
-    results['rl']['success_ratio'].append(float(matching_lines[0]))
-    results['rl']['energy'].append(float(matching_lines[1]))
-
-    pattern = r'^GEDF\s*\|\s*([^\|\s]*)'
-    matching_lines = re.findall(pattern, text, re.MULTILINE)
-    results['gedf']['success_ratio'].append(float(matching_lines[0]))
-    results['gedf']['energy'].append(float(matching_lines[1]))
-
-    pattern = r'^ES-DVFS\s*\|\s*([^\|\s]*)'
-    matching_lines = re.findall(pattern, text, re.MULTILINE)
-    results['es-dvfs']['success_ratio'].append(float(matching_lines[0]))
-    results['es-dvfs']['energy'].append(float(matching_lines[1]))
-
-
-def plot_results(utilization_levels, results, save_path):
+def plot_results(x_axis, x_label, results, save_path):
     """
     Plots the success ratios and energy consumption.
 
     Args:
-        utilization_levels (list): List of utilization levels.
+        x_axis (list): List of x-axis values (e.g., utilization levels).
+        x_label (str): Label for the x-axis.
         results (dict): Dictionary containing success ratios and energy data.
         save_path (str): Path to save the plot.
     """
     fig, ax1 = plt.subplots(figsize=(12, 7))
 
-    x = np.arange(len(utilization_levels))  # the label locations
+    x = np.arange(len(x_axis))  # the label locations
     width = 0.25  # the width of the bars
 
     # Energy Consumption (Bar Plots with reduced opacity)
@@ -56,10 +29,14 @@ def plot_results(utilization_levels, results, save_path):
     ax1.bar(x + width, results['es-dvfs']['normalized_energy'], width,
         label='ES-DVFS Energy (Normalized)', color='tab:blue', alpha=0.5)
 
-    ax1.set_xlabel('System Utilization (Load)', fontsize=14)
+    ax1.set_xlabel(x_label, fontsize=14)
     ax1.set_ylabel('Normalized Total Energy Consumed', fontsize=14)
     ax1.set_xticks(x)
-    ax1.set_xticklabels([f"{util:.2f}" for util in utilization_levels], fontsize=12)
+    if isinstance(x_axis[0], float):
+        ax1.set_xticklabels([f"{tick:.2f}" for tick in x_axis], fontsize=12)
+    else:
+        ax1.set_xticklabels([str(tick) for tick in x_axis], fontsize=12)
+
     ax1.tick_params(axis='y', labelsize=12)
     ax1.grid(True, linestyle=':', alpha=0.7)
 
@@ -90,18 +67,57 @@ def plot_results(utilization_levels, results, save_path):
 
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"\nPlot saved to {save_path}")
+    print(f"Plot saved to {save_path}")
 
 
-for directory in sorted(os.listdir('results')):
+def plot_overall_result(dir_name):
 
-    path = f'results/{directory}/fixed_taskset_summary.txt'
-    utilizations.append(float(directory[-3:].replace('_', '.')))
-    read_stat(path)
+    dir_path = os.path.join('results', dir_name)
 
-max_energy = np.max(results['rl']['energy'] + results['gedf']['energy'] + results['es-dvfs']['energy'])
-results['rl']['normalized_energy'] = [e / max_energy for e in results['rl']['energy']]
-results['gedf']['normalized_energy'] = [e / max_energy for e in results['gedf']['energy']]
-results['es-dvfs']['normalized_energy'] = [e / max_energy for e in results['es-dvfs']['energy']]
+    x_axis = []
+    results = {
+        'rl': {'success_ratio': [], 'energy': []},
+        'gedf': {'success_ratio': [], 'energy': []},
+        'es-dvfs': {'success_ratio': [], 'energy': []}
+    }
 
-plot_results(utilizations, results, 'performance_per_util.png')
+    def read_stat(path):
+
+        with open(path) as file:
+            text = file.read()
+
+        pattern = r'^RL\s*\|\s*([^\|\s]*)'
+        matching_lines = re.findall(pattern, text, re.MULTILINE)
+        results['rl']['success_ratio'].append(float(matching_lines[0]))
+        results['rl']['energy'].append(float(matching_lines[1]))
+
+        pattern = r'^GEDF\s*\|\s*([^\|\s]*)'
+        matching_lines = re.findall(pattern, text, re.MULTILINE)
+        results['gedf']['success_ratio'].append(float(matching_lines[0]))
+        results['gedf']['energy'].append(float(matching_lines[1]))
+
+        pattern = r'^ES-DVFS\s*\|\s*([^\|\s]*)'
+        matching_lines = re.findall(pattern, text, re.MULTILINE)
+        results['es-dvfs']['success_ratio'].append(float(matching_lines[0]))
+        results['es-dvfs']['energy'].append(float(matching_lines[1]))
+
+    for sub_dir in sorted(os.listdir(dir_path)):
+
+        if not os.path.isdir(os.path.join(dir_path, sub_dir)):
+            continue
+
+        path = f'{dir_path}/{sub_dir}/test_summary.txt'
+        x_axis.append(sub_dir.replace('_', '.'))
+        read_stat(path)
+
+    max_energy = np.max(results['rl']['energy'] + results['gedf']['energy'] + results['es-dvfs']['energy'])
+    results['rl']['normalized_energy'] = [e / max_energy for e in results['rl']['energy']]
+    results['gedf']['normalized_energy'] = [e / max_energy for e in results['gedf']['energy']]
+    results['es-dvfs']['normalized_energy'] = [e / max_energy for e in results['es-dvfs']['energy']]
+
+    plot_results(x_axis, dir_name, results, f'{dir_path}/experiment_results.png')
+
+
+if __name__ == '__main__':
+    for dir_name in os.listdir('results'):
+        plot_overall_result(dir_name)
