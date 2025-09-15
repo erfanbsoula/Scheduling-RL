@@ -286,8 +286,10 @@ class Tester(object):
 
         for i in range(num_test_runs):
             print(f"\nTest run {i+1}/{num_test_runs}")
+            numpy_saved_state = np.random.get_state()
 
             # Test RL agent
+            np.random.set_state(numpy_saved_state)
             self.environment.reset(CURRENT_LOAD)
             success_rl, energy_rl, completed_rl, missed_rl = self.run_simulation('rl')
             self.results['rl']['success_ratio'].append(success_rl)
@@ -296,14 +298,16 @@ class Tester(object):
             self.results['rl']['missed'].append(missed_rl)
 
             # Test GEDF
+            np.random.set_state(numpy_saved_state)
             self.environment.reset(CURRENT_LOAD)
             success_gedf, energy_gedf, completed_gedf, missed_gedf = self.run_simulation('gedf')
             self.results['gedf']['success_ratio'].append(success_gedf)
             self.results['gedf']['energy'].append(energy_gedf)
             self.results['gedf']['completed'].append(completed_gedf)
             self.results['gedf']['missed'].append(missed_gedf)
-            
+
             # Test ES-DVFS
+            np.random.set_state(numpy_saved_state)
             self.environment.reset(CURRENT_LOAD)
             success_es_dvfs, energy_es_dvfs, completed_es_dvfs, missed_es_dvfs = self.run_simulation('es-dvfs')
             self.results['es-dvfs']['success_ratio'].append(success_es_dvfs)
