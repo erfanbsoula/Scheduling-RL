@@ -1,62 +1,79 @@
-
 #!/bin/bash
 
 source ../pyenv/bin/activate
 
 #=======================================================================
-# Configuration
+# Search Space Configuration
 #=======================================================================
-HYPERPARAM_FILE="hyperparams.txt"
+
+RANDOM_SEEDS=(6950 6955 6960 6965 6970 6975 6980 6985 6990 6995)
+
+HPARAM_COMBINATIONS=(
+    "Q_LEARNING_RATE=1e-2 POLICY_LEARNING_RATE=1e-3"
+    "Q_LEARNING_RATE=1e-3 POLICY_LEARNING_RATE=1e-3"
+    "Q_LEARNING_RATE=1e-3 POLICY_LEARNING_RATE=1e-4"
+    "Q_LEARNING_RATE=1e-4 POLICY_LEARNING_RATE=1e-4"
+)
+
+MAX_PARALLEL_JOBS=1
 
 START_ID=0
-END_ID=67
-
-MAX_PARALLEL_JOBS=2
+END_ID=16
 
 #=======================================================================
 # Main Execution Logic
 #=======================================================================
-echo "🚀 Starting hyperparameter search for experiments $START_ID through $END_ID..."
+
+echo "Starting structured runs for experiments $START_ID through $END_ID..."
+echo -n "Each experiment will run with ${#RANDOM_SEEDS[@]} seeds and "
+echo "${#HPARAM_COMBINATIONS[@]} hyperparameter search combinations."
 echo "Running up to $MAX_PARALLEL_JOBS jobs in parallel."
 
-# Loop through each experiment ID
-for (( TASK_ID=$START_ID; TASK_ID<=$END_ID; TASK_ID++ )); do
-  # This entire block is run in a background subshell
-  (
-    # 1. Set up the save path for this specific task
-    export SAVE_PATH="./saves/experiment-$TASK_ID"
-    mkdir -p "$SAVE_PATH"
+for (( EXPERIMENT_ID=$START_ID; EXPERIMENT_ID<=$END_ID; EXPERIMENT_ID++ )); do
 
-    # 2. Read the corresponding line of hyperparameters from the file
-    # The '+1' is needed because sed is 1-indexed, while our loop is 0-indexed
-    HYPER_LINE=$(sed -n "$((TASK_ID + 1))p" "$HYPERPARAM_FILE")
-    export $HYPER_LINE
+    BASE_PARAMS=$(sed -n "$((EXPERIMENT_ID + 1))p" experiments.txt)
+    EXP_BASE_PATH="./saves/experiment-${EXPERIMENT_ID}"
 
-    echo "▶️  Starting Job ID: $TASK_ID | Params: $HYPER_LINE"
+    echo "Staging Main Experiment $EXPERIMENT_ID ($BASE_PARAMS)"
 
-    # 3. Run the Python scripts and redirect all output (stdout & stderr) to a file
-    #    The '-u' flag makes Python's output unbuffered, similar to 'srun --unbuffered'.
-    #    The '&&' ensures the test script only runs if the training script succeeds.
-    {
-      python3 -u trainer.py && \
-      python3 -u tester.py
-    } > "$SAVE_PATH/train.out" 2>&1
+    for SEED_INDEX in "${!RANDOM_SEEDS[@]}"; do
 
-    echo "✅ Finished Job ID: $TASK_ID"
+        SEED=${RANDOM_SEEDS[$SEED_INDEX]}
+        SEED_PATH="$EXP_BASE_PATH/seed-${SEED_INDEX}"
 
-  ) & # The '&' sends this entire subshell process to the background
+        HYPER_PARAMS_ID=0
 
-  # --- Parallel Job Management ---
-  # If we've reached the max number of parallel jobs, wait for one to finish
-  if [[ $(jobs -r -p | wc -l) -ge $MAX_PARALLEL_JOBS ]]; then
-    # 'wait -n' waits for the next background job to terminate
-    wait -n
-  fi
+        for HYPER_PARAMS in "${HPARAM_COMBINATIONS[@]}"; do
+
+            (
+                export SAVE_PATH="$SEED_PATH/hps-${HYPER_PARAMS_ID}"
+                mkdir -p "$SAVE_PATH"
+
+                export RANDOM_SEED=$SEED
+                export $BASE_PARAMS
+                export $HYPER_PARAMS
+
+                echo "- Starting Job | Exp ${EXPERIMENT_ID} | Seed ${SEED_INDEX} ($SEED) | HPS ${HYPER_PARAMS_ID}"
+
+                {
+                    python3 -u trainer.py && \
+                    python3 -u tester.py
+                } > "$SAVE_PATH/run.out" 2>&1
+
+                echo "- Finished Job | Exp ${EXPERIMENT_ID} | Seed ${SEED_INDEX} ($SEED) | HPS ${HYPER_PARAMS_ID}"
+
+            ) &
+
+            if [[ $(jobs -r -p | wc -l) -ge $MAX_PARALLEL_JOBS ]]; then
+                wait -n
+            fi
+
+            ((HYPER_PARAMS_ID++))
+        done
+    done
 
 done
 
-# --- Final Cleanup ---
-# Wait for any remaining background jobs (the last batch) to complete
 echo "⏳ Waiting for the last batch of jobs to finish..."
 wait
 echo "🎉 All experiments completed successfully!"

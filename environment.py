@@ -6,18 +6,18 @@ from config import (
     ACTOR_STATE_DIM,
     PROCESSOR_COUNT,
     TASK_PER_PROCESSOR,
-    DEFAULT_MIN_LOAD,
-    DEFAULT_MAX_LOAD,
     MIN_PERIOD, MAX_PERIOD,
     INSTANCE_COMPLETION_REWARD,
     INSTANCE_MISS_PENALTY,
     STATIC_POWER_COEFF,
     DYNAMIC_POWER_COEFF,
     ENERGY_PENALTY_COEFF,
-    MAX_EPISODE_TIME
+    MAX_EPISODE_TIME,
+    CURRENT_LOAD
 )
 from task_gen import StaffordRandFixedSum, gen_periods
 import heapq
+import pickle
 
 
 class EventType(Enum):
@@ -193,23 +193,23 @@ class Environment(object):
         }
 
 
-    def reset(self, per_core_utilization: float = None):
+    def generate_new_taskset(self):
 
-        self.time = 0.0
-        self.instance_arrival_count = 0
-        self.active_instances = []
-        self.total_energy_consumed = 0.0
-
-        if per_core_utilization is None:
-            per_core_utilization = np.random.uniform(DEFAULT_MIN_LOAD, DEFAULT_MAX_LOAD)
-
-        target_util = per_core_utilization * self.processor_count
+        target_util = CURRENT_LOAD * self.processor_count
         utilizations = StaffordRandFixedSum(self.task_count, target_util, 1).flatten()
         periods = gen_periods(self.task_count, 1, MIN_PERIOD, MAX_PERIOD, 0.1, "logunif").flatten()
 
         self.task_set = [
             Task(idx, utilizations[idx], periods[idx]) for idx in range(self.task_count)
         ]
+
+
+    def reset(self):
+
+        self.time = 0.0
+        self.instance_arrival_count = 0
+        self.active_instances = []
+        self.total_energy_consumed = 0.0
 
         self.event_queue.reset()
         for task in self.task_set:
@@ -408,10 +408,6 @@ class Environment(object):
         ]
         global_state_actor = np.array(global_state_actor, dtype=np.float32)
 
-        # mean_remaining_work_units = self.stats["remaining_work_units"]["mean"] + 1e-6
-        # mean_deadline = self.stats["deadline"]["mean"] + 1e-6
-        # mean_laxity = self.stats["laxity"]["mean"] + 1e-6
-
         local_observations = []
         for instance in self.active_instances:
             local_obs = [
@@ -436,6 +432,12 @@ class Environment(object):
     def done(self) -> bool:
         return self.time >= MAX_EPISODE_TIME or self.event_queue.is_empty()
 
-    # def calc_mean_utilization(self) -> float:
-    #     utils = [task.work_units / np.mean(task.arrival_intervals) for task in self.task_set]
-    #     return np.sum(utils) / self.processor_count
+
+    def save_task_set(self, path: str):
+        with open(path, 'wb') as f:
+            pickle.dump(self.task_set, f)
+
+
+    def load_task_set(self, path: str):
+        with open(path, 'rb') as f:
+            self.task_set = pickle.load(f)

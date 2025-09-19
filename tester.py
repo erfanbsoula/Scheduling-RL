@@ -8,6 +8,7 @@ from ddpg_torch import MADDPG
 from config import (
     SAVE_PATH,
     RANDOM_SEED,
+    PROCESSOR_COUNT,
     CURRENT_LOAD,
     DVFS_LEVELS
 )
@@ -75,7 +76,7 @@ def es_dvfs_scheduler(active_instances: list):
 
     total_remaining_work = sum(inst.remaining_work_units for inst in active_instances)
     max_deadline = max(inst.deadline for inst in active_instances)
-    h_k = total_remaining_work / max_deadline if max_deadline > 0 else float('inf')
+    H_k = total_remaining_work / PROCESSOR_COUNT / max_deadline if max_deadline > 0 else 1.0
 
     sorted_instances = sorted(active_instances, key=lambda inst: inst.deadline)
     cumulative_work = 0
@@ -89,7 +90,7 @@ def es_dvfs_scheduler(active_instances: list):
 
     I_j = max_intensity
 
-    speed = max(h_k, I_j)
+    speed = max(H_k, I_j)
     frequency_scales = np.full(num_active_instances, speed, dtype=np.float32)
     frequency_scales = convert_to_discrete_levels(frequency_scales)
 
@@ -104,11 +105,14 @@ class Tester(object):
 
     def __init__(self):
 
-        np.random.seed(RANDOM_SEED)
-        torch.manual_seed(RANDOM_SEED)
+        np.random.seed(RANDOM_SEED+1)
+        torch.manual_seed(RANDOM_SEED+1)
         np.set_printoptions(precision=4, suppress=True)
 
         self.environment = Environment()
+        self.environment.load_task_set(
+            os.path.join(SAVE_PATH, "taskset.pkl")
+        )
         self.rl_agent = MADDPG(None)
 
         model_files = [d for d in os.listdir(SAVE_PATH) if d.startswith('ep_')]
@@ -290,7 +294,7 @@ class Tester(object):
 
             # Test RL agent
             np.random.set_state(numpy_saved_state)
-            self.environment.reset(CURRENT_LOAD)
+            self.environment.reset()
             success_rl, energy_rl, completed_rl, missed_rl = self.run_simulation('rl')
             self.results['rl']['success_ratio'].append(success_rl)
             self.results['rl']['energy'].append(energy_rl)
@@ -299,7 +303,7 @@ class Tester(object):
 
             # Test GEDF
             np.random.set_state(numpy_saved_state)
-            self.environment.reset(CURRENT_LOAD)
+            self.environment.reset()
             success_gedf, energy_gedf, completed_gedf, missed_gedf = self.run_simulation('gedf')
             self.results['gedf']['success_ratio'].append(success_gedf)
             self.results['gedf']['energy'].append(energy_gedf)
@@ -308,7 +312,7 @@ class Tester(object):
 
             # Test ES-DVFS
             np.random.set_state(numpy_saved_state)
-            self.environment.reset(CURRENT_LOAD)
+            self.environment.reset()
             success_es_dvfs, energy_es_dvfs, completed_es_dvfs, missed_es_dvfs = self.run_simulation('es-dvfs')
             self.results['es-dvfs']['success_ratio'].append(success_es_dvfs)
             self.results['es-dvfs']['energy'].append(energy_es_dvfs)

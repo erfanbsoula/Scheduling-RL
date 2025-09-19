@@ -18,7 +18,6 @@ from config import (
     CHECKPOINT_INTERVAL,
     START_NOISE_WIDTH,
     END_NOISE_WIDTH,
-    CURRENT_LOAD
 )
 
 
@@ -36,6 +35,10 @@ class Trainer(object):
         self.noise_decay = (END_NOISE_WIDTH / START_NOISE_WIDTH) ** (1 / MAX_EPISODES)
 
         self.environment = Environment()
+        self.environment.generate_new_taskset()
+        self.environment.save_task_set(
+            os.path.join(SAVE_PATH, "taskset.pkl")
+        )
         self.replay_buffer = ReplayBuffer(BUFFER_SIZE)
         self.algorithm = MADDPG(self.replay_buffer)
 
@@ -46,7 +49,7 @@ class Trainer(object):
 
     def train_episode(self):
 
-        self.environment.reset(CURRENT_LOAD)
+        self.environment.reset()
         next_state = self.environment.get_state()
         self.curr_noise_width *= self.noise_decay
 
